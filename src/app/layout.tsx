@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${elMessiri.variable} ${alexandria.variable}`}>
       <head>
-        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.tailwindcss.com" async></script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;600;700;900&family=El+Messiri:wght@600;700&display=swap" rel="stylesheet" />

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Language, Product } from "@/types";
+import { Language, Product } from "../types";
 import { Flame, ArrowUpRight } from "lucide-react";
 
 interface DropShowcaseProps {
