@@ -1,28 +1,38 @@
 'use client';
 
 import React from 'react';
-import { Copy, Check, ShieldCheck, Ruler } from 'lucide-react';
+import { Copy, Check, ShieldCheck, Ruler, X, Trash2 } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
-import { GOVERNORATES, TSHIRT_SIZE_CHART, HOODIE_SIZE_CHART, basePrices } from '@/constants';
+import { GOVERNORATES, TSHIRT_SIZE_CHART, HOODIE_SIZE_CHART, basePrices, CLIQ_ALIAS } from '@/constants';
 
 export default function Modals() {
   const { 
-    lang, isCheckoutOpen, setIsCheckoutOpen, isSizeChartOpen, setIsSizeChartOpen,
+    lang, isSizeChartOpen, setIsSizeChartOpen,
     isWorkshopModalOpen, setIsWorkshopModalOpen, selectedWorkshop, activeChartTab,
-    setActiveChartTab, garment, size, placement, selectedGov, setSelectedGov,
-    copiedCliq, setCopiedCliq
+    setActiveChartTab, selectedGov, setSelectedGov, copiedCliq, setCopiedCliq,
+    cart, removeFromCart, isCartOpen, setIsCartOpen, paymentMethod, setPaymentMethod
   } = useStore();
   
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   
-  const currentPrice = basePrices[garment as keyof typeof basePrices];
-  const finalTotal = currentPrice + selectedGov.fee;
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(CLIQ_ALIAS);
+    setCopiedCliq(true);
+    setTimeout(() => setCopiedCliq(false), 2000);
+  };
+
+  const cartSubtotal = cart.reduce((sum, item) => sum + item.price, 0);
+  const finalTotal = cartSubtotal > 0 ? cartSubtotal + selectedGov.fee : 0;
 
   const getWhatsAppOrderUrl = () => {
-    const sizeStr = garment === 'tote' ? 'One Size' : size;
-    const msg = `مرحباً استوديو ميدان، أود تأكيد طلبي: قطعة ${garment} - مقاس ${sizeStr} - مكان التصميم: ${placement}. المجموع: ${finalTotal.toFixed(2)} د.أ`;
+    const orderDetails = cart.map((item, index) => {
+      const sizeStr = item.garment === 'tote' ? 'One Size' : item.size;
+      return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Print: ${item.placement} - Art: ${item.artMode}`;
+    }).join('\n');
+
+    const msg = `مرحباً استوديو ميدان، أود تأكيد طلبي:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr}\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\nالمجموع الكلي: ${finalTotal.toFixed(2)} د.أ`;
     return `https://wa.me/962790000000?text=${encodeURIComponent(msg)}`;
   };
   
@@ -31,140 +41,169 @@ export default function Modals() {
     return `https://wa.me/962790000000?text=${encodeURIComponent(msg)}`;
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText('MIDAANME');
-    setCopiedCliq(true);
-    setTimeout(() => setCopiedCliq(false), 2000);
-  };
-
   return (
     <>
-      {/* Checkout Modal */}
-      {isCheckoutOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4" dir={isRtl ? 'rtl' : 'ltr'}>
-          <div className="bg-[#111] border border-[#262626] rounded max-w-lg w-full p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto">
-            <button 
-              onClick={() => setIsCheckoutOpen(false)}
-              className={`absolute top-4 text-neutral-400 hover:text-white text-sm font-bold uppercase tracking-widest font-mono ${isRtl ? 'left-4' : 'right-4'}`}
-            >
-              {strings.close}
-            </button>
-
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#262626]">
-              <div className="bg-[#D80032]/20 p-3 rounded">
-                <ShieldCheck size={24} className="text-[#D80032]" />
-              </div>
-              <div>
-                <h3 className="font-black text-xl text-white uppercase tracking-tight">{strings.orderModalTitle}</h3>
-              </div>
+      {/* Cart Drawer */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Overlay */}
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+            onClick={() => setIsCartOpen(false)}
+          ></div>
+          
+          {/* Drawer */}
+          <div 
+            className={`relative w-full max-w-md bg-[#050505] h-full shadow-2xl flex flex-col border-l border-[#262626] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${isRtl ? 'border-l-0 border-r left-0 right-auto' : 'right-0'}`}
+            dir={isRtl ? 'rtl' : 'ltr'}
+          >
+            <div className="p-6 flex items-center justify-between border-b border-[#1A1A1A]">
+              <h2 className="text-xl font-black text-white uppercase font-sans tracking-tight">
+                {/* @ts-expect-error (dynamically typed dictionary) */}
+                {strings.nav?.cart || 'Cart'} <span className="text-[#D80032] font-mono text-sm ml-2">({cart.length})</span>
+              </h2>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="text-neutral-500 hover:text-white transition-colors"
+              >
+                <X size={24} />
+              </button>
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">{strings.fullName}</label>
-                <input type="text" className="w-full bg-[#0A0A0A] border border-[#262626] rounded p-3 text-white font-sans outline-none focus:border-[#D80032] transition-colors" />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">{strings.phone}</label>
-                <input type="tel" dir="ltr" placeholder="079 000 0000" className="w-full bg-[#0A0A0A] border border-[#262626] rounded p-3 text-white font-mono outline-none focus:border-[#D80032] transition-colors" />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">{strings.governorate}</label>
-                <select 
-                  value={selectedGov.id}
-                  onChange={(e) => {
-                    const gov = GOVERNORATES.find(g => g.id === e.target.value);
-                    if(gov) setSelectedGov(gov);
-                  }}
-                  className="w-full bg-[#0A0A0A] border border-[#262626] rounded p-3 text-white font-sans outline-none focus:border-[#D80032] transition-colors"
-                >
-                  {GOVERNORATES.map(g => (
-                    <option key={g.id} value={g.id}>{isRtl ? g.nameAr : g.nameEn} ({g.fee} JOD)</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">{strings.address}</label>
-                <textarea rows={2} className="w-full bg-[#0A0A0A] border border-[#262626] rounded p-3 text-white font-sans outline-none focus:border-[#D80032] transition-colors"></textarea>
-              </div>
-
-              {/* CliQ Payment Box */}
-              <div className="bg-[#1A1A1A] border border-[#D80032]/30 rounded p-4 relative overflow-hidden">
-                <div className="absolute -right-4 -top-4 text-white/5 opacity-50 select-none pointer-events-none">
-                  <h1 className="text-8xl font-black italic">CliQ</h1>
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {cart.length === 0 ? (
+                <div className="text-center text-neutral-500 py-12 font-mono text-xs uppercase tracking-widest">
+                  {isRtl ? 'الحقيبة فارغة' : 'Your cart is empty'}
                 </div>
-                
-                <h4 className="text-[#D80032] font-black uppercase tracking-widest text-sm mb-2 relative z-10 font-sans">{strings.cliqModal.title}</h4>
-                <p className="text-xs text-neutral-400 mb-4 font-sans relative z-10">{strings.cliqModal.desc}</p>
-                
-                <div className="flex flex-col gap-3 relative z-10">
-                  <span className="text-xs font-bold text-white uppercase tracking-widest font-mono">{strings.cliqModal.aliasLabel}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="bg-black border border-[#333] px-4 py-3 rounded flex-1 font-mono text-xl tracking-[0.2em] font-black text-white text-center">
-                      MIDAANME
+              ) : (
+                <div className="space-y-4">
+                  {cart.map((item) => (
+                    <div key={item.id} className="bg-[#111] border border-[#262626] p-4 rounded-xl flex gap-4 items-start">
+                      <div className="flex-1 space-y-1">
+                        <div className="flex justify-between items-start">
+                          <h4 className="font-bold text-white uppercase text-sm">{strings.studio[item.garment as keyof typeof strings.studio]}</h4>
+                          <span className="font-mono text-xs text-[#D80032] font-bold">{item.price.toFixed(2)} {strings.studio.jod}</span>
+                        </div>
+                        <p className="text-xs text-neutral-400 font-mono">
+                          {item.color} • {item.garment === 'tote' ? 'O/S' : item.size}
+                        </p>
+                        <p className="text-[10px] text-neutral-500 font-mono uppercase tracking-widest mt-2">
+                          {item.placement} / {item.artMode}
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-neutral-600 hover:text-red-500 transition-colors p-1"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
-                    <button 
-                      onClick={copyToClipboard}
-                      className="bg-white hover:bg-neutral-200 text-black p-3.5 rounded transition-colors flex shrink-0"
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <div className="border-t border-[#1A1A1A] p-6 bg-gradient-to-t from-black to-[#050505]">
+                <div className="space-y-4 mb-6">
+                  {/* Governorate */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">{strings.governorate}</label>
+                    <select 
+                      value={selectedGov.id}
+                      onChange={(e) => {
+                        const gov = GOVERNORATES.find(g => g.id === e.target.value);
+                        if(gov) setSelectedGov(gov);
+                      }}
+                      className="w-full bg-[#111] border border-[#262626] rounded-lg p-3 text-white text-sm font-sans outline-none focus:border-[#D80032] transition-colors"
                     >
-                      {copiedCliq ? <Check size={20} className="text-green-600" /> : <Copy size={20} />}
-                    </button>
+                      {GOVERNORATES.map(g => (
+                        <option key={g.id} value={g.id}>{isRtl ? g.nameAr : g.nameEn} (+{g.fee} JOD)</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Payment Method */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">Payment Method</label>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => setPaymentMethod('cliq')}
+                        className={`flex-1 py-2.5 border rounded-lg text-xs font-bold transition-colors ${paymentMethod === 'cliq' ? 'border-[#D80032] bg-[#D80032]/10 text-white' : 'border-[#262626] bg-[#111] text-neutral-400'}`}
+                      >
+                        CliQ Instant
+                      </button>
+                      <button 
+                        onClick={() => setPaymentMethod('cod')}
+                        className={`flex-1 py-2.5 border rounded-lg text-xs font-bold transition-colors ${paymentMethod === 'cod' ? 'border-white bg-[#1A1A1A] text-white' : 'border-[#262626] bg-[#111] text-neutral-400'}`}
+                      >
+                        Cash on Delivery
+                      </button>
+                    </div>
+                  </div>
+
+                  {paymentMethod === 'cliq' && (
+                    <div className="bg-[#111] border border-[#D80032]/30 rounded-lg p-3 flex justify-between items-center">
+                      <div>
+                        <div className="text-[9px] text-neutral-500 font-mono uppercase tracking-widest mb-1">{strings.cliqModal.aliasLabel}</div>
+                        <div className="font-mono text-sm font-black tracking-widest text-white">{CLIQ_ALIAS}</div>
+                      </div>
+                      <button onClick={copyToClipboard} className="text-neutral-400 hover:text-white p-2">
+                        {copiedCliq ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="pt-4 border-t border-[#1A1A1A] space-y-2">
+                    <div className="flex justify-between text-xs text-neutral-400">
+                      <span>Subtotal</span>
+                      <span className="font-mono">{cartSubtotal.toFixed(2)} JOD</span>
+                    </div>
+                    <div className="flex justify-between text-xs text-neutral-400">
+                      <span>Shipping</span>
+                      <span className="font-mono">{selectedGov.fee.toFixed(2)} JOD</span>
+                    </div>
+                    <div className="flex justify-between items-end pt-2">
+                      <span className="text-sm font-bold text-white uppercase tracking-wide">Total</span>
+                      <span className="text-2xl font-black text-white font-mono">{finalTotal.toFixed(2)} <span className="text-xs text-[#D80032]">JOD</span></span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="border-t border-[#262626] pt-6 flex justify-between items-end">
-                <span className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">{strings.grandTotal}</span>
-                <span className="text-3xl font-black text-white font-mono">{finalTotal.toFixed(2)} <span className="text-sm text-[#D80032]">{strings.studio.jod}</span></span>
+                <a 
+                  href={getWhatsAppOrderUrl()}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full bg-white text-black hover:bg-neutral-200 py-4 font-mono text-sm font-black uppercase tracking-widest transition-colors rounded-xl flex items-center justify-center gap-2"
+                >
+                  {strings.confirmOrder}
+                </a>
               </div>
-
-              <a 
-                href={getWhatsAppOrderUrl()}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full bg-[#D80032] hover:bg-[#B00028] text-white py-4 font-mono text-sm font-black uppercase tracking-widest rounded flex items-center justify-center gap-2 transition-colors block text-center"
-              >
-                {strings.confirmOrder}
-              </a>
-            </div>
+            )}
           </div>
         </div>
       )}
 
       {/* Workshop Modal */}
       {isWorkshopModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4" dir={isRtl ? 'rtl' : 'ltr'}>
-          <div className="bg-[#111] border border-[#262626] rounded max-w-md w-full p-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4" dir={isRtl ? 'rtl' : 'ltr'}>
+          <div className="bg-[#050505] border border-[#262626] rounded-2xl max-w-md w-full p-8 shadow-2xl relative">
             <button 
               onClick={() => setIsWorkshopModalOpen(false)}
-              className={`absolute top-4 text-neutral-400 hover:text-white text-sm font-bold uppercase tracking-widest font-mono ${isRtl ? 'left-4' : 'right-4'}`}
+              className={`absolute top-6 text-neutral-500 hover:text-white transition-colors ${isRtl ? 'left-6' : 'right-6'}`}
             >
-              {strings.close}
+              <X size={20} />
             </button>
-            <h3 className="font-black text-xl text-white uppercase tracking-tight mb-2 font-sans pr-8">{strings.workshopModalTitle}</h3>
-            <div className="bg-[#1A1A1A] border border-[#262626] p-4 rounded mb-6">
-              <span className="text-sm text-white font-bold block font-sans">{selectedWorkshop}</span>
+            <h3 className="font-black text-2xl text-white uppercase tracking-tight mb-2 font-sans pr-8">{strings.workshopModalTitle}</h3>
+            <div className="bg-[#111] border border-[#262626] p-4 rounded-xl mb-8">
+              <span className="text-sm text-[#D80032] font-bold block font-sans">{selectedWorkshop}</span>
             </div>
             
-            <div className="space-y-4 mb-6">
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">{strings.fullName}</label>
-                <input type="text" className="w-full bg-[#0A0A0A] border border-[#262626] rounded p-3 text-white font-sans outline-none focus:border-[#D80032] transition-colors" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-widest">{strings.phone}</label>
-                <input type="tel" dir="ltr" className="w-full bg-[#0A0A0A] border border-[#262626] rounded p-3 text-white font-mono outline-none focus:border-[#D80032] transition-colors" />
-              </div>
-            </div>
-
             <a 
               href={getWhatsAppWorkshopUrl()}
               target="_blank"
               rel="noreferrer"
-              className="w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-xs font-black uppercase tracking-widest rounded flex items-center justify-center gap-2 transition-colors block text-center"
+              className="w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-xs font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 transition-colors block text-center"
             >
               {strings.submitWorkshopWhatsApp}
             </a>
@@ -174,60 +213,63 @@ export default function Modals() {
 
       {/* Size Chart Modal */}
       {isSizeChartOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4" dir={isRtl ? 'rtl' : 'ltr'}>
-          <div className="bg-[#111] border border-[#262626] rounded max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4" dir={isRtl ? 'rtl' : 'ltr'}>
+          <div className="bg-[#050505] border border-[#262626] rounded-2xl max-w-2xl w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button 
               onClick={() => setIsSizeChartOpen(false)}
-              className={`absolute top-4 text-neutral-400 hover:text-white text-sm font-bold uppercase tracking-widest font-mono ${isRtl ? 'left-4' : 'right-4'}`}
+              className={`absolute top-6 text-neutral-500 hover:text-white transition-colors ${isRtl ? 'left-6' : 'right-6'}`}
             >
-              {strings.close}
+              <X size={20} />
             </button>
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[#262626]">
+            
+            <div className="flex items-center gap-3 mb-8 pb-4 border-b border-[#1A1A1A]">
               <Ruler size={24} className="text-[#D80032]" />
               <h3 className="font-black text-xl text-white uppercase tracking-tight">{strings.studio.sizeLabel}</h3>
             </div>
 
-            <div className="flex gap-4 mb-6">
+            <div className="flex gap-4 mb-8 bg-[#111] p-1 rounded-xl">
               <button 
                 onClick={() => setActiveChartTab('tshirt')}
-                className={`flex-1 py-3 font-mono text-xs font-bold uppercase tracking-widest border-b-2 ${activeChartTab === 'tshirt' ? 'border-[#D80032] text-white' : 'border-[#262626] text-neutral-500'}`}
+                className={`flex-1 py-3 font-mono text-xs font-bold uppercase tracking-widest rounded-lg transition-all ${activeChartTab === 'tshirt' ? 'bg-[#262626] text-white shadow' : 'text-neutral-500 hover:text-white'}`}
               >
                 {strings.studio.tee}
               </button>
               <button 
                 onClick={() => setActiveChartTab('hoodie')}
-                className={`flex-1 py-3 font-mono text-xs font-bold uppercase tracking-widest border-b-2 ${activeChartTab === 'hoodie' ? 'border-[#D80032] text-white' : 'border-[#262626] text-neutral-500'}`}
+                className={`flex-1 py-3 font-mono text-xs font-bold uppercase tracking-widest rounded-lg transition-all ${activeChartTab === 'hoodie' ? 'bg-[#262626] text-white shadow' : 'text-neutral-500 hover:text-white'}`}
               >
                 {strings.studio.hoodie}
               </button>
             </div>
 
-            <div className="overflow-x-auto mb-8">
-              <table className="w-full text-center font-mono text-sm border-collapse border border-[#262626]">
+            <div className="overflow-x-auto mb-8 border border-[#262626] rounded-xl">
+              <table className="w-full text-center font-mono text-sm border-collapse">
                 <thead>
-                  <tr className="bg-[#1A1A1A] border-b border-[#262626]">
-                    <th className="p-3 border-x border-[#262626] text-white">Size</th>
-                    <th className="p-3 border-x border-[#262626] text-neutral-400">A (Length cm)</th>
-                    <th className="p-3 border-x border-[#262626] text-neutral-400">B (Width cm)</th>
+                  <tr className="bg-[#111] border-b border-[#262626]">
+                    <th className="p-4 text-white font-bold text-xs tracking-widest">Size</th>
+                    <th className="p-4 text-neutral-400 font-normal text-xs tracking-widest border-l border-[#262626]">A (Length cm)</th>
+                    <th className="p-4 text-neutral-400 font-normal text-xs tracking-widest border-l border-[#262626]">B (Width cm)</th>
                   </tr>
                 </thead>
-                <tbody className="bg-[#0A0A0A]">
+                <tbody className="bg-[#050505]">
                   {(activeChartTab === 'tshirt' ? TSHIRT_SIZE_CHART : HOODIE_SIZE_CHART).map((row) => (
-                    <tr key={row.size} className="border-b border-[#262626] hover:bg-[#111]">
-                      <td className="p-3 font-bold border-x border-[#262626] text-white">{row.size}</td>
-                      <td className="p-3 border-x border-[#262626] text-neutral-400">{row.a}</td>
-                      <td className="p-3 border-x border-[#262626] text-neutral-400">{row.b}</td>
+                    <tr key={row.size} className="border-b border-[#1A1A1A] last:border-0 hover:bg-[#111] transition-colors">
+                      <td className="p-4 font-black text-white">{row.size}</td>
+                      <td className="p-4 text-neutral-400 border-l border-[#1A1A1A]">{row.a}</td>
+                      <td className="p-4 text-neutral-400 border-l border-[#1A1A1A]">{row.b}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            <div className="bg-[#1A1A1A] p-4 rounded text-xs leading-relaxed font-sans border border-[#262626]">
-              <strong className="text-white block mb-1 font-mono uppercase tracking-widest">{strings.fabricSpecsTitle}</strong>
-              <p className="text-neutral-400 mb-1">- {strings.tshirtSpecs}</p>
-              <p className="text-neutral-400 mb-1">- {strings.hoodieSpecs}</p>
-              <p className="text-neutral-400 mt-2 italic border-t border-[#333] pt-2">- {strings.careInstructions}</p>
+            <div className="bg-gradient-to-br from-[#111] to-[#0A0A0A] p-6 rounded-xl text-xs leading-relaxed font-sans border border-[#262626]">
+              <strong className="text-white block mb-3 font-mono uppercase tracking-widest text-[10px]">{strings.fabricSpecsTitle}</strong>
+              <div className="space-y-2 text-neutral-400">
+                <p>• {strings.tshirtSpecs}</p>
+                <p>• {strings.hoodieSpecs}</p>
+              </div>
+              <p className="text-neutral-500 mt-4 italic border-t border-[#1A1A1A] pt-4 font-medium">{strings.careInstructions}</p>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { 
   Language, GarmentType, GarmentColor, GarmentView, GarmentSize, 
-  PrintPlacement, ArtMode, PresetArt 
+  PrintPlacement, ArtMode, PresetArt, TextColor, TextFont, CartItem, PaymentMethod
 } from '@/types';
 import { GOVERNORATES } from '@/constants';
 
@@ -11,6 +11,7 @@ interface StoreState {
   lang: Language;
   setLang: (lang: Language) => void;
   
+  // Studio State
   garment: GarmentType;
   setGarment: (garment: GarmentType) => void;
   view: GarmentView;
@@ -30,13 +31,35 @@ interface StoreState {
   setCustomText: (text: string) => void;
   uploadedImage: string | null;
   setUploadedImage: (image: string | null) => void;
+
+  // Studio 2.0 State
+  artworkScale: number;
+  setArtworkScale: (scale: number) => void;
+  verticalOffset: number;
+  setVerticalOffset: (offset: number) => void;
+  customTextColor: TextColor;
+  setCustomTextColor: (color: TextColor) => void;
+  customTextFont: TextFont;
+  setCustomTextFont: (font: TextFont) => void;
+
+  // Cart State
+  cart: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (id: string) => void;
+  isCartOpen: boolean;
+  setIsCartOpen: (isOpen: boolean) => void;
+  paymentMethod: PaymentMethod;
+  setPaymentMethod: (method: PaymentMethod) => void;
   
+  // UI State
   isCheckoutOpen: boolean;
   setIsCheckoutOpen: (isOpen: boolean) => void;
   isSizeChartOpen: boolean;
   setIsSizeChartOpen: (isOpen: boolean) => void;
   activeChartTab: 'tshirt' | 'hoodie';
   setActiveChartTab: (tab: 'tshirt' | 'hoodie') => void;
+  isDossierOpen: boolean;
+  setIsDossierOpen: (isOpen: boolean) => void;
   
   selectedGov: typeof GOVERNORATES[0];
   setSelectedGov: (gov: typeof GOVERNORATES[0]) => void;
@@ -79,6 +102,23 @@ export const useStore = create<StoreState>((set) => ({
   setCustomText: (customText) => set({ customText }),
   uploadedImage: null,
   setUploadedImage: (uploadedImage) => set({ uploadedImage }),
+
+  artworkScale: 100,
+  setArtworkScale: (artworkScale) => set({ artworkScale }),
+  verticalOffset: -16,
+  setVerticalOffset: (verticalOffset) => set({ verticalOffset }),
+  customTextColor: 'white',
+  setCustomTextColor: (customTextColor) => set({ customTextColor }),
+  customTextFont: 'sans',
+  setCustomTextFont: (customTextFont) => set({ customTextFont }),
+
+  cart: [],
+  addToCart: (item) => set((state) => ({ cart: [...state.cart, item] })),
+  removeFromCart: (id) => set((state) => ({ cart: state.cart.filter(i => i.id !== id) })),
+  isCartOpen: false,
+  setIsCartOpen: (isCartOpen) => set({ isCartOpen }),
+  paymentMethod: 'cliq',
+  setPaymentMethod: (paymentMethod) => set({ paymentMethod }),
   
   isCheckoutOpen: false,
   setIsCheckoutOpen: (isCheckoutOpen) => set({ isCheckoutOpen }),
@@ -86,6 +126,8 @@ export const useStore = create<StoreState>((set) => ({
   setIsSizeChartOpen: (isSizeChartOpen) => set({ isSizeChartOpen }),
   activeChartTab: 'tshirt',
   setActiveChartTab: (activeChartTab) => set({ activeChartTab }),
+  isDossierOpen: false,
+  setIsDossierOpen: (isDossierOpen) => set({ isDossierOpen }),
   
   selectedGov: GOVERNORATES[0],
   setSelectedGov: (selectedGov) => set({ selectedGov }),

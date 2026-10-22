@@ -10,6 +10,23 @@ export type PrintPlacement = 'center' | 'small_corpo';
 export type ArtMode = 'presets' | 'text' | 'upload';
 export type PresetArt = 'calligraphy' | 'press' | 'far3i';
 
+export type TextColor = 'white' | '#D80032' | '#E5E0D0' | 'black';
+export type TextFont = 'sans' | 'serif' | 'mono';
+export type PaymentMethod = 'cliq' | 'cod';
+
+export interface CartItem {
+  id: string;
+  garment: GarmentType;
+  color: GarmentColor;
+  size: GarmentSize;
+  placement: PrintPlacement;
+  artMode: ArtMode;
+  price: number;
+  previewImage?: string; // Optional snapshot for the cart
+  customText?: string;
+  selectedPreset?: PresetArt;
+}
+
 export interface ProductVariant {
   id: string;
   sku: string;
