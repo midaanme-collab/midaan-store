@@ -243,15 +243,13 @@ export default function Studio() {
                 onClick={() => setPlacement('center')}
                 className={`flex-1 py-3 border rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all ${placement === 'center' ? 'border-white bg-[#141414] text-white shadow-lg scale-[1.02]' : 'border-[#262626] bg-[#0A0A0A] text-neutral-500 hover:border-neutral-400 hover:text-neutral-300'}`}
               >
-                {}
-                {'Center Heavy'}
+                {strings.placementCenter}
               </button>
               <button 
                 onClick={() => setPlacement('small_corpo')}
                 className={`flex-1 py-3 border rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all ${placement === 'small_corpo' ? 'border-white bg-[#141414] text-white shadow-lg scale-[1.02]' : 'border-[#262626] bg-[#0A0A0A] text-neutral-500 hover:border-neutral-400 hover:text-neutral-300'}`}
               >
-                {}
-                {'Pocket Stamp'}
+                {strings.placementSmall}
               </button>
             </div>
           </div>
@@ -380,8 +378,7 @@ export default function Studio() {
             onClick={handleAddToCart}
             className="w-full bg-white text-black hover:bg-neutral-200 py-5 font-mono text-sm font-black uppercase tracking-[0.2em] transition-all rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-8"
           >
-            {}
-            {strings.studio.addToCart || "Add to Bag"}
+            {strings.studio.addToCart}
           </button>
         </div>
       </div>

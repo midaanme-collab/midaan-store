@@ -60,7 +60,7 @@ export default function Modals() {
             <div className="p-6 flex items-center justify-between border-b border-[#1A1A1A]">
               <h2 className="text-xl font-black text-white uppercase font-sans tracking-tight">
                 {}
-                {strings.nav?.cart || 'Cart'} <span className="text-[#D80032] font-mono text-sm ml-2">({cart.length})</span>
+                {strings.nav.cart} <span className="text-[#D80032] font-mono text-sm ml-2">({cart.length})</span>
               </h2>
               <button 
                 onClick={() => setIsCartOpen(false)}
