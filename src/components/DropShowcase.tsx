@@ -2,8 +2,10 @@
 
 import React from "react";
 import { Language, Product } from "@/types";
-import { Flame, ArrowUpRight, ShoppingBag, Edit3 } from "lucide-react";
+import { Flame, ArrowUpRight, ShoppingBag, Edit3, PackageCheck } from "lucide-react";
 import { useStore } from "@/store";
+import { useState } from "react";
+import { GarmentSize } from "@/types";
 
 interface DropShowcaseProps {
   lang?: Language;
@@ -82,6 +84,50 @@ const FEATURED_PRODUCTS: Product[] = [
     ],
     orderToPrintTimeHours: 12,
   },
+  {
+    id: "drop-helmet-05",
+    slug: "helmet-white-tee",
+    titleEn: "HELMET WHITE TEE",
+    titleAr: "تيشيرت الخوذة الأبيض",
+    category: "drops",
+    descriptionEn: "Pre-printed physical inventory. Heavyweight white cotton tee with a back print.",
+    descriptionAr: "قطعة جاهزة للتسليم الفوري. تيشيرت أبيض ثقيل بطباعة على الظهر.",
+    basePriceJOD: 20.0,
+    printSpec: "DTF_INDUSTRIAL_602A",
+    images: ["/images/studio/tshirt-white-back.png"],
+    variants: [
+      { id: "v10", sku: "HLM-S", size: "S", inStock: true, stockCount: 4 },
+      { id: "v11", sku: "HLM-M", size: "M", inStock: true, stockCount: 5 },
+      { id: "v12", sku: "HLM-L", size: "L", inStock: true, stockCount: 6 },
+      { id: "v13", sku: "HLM-XL", size: "XL", inStock: true, stockCount: 2 },
+      { id: "v14", sku: "HLM-2XL", size: "2XL", inStock: true, stockCount: 4 },
+    ],
+    orderToPrintTimeHours: 24,
+    isPrePrinted: true,
+    backPrintOnly: true,
+  },
+  {
+    id: "drop-poster-06",
+    slug: "poster-white-tee",
+    titleEn: "POSTER WHITE TEE",
+    titleAr: "تيشيرت البوستر الأبيض",
+    category: "drops",
+    descriptionEn: "Pre-printed physical inventory. Heavyweight white cotton tee with a back print.",
+    descriptionAr: "قطعة جاهزة للتسليم الفوري. تيشيرت أبيض ثقيل بطباعة على الظهر.",
+    basePriceJOD: 20.0,
+    printSpec: "DTF_INDUSTRIAL_602A",
+    images: ["/images/studio/tshirt-white-back.png"],
+    variants: [
+      { id: "v15", sku: "PST-S", size: "S", inStock: true, stockCount: 3 },
+      { id: "v16", sku: "PST-M", size: "M", inStock: true, stockCount: 1 },
+      { id: "v17", sku: "PST-L", size: "L", inStock: true, stockCount: 1 },
+      { id: "v18", sku: "PST-XL", size: "XL", inStock: true, stockCount: 8 },
+      { id: "v19", sku: "PST-2XL", size: "2XL", inStock: true, stockCount: 1 },
+    ],
+    orderToPrintTimeHours: 24,
+    isPrePrinted: true,
+    backPrintOnly: true,
+  },
 ];
 
 export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
@@ -109,16 +155,29 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
     document.getElementById('studio')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
+
   const handleAddToCart = (prod: Product) => {
+    let size = 'L';
+    if (prod.isPrePrinted) {
+      size = selectedSizes[prod.id];
+      if (!size) {
+        alert(isRtl ? 'الرجاء اختيار المقاس' : 'Please select a size');
+        return;
+      }
+    }
+
     addToCart({
-      id: Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       garment: prod.id.includes('hoodie') ? 'hoodie' : prod.id.includes('tote') ? 'tote' : 'tshirt',
-      color: 'black',
-      size: 'L',
-      placement: 'center',
+      color: prod.isPrePrinted ? 'offwhite' : 'black',
+      size: (prod.id.includes('tote') ? 'O/S' : size) as GarmentSize,
+      placement: prod.backPrintOnly ? 'back' : 'center',
       artMode: 'presets',
       price: prod.basePriceJOD,
-      selectedPreset: 'calligraphy'
+      selectedPreset: 'calligraphy',
+      isPrePrinted: prod.isPrePrinted,
+      productTitle: isRtl ? prod.titleAr : prod.titleEn,
     });
     setIsCartOpen(true);
   };
@@ -158,6 +217,20 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
 
               <img src={prod.images[0]} alt={prod.titleEn} className="w-4/5 h-auto object-contain transition-transform duration-700 group-hover:scale-110" />
 
+              {prod.isPrePrinted && (
+                 <div className="absolute top-14 start-4 z-10 flex flex-col gap-1">
+                  <div className="bg-green-600/90 text-white text-[9px] font-mono font-bold px-2 py-1 uppercase tracking-widest rounded shadow-lg backdrop-blur flex items-center gap-1">
+                    <PackageCheck size={10} />
+                    {isRtl ? "جاهز للشحن الفوري (تسليم 24 ساعة في عمّان)" : "In Stock — Dispatches within 24h"}
+                  </div>
+                  {prod.backPrintOnly && (
+                    <div className="bg-[#111]/90 text-neutral-300 text-[9px] font-mono font-bold px-2 py-1 uppercase tracking-widest rounded shadow-lg backdrop-blur border border-[#333] inline-flex items-center">
+                      {isRtl ? "طباعة الظهر (Back Print)" : "Back Print"}
+                    </div>
+                  )}
+                 </div>
+              )}
+
               <div className="absolute bottom-4 inset-x-4 flex gap-2">
                 <button
                   onClick={() => handleAddToCart(prod)}
@@ -165,13 +238,15 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
                 >
                   <ShoppingBag size={14} /> Bag
                 </button>
-                <button
-                  onClick={() => handleCustomize(prod)}
-                  className="w-12 h-12 bg-[#1A1A1A] hover:bg-[#262626] border border-[#333] text-white rounded-lg flex items-center justify-center transition-colors shadow-lg"
-                  title="Customize in Studio"
-                >
-                  <Edit3 size={16} />
-                </button>
+                {!prod.isPrePrinted && (
+                  <button
+                    onClick={() => handleCustomize(prod)}
+                    className="w-12 h-12 bg-[#1A1A1A] hover:bg-[#262626] border border-[#333] text-white rounded-lg flex items-center justify-center transition-colors shadow-lg"
+                    title="Customize in Studio"
+                  >
+                    <Edit3 size={16} />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -186,14 +261,38 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
                 {isRtl ? prod.descriptionAr : prod.descriptionEn}
               </p>
               
+              {prod.isPrePrinted && (
+                <div className="mb-4">
+                  <div className="text-[10px] font-mono text-neutral-500 mb-2 uppercase tracking-widest">{isRtl ? 'اختر المقاس:' : 'Select Size:'}</div>
+                  <div className="flex flex-wrap gap-2">
+                    {prod.variants.map((v) => (
+                      <button
+                        key={v.id}
+                        disabled={v.stockCount === 0}
+                        onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
+                        className={`text-xs font-mono font-bold px-3 py-1.5 rounded border transition-colors ${
+                          v.stockCount === 0
+                            ? 'bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-50'
+                            : selectedSizes[prod.id] === v.size
+                              ? 'bg-white border-white text-black'
+                              : 'bg-[#1A1A1A] border-[#333] text-neutral-400 hover:border-neutral-400 hover:text-white'
+                        }`}
+                      >
+                        {v.size} {v.stockCount > 0 && v.stockCount <= 5 && <span className="text-[#D80032] ml-1">({v.stockCount})</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center justify-between border-t border-[#1A1A1A] pt-4 mt-auto">
                 <div className="flex gap-1">
-                  {prod.variants.slice(0, 3).map(v => (
+                  {!prod.isPrePrinted && prod.variants.slice(0, 3).map(v => (
                     <span key={v.id} className="text-[9px] font-mono font-bold bg-[#111] border border-[#333] text-neutral-400 px-1.5 py-0.5 rounded">
                       {v.size}
                     </span>
                   ))}
-                  {prod.variants.length > 3 && <span className="text-[9px] text-neutral-500">+{prod.variants.length - 3}</span>}
+                  {!prod.isPrePrinted && prod.variants.length > 3 && <span className="text-[9px] text-neutral-500">+{prod.variants.length - 3}</span>}
                 </div>
                 <span className="font-mono text-lg font-black text-white">
                   {prod.basePriceJOD.toFixed(2)} <span className="text-[10px] text-[#D80032]">{isRtl ? "د.أ" : "JOD"}</span>

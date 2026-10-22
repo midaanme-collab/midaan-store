@@ -29,6 +29,9 @@ export default function Modals() {
   const getWhatsAppOrderUrl = () => {
     const orderDetails = cart.map((item, index) => {
       const sizeStr = item.garment === 'tote' ? 'One Size' : item.size;
+      if (item.isPrePrinted) {
+        return `${index + 1}. ${item.productTitle || item.garment} [قطعة جاهزة للتسليم الفوري - طباعة ظهر] - مقاس: ${sizeStr}`;
+      }
       return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Print: ${item.placement} - Art: ${item.artMode}`;
     }).join('\n');
 
@@ -81,15 +84,21 @@ export default function Modals() {
                     <div key={item.id} className="bg-[#111] border border-[#262626] p-4 rounded-xl flex gap-4 items-start">
                       <div className="flex-1 space-y-1">
                         <div className="flex justify-between items-start">
-                          <h4 className="font-bold text-white uppercase text-sm">{strings.studio[item.garment as keyof typeof strings.studio]}</h4>
+                          <h4 className="font-bold text-white uppercase text-sm">{item.productTitle || strings.studio[item.garment as keyof typeof strings.studio]}</h4>
                           <span className="font-mono text-xs text-[#D80032] font-bold">{item.price.toFixed(2)} {strings.studio.jod}</span>
                         </div>
                         <p className="text-xs text-neutral-400 font-mono">
                           {item.color} • {item.garment === 'tote' ? 'O/S' : item.size}
                         </p>
-                        <p className="text-[10px] text-neutral-500 font-mono uppercase tracking-widest mt-2">
-                          {item.placement} / {item.artMode}
-                        </p>
+                        {item.isPrePrinted ? (
+                          <div className="text-[10px] bg-green-900/40 text-green-400 font-mono uppercase tracking-widest mt-2 px-2 py-1 rounded inline-block">
+                            {isRtl ? 'جاهز للشحن الفوري' : 'In Stock'}
+                          </div>
+                        ) : (
+                          <p className="text-[10px] text-neutral-500 font-mono uppercase tracking-widest mt-2">
+                            {item.placement} / {item.artMode}
+                          </p>
+                        )}
                       </div>
                       <button 
                         onClick={() => removeFromCart(item.id)}

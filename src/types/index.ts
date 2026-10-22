@@ -6,7 +6,7 @@ export type GarmentType = 'tshirt' | 'hoodie' | 'tote';
 export type GarmentColor = 'black' | 'offwhite' | 'charcoal';
 export type GarmentView = 'front' | 'back';
 export type GarmentSize = typeof SIZES[number];
-export type PrintPlacement = 'center' | 'small_corpo';
+export type PrintPlacement = 'center' | 'small_corpo' | 'back';
 export type ArtMode = 'presets' | 'text' | 'upload';
 export type PresetArt = 'calligraphy' | 'press' | 'far3i' | 'archive_1' | 'archive_2' | 'archive_3';
 
@@ -25,6 +25,8 @@ export interface CartItem {
   previewImage?: string;
   customText?: string;
   selectedPreset?: PresetArt;
+  isPrePrinted?: boolean;
+  productTitle?: string;
 }
 
 export interface ProductVariant {
@@ -50,4 +52,6 @@ export interface Product {
   isCollab?: boolean;
   collabArtist?: string;
   orderToPrintTimeHours: number;
+  isPrePrinted?: boolean;
+  backPrintOnly?: boolean;
 }
