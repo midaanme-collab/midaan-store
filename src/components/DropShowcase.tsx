@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { Language, Product } from "../types";
-import { Flame, ArrowUpRight } from "lucide-react";
+import { Language, Product } from "@/types";
+import { Flame, ArrowUpRight, ShoppingBag, Edit3 } from "lucide-react";
+import { useStore } from "@/store";
 
 interface DropShowcaseProps {
   lang?: Language;
@@ -48,107 +49,156 @@ const FEATURED_PRODUCTS: Product[] = [
     ],
     orderToPrintTimeHours: 18,
   },
+  {
+    id: "drop-core-03",
+    slug: "entehab-issue-zero-tee",
+    titleEn: "ENTEHAB: ISSUE ZERO HEAVY TEE",
+    titleAr: "تيشيرت العدد صفر: انتحاب",
+    category: "drops",
+    descriptionEn: "Commemorative drop for the launch of Midaan Magazine. Heavyweight cotton canvas chassis.",
+    descriptionAr: "إصدار تذكاري بمناسبة إطلاق مجلة ميدان. قطن ثقيل خام.",
+    basePriceJOD: 22.0,
+    printSpec: "DTF_INDUSTRIAL_602A",
+    images: ["/images/studio/tshirt-white-front.png"],
+    variants: [
+      { id: "v7", sku: "ENT-S", size: "S", inStock: true, stockCount: 50 },
+      { id: "v8", sku: "ENT-M", size: "M", inStock: true, stockCount: 50 },
+    ],
+    orderToPrintTimeHours: 24,
+  },
+  {
+    id: "drop-core-04",
+    slug: "amman-underground-tote",
+    titleEn: "AMMAN UNDERGROUND TOTE",
+    titleAr: "حقيبة عمّان أندرغراوند",
+    category: "drops",
+    descriptionEn: "16oz Raw duck canvas tote bag. Printed edge-to-edge with the underground manifesto.",
+    descriptionAr: "حقيبة قماش خام 16 أونصة. مطبوعة من الحافة للحافة ببيان المشهد المستقل.",
+    basePriceJOD: 15.0,
+    printSpec: "DTF_INDUSTRIAL_602A",
+    images: ["/images/studio/tote-white.png"],
+    variants: [
+      { id: "v9", sku: "TOTE-OS", size: "O/S", inStock: true, stockCount: 100 },
+    ],
+    orderToPrintTimeHours: 12,
+  },
 ];
 
-export default function DropShowcase({ lang = "ar", onSelectProduct }: DropShowcaseProps) {
+export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
   const isRtl = lang === "ar";
+  const { addToCart, setIsCartOpen, setGarment, setArtMode, setSelectedPreset } = useStore();
+
+  const handleCustomize = (prod: Product) => {
+    if (prod.id.includes('elfar3i')) {
+      setGarment('tshirt');
+      setArtMode('presets');
+      setSelectedPreset('far3i');
+    } else if (prod.id.includes('hoodie')) {
+      setGarment('hoodie');
+      setArtMode('presets');
+      setSelectedPreset('calligraphy');
+    } else if (prod.id.includes('tote')) {
+      setGarment('tote');
+      setArtMode('presets');
+      setSelectedPreset('press');
+    } else {
+      setGarment('tshirt');
+      setArtMode('presets');
+      setSelectedPreset('press');
+    }
+    document.getElementById('studio')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleAddToCart = (prod: Product) => {
+    addToCart({
+      id: Math.random().toString(36).substring(2, 9),
+      garment: prod.id.includes('hoodie') ? 'hoodie' : prod.id.includes('tote') ? 'tote' : 'tshirt',
+      color: 'black',
+      size: 'L',
+      placement: 'center',
+      artMode: 'presets',
+      price: prod.basePriceJOD,
+      selectedPreset: 'calligraphy'
+    });
+    setIsCartOpen(true);
+  };
 
   return (
-    <section dir={isRtl ? "rtl" : "ltr"} className="w-full bg-[#0A0A0A] py-12 px-4 md:px-8 font-sans border-t border-[#1F1F1F]">
-      {/* Live Badge */}
-      <div className="max-w-7xl mx-auto mb-10 bg-[#141414] border border-[#262626] p-4 md:p-6 flex flex-wrap items-center justify-between gap-4 rounded-xl">
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D80032] opacity-75" />
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-[#D80032]" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-black uppercase text-white tracking-widest">
-                {isRtl ? "مشغل قبة ميدان للطباعة الحية — عمان" : "AMMAN DOME PRINT-STATION — ONLINE"}
-              </span>
-              <span className="bg-[#262626] text-[10px] font-mono px-2 py-0.5 text-neutral-300 rounded">
-                KINGJET 602A DTF
-              </span>
-            </div>
-            <p className="text-[11px] font-mono text-neutral-400 mt-0.5">
-              {isRtl
-                ? "طباعة وتجهيز الطلبات الحالية يتم فورياً داخل مشغلنا في عمان خلال 24 ساعة كحد أقصى."
-                : "Live order-to-print cycle operational. Turnaround 24h dispatched to all HKJ Governorates."}
-            </p>
-          </div>
-        </div>
-
-        <div className="font-mono text-[11px] text-neutral-400 border-s border-[#262626] ps-4">
-          <div>LOC: AMMAN / SWIEFIEH</div>
-          <div className="text-green-500 font-bold">STATUS: READY TO PRINT</div>
-        </div>
-      </div>
-
+    <section dir={isRtl ? "rtl" : "ltr"} className="w-full bg-[#050505] py-20 px-4 md:px-8 font-sans border-t border-[#1F1F1F]">
       {/* Section Title */}
-      <div className="max-w-7xl mx-auto flex items-end justify-between border-b border-[#262626] pb-4 mb-8">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between border-b border-[#262626] pb-8 mb-16 gap-6">
         <div>
-          <div className="flex items-center gap-2 font-mono text-xs text-[#D80032] uppercase font-bold tracking-widest mb-1">
-            <Flame size={14} />
-            <span>{isRtl ? "إصدارات المشهد المستقل" : "UNDERGROUND DROPS & COLLABS"}</span>
+          <div className="flex items-center gap-2 font-mono text-xs text-[#D80032] uppercase font-bold tracking-widest mb-2">
+            <Flame size={16} />
+            <span>{isRtl ? "المحل // إصدارات جاهزة" : "READY-TO-WEAR DROPS"}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black uppercase text-white tracking-tight">
+          <h2 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tighter">
             {isRtl ? "مجموعات الشارع الرسمية" : "OFFICIAL MERCHANDISE"}
           </h2>
         </div>
       </div>
 
       {/* Product Grid */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-        {FEATURED_PRODUCTS.map((prod) => (
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {FEATURED_PRODUCTS.map((prod, idx) => (
           <div
             key={prod.id}
-            className="group bg-[#141414] border border-[#262626] hover:border-neutral-500 transition-all rounded-xl overflow-hidden flex flex-col justify-between"
+            className="group bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] hover:border-white transition-all rounded-2xl overflow-hidden flex flex-col justify-between shadow-2xl hover:-translate-y-2"
           >
-            <div className="relative aspect-[4/3] bg-black flex items-center justify-center border-b border-[#262626]">
+            <div className="relative aspect-[4/5] bg-[#050505] flex items-center justify-center border-b border-[#262626] overflow-hidden">
+              <div className="absolute top-4 start-4 z-10 bg-[#D80032] text-white text-[9px] font-mono font-bold px-3 py-1.5 uppercase tracking-widest rounded-lg shadow-lg">
+                DROP 0{idx + 1}
+              </div>
+
               {prod.isCollab && (
-                <div className="absolute top-3 start-3 z-10 bg-[#D80032] text-white text-[10px] font-mono font-bold px-2.5 py-1 uppercase tracking-widest rounded">
+                <div className="absolute top-4 end-4 z-10 bg-white text-black text-[9px] font-mono font-bold px-3 py-1.5 uppercase tracking-widest rounded-lg shadow-lg">
                   {prod.collabArtist}
                 </div>
               )}
 
-              <div className="w-44 h-44 border border-neutral-800 flex flex-col items-center justify-center p-4 text-center group-hover:scale-105 transition-transform">
-                <span className="text-4xl font-black text-white/20 uppercase tracking-widest">
-                  {isRtl ? "ميدان" : "MIDAAN"}
-                </span>
-                <span className="font-mono text-[9px] text-[#D80032] mt-2 tracking-widest">
-                  [DTF DUAL PASS 300DPI]
-                </span>
-              </div>
+              <img src={prod.images[0]} alt={prod.titleEn} className="w-4/5 h-auto object-contain transition-transform duration-700 group-hover:scale-110" />
 
-              <div className="absolute bottom-3 end-3 font-mono text-[10px] text-neutral-400 bg-black/90 px-2 py-1 border border-neutral-800 rounded">
-                {prod.orderToPrintTimeHours}H FULFILLMENT
+              <div className="absolute bottom-4 inset-x-4 flex gap-2">
+                <button
+                  onClick={() => handleAddToCart(prod)}
+                  className="flex-1 bg-white hover:bg-neutral-200 text-black py-3 rounded-lg font-mono text-[10px] font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <ShoppingBag size={14} /> Bag
+                </button>
+                <button
+                  onClick={() => handleCustomize(prod)}
+                  className="w-12 h-12 bg-[#1A1A1A] hover:bg-[#262626] border border-[#333] text-white rounded-lg flex items-center justify-center transition-colors shadow-lg"
+                  title="Customize in Studio"
+                >
+                  <Edit3 size={16} />
+                </button>
               </div>
             </div>
 
             <div className="p-6">
-              <div className="flex items-start justify-between gap-4 mb-2">
-                <h3 className="font-black text-xl md:text-2xl text-white group-hover:text-[#D80032] transition-colors">
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <h3 className="font-black text-lg text-white leading-tight font-sans">
                   {isRtl ? prod.titleAr : prod.titleEn}
                 </h3>
-                <span className="font-mono text-xl font-bold text-white whitespace-nowrap">
-                  {prod.basePriceJOD.toFixed(2)}{" "}
-                  <span className="text-xs text-[#D80032]">{isRtl ? "د.أ" : "JOD"}</span>
-                </span>
               </div>
 
-              <p className="text-xs text-neutral-400 line-clamp-2 mb-6">
+              <p className="text-xs text-neutral-400 line-clamp-3 mb-6 font-serif">
                 {isRtl ? prod.descriptionAr : prod.descriptionEn}
               </p>
-
-              <button
-                onClick={() => onSelectProduct && onSelectProduct(prod)}
-                className="w-full bg-black hover:bg-white text-white hover:text-black border border-[#262626] py-3 font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all rounded"
-              >
-                <span>{isRtl ? "معاينة القطعة وتحديد المقاس" : "INSPECT & PRINT SPEC"}</span>
-                <ArrowUpRight size={14} />
-              </button>
+              
+              <div className="flex items-center justify-between border-t border-[#1A1A1A] pt-4 mt-auto">
+                <div className="flex gap-1">
+                  {prod.variants.slice(0, 3).map(v => (
+                    <span key={v.id} className="text-[9px] font-mono font-bold bg-[#111] border border-[#333] text-neutral-400 px-1.5 py-0.5 rounded">
+                      {v.size}
+                    </span>
+                  ))}
+                  {prod.variants.length > 3 && <span className="text-[9px] text-neutral-500">+{prod.variants.length - 3}</span>}
+                </div>
+                <span className="font-mono text-lg font-black text-white">
+                  {prod.basePriceJOD.toFixed(2)} <span className="text-[10px] text-[#D80032]">{isRtl ? "د.أ" : "JOD"}</span>
+                </span>
+              </div>
             </div>
           </div>
         ))}

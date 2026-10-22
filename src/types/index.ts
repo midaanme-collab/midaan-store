@@ -8,7 +8,7 @@ export type GarmentView = 'front' | 'back';
 export type GarmentSize = typeof SIZES[number];
 export type PrintPlacement = 'center' | 'small_corpo';
 export type ArtMode = 'presets' | 'text' | 'upload';
-export type PresetArt = 'calligraphy' | 'press' | 'far3i';
+export type PresetArt = 'calligraphy' | 'press' | 'far3i' | 'archive_1' | 'archive_2' | 'archive_3';
 
 export type TextColor = 'white' | '#D80032' | '#E5E0D0' | 'black';
 export type TextFont = 'sans' | 'serif' | 'mono';
@@ -22,7 +22,7 @@ export interface CartItem {
   placement: PrintPlacement;
   artMode: ArtMode;
   price: number;
-  previewImage?: string; // Optional snapshot for the cart
+  previewImage?: string;
   customText?: string;
   selectedPreset?: PresetArt;
 }

@@ -8,22 +8,23 @@ import Hub from '@/components/Hub';
 import Voice from '@/components/Voice';
 import Modals from '@/components/Modals';
 import DropShowcase from '@/components/DropShowcase';
+import ArticlesSection from '@/components/ArticlesSection';
 import { useStore } from '@/store';
 
 export default function Home() {
-  const { lang, hasEntered, setHasEntered } = useStore();
+  const { hasEntered, setHasEntered } = useStore();
 
   if (!hasEntered) {
     return (
-      <div className="fixed inset-0 bg-[#080808] flex items-center justify-center z-50 text-white" dir="ltr">
+      <div className="fixed inset-0 bg-[#050505] flex items-center justify-center z-50 text-white" dir="ltr">
         <div className="text-center">
           <div className="text-sm font-mono text-[#D80032] mb-4 tracking-widest">[ SYSTEM BOOT ]</div>
-          <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-tighter uppercase">
+          <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-tighter uppercase font-sans">
             MIDAAN COLLECTIVE
           </h1>
           <button
             onClick={() => setHasEntered(true)}
-            className="border border-[#262626] hover:border-white px-8 py-3 text-xs font-mono font-bold uppercase tracking-widest transition-colors rounded"
+            className="border border-[#262626] hover:border-white px-8 py-3 text-xs font-mono font-bold uppercase tracking-widest transition-colors rounded-xl"
           >
             Enter Platform
           </button>
@@ -35,7 +36,8 @@ export default function Home() {
   return (
     <PageLayout>
       <Hero />
-      <DropShowcase lang={lang} />
+      <ArticlesSection />
+      <DropShowcase lang="ar" />
       <Studio />
       <Hub />
       <Voice />

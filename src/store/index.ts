@@ -9,6 +9,8 @@ interface StoreState {
   hasEntered: boolean;
   setHasEntered: (hasEntered: boolean) => void;
   lang: Language;
+  theme: 'dark' | 'light';
+  setTheme: (theme: 'dark' | 'light') => void;
   setLang: (lang: Language) => void;
   
   // Studio State
@@ -76,6 +78,8 @@ export const useStore = create<StoreState>((set) => ({
   hasEntered: false,
   setHasEntered: (hasEntered) => set({ hasEntered }),
   lang: 'ar',
+  theme: 'dark',
+  setTheme: (theme) => set({ theme }),
   setLang: (lang) => set((state) => {
     let customText = state.customText;
     if (customText === 'مَـيـدَان' && lang === 'en') customText = 'MIDAAN';

@@ -95,7 +95,7 @@ export default function Voice() {
                   onClick={() => setIsDossierOpen(true)}
                   className="w-full bg-transparent border border-[#333] hover:border-white text-white py-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] transition-colors rounded-xl flex items-center justify-center gap-2"
                 >
-                  {/* @ts-expect-error (dynamically typed dictionary) */}
+                  {}
                   {strings.watchProjectBtn || 'Production Dossier'}
                 </button>
               </div>
