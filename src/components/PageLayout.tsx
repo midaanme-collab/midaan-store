@@ -39,6 +39,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             <a href="#advocacy" className="hover:text-[#D80032] transition-colors">{}{strings.nav.advocacy}</a>
             <a href="#studio" className="hover:text-[#D80032] transition-colors">{}{strings.nav.studio}</a>
             <a href="#hub" className="hover:text-[#D80032] transition-colors">{}{strings.nav.dome}</a>
+            <a href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/30 px-3 py-1 rounded bg-[#D80032]/10">Collab // تعاون</a>
           </div>
 
           <div className="flex items-center gap-4">
