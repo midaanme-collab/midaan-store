@@ -94,19 +94,19 @@ export default function CollabPage() {
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
             
             <div className="flex items-center justify-center gap-6 md:gap-12 mb-12">
-              <img src="/logo.png" alt="Middan" className="h-16 md:h-24 object-contain brightness-0 invert" />
+              <img src="/logo.png" alt="Midaan" className="h-16 md:h-24 object-contain brightness-0 invert" />
               <div className="text-4xl md:text-6xl font-light text-neutral-500">×</div>
               <img src="/sotusura.jpg" alt="Sotusura" className="h-16 md:h-24 object-contain rounded-lg" />
             </div>
 
             <div className="inline-block bg-[#D80032] text-white px-4 py-1.5 font-mono text-[10px] md:text-xs font-bold tracking-widest uppercase mb-8 rounded shadow-lg">
-              MIDDAN COLLECTIVE × SOTUSURA CLOTHING // ARCHIVE 01
+              MIDAAN COLLECTIVE × SOTUSURA CLOTHING // ARCHIVE 01
             </div>
 
             <p className="max-w-2xl mx-auto text-lg md:text-xl text-neutral-300 leading-relaxed font-serif" dir={isRtl ? 'rtl' : 'ltr'}>
               {isRtl 
                 ? 'اندماج بين منصة ميدان للمناصرة عبر الأزياء، وثقافة الشارع المستقلة لصوت صورة. مجموعة "أرشيف 01" تعيد صياغة الذاكرة البصرية وتوثق السردية البديلة على قطع قطنية ثقيلة.'
-                : 'A synergy between Middan\'s Wearable Advocacy and Sotusura\'s independent underground street culture. The "Archive 01" capsule reframes visual memory, documenting the alternative narrative on heavyweight cotton.'}
+                : 'A synergy between Midaan\'s Wearable Advocacy and Sotusura\'s independent underground street culture. The "Archive 01" capsule reframes visual memory, documenting the alternative narrative on heavyweight cotton.'}
             </p>
           </div>
         </header>

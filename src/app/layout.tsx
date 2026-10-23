@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={`${elMessiri.variable} ${alexandria.variable}`}>
+    <html lang="ar" dir="auto" className={`${elMessiri.variable} ${alexandria.variable}`}>
       <head>
         <script src="https://cdn.tailwindcss.com" async></script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
