@@ -113,7 +113,7 @@ export default function Studio() {
 
       <div className="max-w-7xl mx-auto flex items-end justify-between border-b border-[#262626] pb-6 mb-12 relative z-10">
         <div>
-          <div className="flex items-center gap-2 font-mono text-xs text-[#D80032] uppercase font-bold tracking-widest mb-2">
+          <div className={`flex items-center gap-2 font-mono text-xs text-[#D80032] font-bold mb-2 ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>
             <span>{}
             {strings.studio.tag}</span>
           </div>

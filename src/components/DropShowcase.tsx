@@ -94,7 +94,7 @@ const FEATURED_PRODUCTS: Product[] = [
     descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
     basePriceJOD: 20.0,
     printSpec: "DTF_INDUSTRIAL_602A",
-    images: ["/images/products/helmet-back-white.jpg"],
+    images: ["/helmet-back-white.jpg"],
     variants: [
       { id: "v10", sku: "HLM-S", size: "S", inStock: true, stockCount: 4 },
       { id: "v11", sku: "HLM-M", size: "M", inStock: true, stockCount: 5 },
@@ -116,7 +116,7 @@ const FEATURED_PRODUCTS: Product[] = [
     descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
     basePriceJOD: 20.0,
     printSpec: "DTF_INDUSTRIAL_602A",
-    images: ["/images/products/palestine-back-white.jpg"],
+    images: ["/palestine-back-white.jpg"],
     variants: [
       { id: "v15", sku: "PST-S", size: "S", inStock: true, stockCount: 3 },
       { id: "v16", sku: "PST-M", size: "M", inStock: true, stockCount: 1 },
