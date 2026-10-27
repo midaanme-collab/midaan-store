@@ -15,3 +15,7 @@
  GET / 200 in 584ms (next.js: 334ms, application-code: 250ms)
 [browser] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation (https://cdn.tailwindcss.com/:64:1711)
  GET /collab 200 in 120ms (next.js: 35ms, application-code: 85ms)
+ GET / 200 in 492ms (next.js: 126ms, application-code: 366ms)
+[browser] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation (https://cdn.tailwindcss.com/:64:1711)
+ GET /collab 200 in 84ms (next.js: 10ms, application-code: 74ms)
+[browser] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation (https://cdn.tailwindcss.com/:64:1711)
