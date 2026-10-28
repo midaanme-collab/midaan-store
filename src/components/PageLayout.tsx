@@ -21,7 +21,9 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
       <nav className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 ${headerBgClass}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <div className="h-16 md:h-20 flex items-center">
-             <MidaanLogo size="lg" />
+             <a href="/" className="cursor-pointer">
+               <MidaanLogo size="sm" />
+             </a>
           </div>
           
           <div className={`hidden md:flex items-center gap-8 font-mono text-[10px] font-bold ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
@@ -62,7 +64,9 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
 
       {/* Footer */}
       <footer className="bg-[#111] text-[#F4F4F0] py-16 border-t border-[#1A1A1A] text-center">
-        <MidaanLogo size="lg" />
+        <a href="/" className="inline-block cursor-pointer">
+          <MidaanLogo size="sm" />
+        </a>
         <div className="mt-8 flex justify-center gap-6 text-neutral-500">
           <Compass size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
           <Globe size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />

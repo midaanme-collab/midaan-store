@@ -194,7 +194,7 @@ export default function CollabPage() {
                             }`}
                           >
                             <span className="block">{v.size}</span>
-                            {v.stockCount > 0 && v.stockCount <= 5 && (
+                            {false && (
                               <span className="block text-[8px] text-[#D80032] -mt-1 leading-none">
                                 {v.stockCount} {isRtl ? 'فقط' : 'left'}
                               </span>

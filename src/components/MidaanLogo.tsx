@@ -2,7 +2,7 @@
 import React from 'react';
 
 export default function MidaanLogo({ size = "md" }: { size?: "sm" | "md" | "lg" | "xl" }) {
-  const heightClass = size === "sm" ? "h-9" : size === "lg" ? "h-16" : size === "xl" ? "h-24" : "h-12";
+  const heightClass = size === "sm" ? "h-6" : size === "lg" ? "h-12" : size === "xl" ? "h-20" : "h-9";
   
   return (
     <div className="flex items-center gap-3">

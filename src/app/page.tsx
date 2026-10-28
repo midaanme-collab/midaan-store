@@ -10,6 +10,7 @@ import Modals from '@/components/Modals';
 import DropShowcase from '@/components/DropShowcase';
 import ArticlesSection from '@/components/ArticlesSection';
 import { useStore } from '@/store';
+import MidaanLogo from '@/components/MidaanLogo';
 
 export default function Home() {
   const { hasEntered, setHasEntered } = useStore();
@@ -17,7 +18,10 @@ export default function Home() {
   if (!hasEntered) {
     return (
       <div className="fixed inset-0 bg-[#050505] flex items-center justify-center z-50 text-white" dir="ltr">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center">
+          <div className="mb-8">
+            <MidaanLogo size="xl" />
+          </div>
           <div className="text-sm font-mono text-[#D80032] mb-4 tracking-normal">[ SYSTEM BOOT ]</div>
           <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-normal uppercase font-sans">
             MIDAAN COLLECTIVE

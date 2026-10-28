@@ -182,7 +182,7 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
 
               {prod.isPrePrinted && (
                  <div className="absolute top-14 start-4 z-10 flex flex-col gap-1">
-                  <div className="bg-green-600/90 text-white text-[9px] font-mono font-bold px-2 py-1 uppercase tracking-normal rounded shadow-lg backdrop-blur flex items-center gap-1">
+                  <div className="hidden">
                     <PackageCheck size={10} />
                     {isRtl ? "جاهز للشحن الفوري (تسليم 24 ساعة في عمّان)" : "In Stock — Dispatches within 24h"}
                   </div>
@@ -236,7 +236,7 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
                               : 'bg-[#1A1A1A] border-[#333] text-neutral-400 hover:border-neutral-400 hover:text-white'
                         }`}
                       >
-                        {v.size} {v.stockCount > 0 && v.stockCount <= 5 && <span className="text-[#D80032] ml-1">({v.stockCount})</span>}
+                        {v.size}
                       </button>
                     ))}
                   </div>
