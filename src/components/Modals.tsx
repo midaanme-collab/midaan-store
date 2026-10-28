@@ -91,14 +91,17 @@ export default function Modals() {
                           {item.color} • {item.garment === 'tote' ? 'O/S' : item.size}
                         </p>
                         {item.isPrePrinted ? (
-                          <div className={`text-[10px] bg-green-900/40 text-green-400 font-mono mt-2 px-2 py-1 rounded inline-block ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
-                            {isRtl ? 'جاهز للشحن الفوري' : 'In Stock'}
-                          </div>
+                          null
                         ) : (
                           <p className={`text-[10px] text-neutral-500 font-mono mt-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
                             {item.placement} / {item.artMode}
                           </p>
                         )}
+                        <div className="flex items-center gap-2 mt-4 bg-black/40 rounded-lg p-1 w-fit border border-[#262626]">
+                          <button onClick={() => updateCartQuantity(item.id, -1)} className="px-2 py-1 hover:bg-[#262626] rounded text-neutral-400 font-bold">-</button>
+                          <span className="text-xs font-mono font-bold px-2">{item.quantity || 1}</span>
+                          <button onClick={() => updateCartQuantity(item.id, 1)} className="px-2 py-1 hover:bg-[#262626] rounded text-neutral-400 font-bold">+</button>
+                        </div>
                       </div>
                       <button 
                         onClick={() => removeFromCart(item.id)}
@@ -185,8 +188,11 @@ export default function Modals() {
                   rel="noreferrer"
                   className={`w-full bg-white text-black hover:bg-neutral-200 py-4 font-mono text-sm font-black transition-colors rounded-xl flex items-center justify-center gap-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}
                 >
-                  {strings.confirmOrder}
+                  {isRtl ? 'إرسال طلب عبر واتساب' : 'Send Order via WhatsApp'}
                 </a>
+                <p className="text-[10px] text-neutral-500 font-mono mt-4 text-center">
+                  {isRtl ? 'إرسال الطلب عبر واتساب لا يعني تأكيده. فريقنا سيقوم بمراجعة توفر المخزون وتأكيد السعر النهائي وإجمالي الطلب معكم.' : 'Sending the order via WhatsApp does not confirm it. Our team will verify inventory availability and confirm the final total with you.'}
+                </p>
               </div>
             )}
           </div>

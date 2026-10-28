@@ -236,7 +236,7 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
                               : 'bg-[#1A1A1A] border-[#333] text-neutral-400 hover:border-neutral-400 hover:text-white'
                         }`}
                       >
-                        {v.size}
+                        {v.stockCount === 0 ? `${v.size} - ${isRtl ? 'غير متوفر' : 'Sold Out'}` : v.size}
                       </button>
                     ))}
                   </div>

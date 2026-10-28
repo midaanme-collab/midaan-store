@@ -1,16 +1,30 @@
-# Verification and Updates Summary
+# Cart Normalization and Verification Report
 
-## PWA Feasibility Note
-Implementing a Progressive Web App (PWA) using the same website codebase is highly feasible. 
-- A basic manifest (`/manifest.json`) is already in place.
-- The next step requires configuring a service worker (via `next-pwa` or custom logic) to handle asset caching, offline fallbacks, and enabling the "Add to Home Screen" prompt.
-- Given Next.js' App Router architecture, setting up the service worker can be done efficiently with standard plugins, requiring minimal refactoring of existing UI components.
+## Changes Made
+1. **Hydration & Cart Cleaning:**
+   - Modified `src/store/index.ts` to implement `onRehydrateStorage` for the Zustand persist middleware.
+   - When the state is loaded from LocalStorage, it loops through the cart.
+   - It automatically evicts removed/stale products (e.g., "El Far3i", heavy hoodie).
+   - It defaults malformed quantities to 1, recalculates limits based on current inventory, merges old duplicate objects in the cache down to their aggregated single variant line item, and forces the true price (`20.0 JOD`) to mitigate stale/hacked LocalStorage values.
+2. **Add to Bag Limit Constraints:**
+   - Modified `addToCart` logic to read existing quantities of the same garment + size.
+   - Enforces `requestedQuantity <= availableStock`. If you add the last unit, it successfully updates. If you try to add one more beyond the stock limit, the cart caps the quantity at the maximum available.
+3. **Modal Limit Constraints:**
+   - Similarly capped `updateCartQuantity` inside the cart modal (+/- buttons) so users cannot increment past the available units.
+   - It also prevents decrementing a quantity to 0 or negative values (minimum is fixed to 1; they must use the `Trash2` icon to remove entirely).
+4. **Checkout Validation Warning:**
+   - Changed the text of the WhatsApp confirmation button from "Confirm Order" to "إرسال طلب عبر واتساب" ("Send Order via WhatsApp").
+   - Added explicit subtext stating that stock availability and total price must be manually reviewed and confirmed by the Midaan team, since a true atomic order reservation system is not present.
 
-## Checklist of Changes
-- **Cart Refactor:** Implemented bounded quantity controls (+/- buttons, min 1) inside `Modals.tsx` and removed arbitrary quantity inputs. Duplicate product configurations are now merged upon `addToCart` with an updated count.
-- **Header/Footer:** Adjusted `PageLayout.tsx` to include `MidaanLogo` and fixed clipping bounds. Made the logo a functional return-to-home link. Cleaned up oversized footer decorations.
-- **Product Scope Constraints:** Reduced visible catalog in `DropShowcase.tsx` to explicitly only the two approved existing variants: `HELMET WHITE TEE` and `POSTER WHITE TEE`. Removed "El Far3i", heavy hoodie, and related drop labels. Added required size selection verification prior to cart additions. 
-- **Voice/Magazine Constraint:** Removed "Cinema" cards to focus explicitly on the single "Midaan Magazine" card per spec.
+## Remaining Blockers
+* **Server-Side Validation:** The frontend now strictly checks stock. However, a malicious user could still edit their browser's LocalStorage or memory to bypass the max limit or change the price just prior to clicking the WhatsApp link, although the link itself would only generate text. For this flow, the actual "blocker" is that manual verification by a human is required via WhatsApp before capturing funds. If moving to an automatic payment gateway, an atomic server endpoint connected to a PostgreSQL database or headless CMS (like Shopify/Medusa) must be introduced to securely reserve the SKU in memory and prevent race conditions (two people buying the final item simultaneously).
 
-## Unresolved Blocker(s)
-1. **Server-side Validation Missing:** As requested by the user, explicitly noting this as a blocker. There is currently no active commerce backend connected for authoritative price, availability, and precise stock verification on checkout submission. The frontend implements safeguards against overselling but these checks must be validated server-side.
+## Testing Performed
+* **Automated Tests (`npx jest`):**
+  - Confirmed duplicate line items are merged.
+  - Confirmed quantities hit hard caps based on stock and don't increment past it.
+  - Confirmed different sizes stay separated as independent items.
+  - Confirmed quantity cannot be lowered below 1 via +/- controls.
+* **Code Inspection:**
+  - Ran `npm run lint` and `npm run build` and verified the application compiles cleanly.
+  - Examined the WhatsApp action link flow and text content.

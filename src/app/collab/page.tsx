@@ -74,11 +74,11 @@ export default function CollabPage() {
       id: crypto.randomUUID(),
       garment: 'tshirt',
       color: 'offwhite',
-      size: size as any,
+      size: size as GarmentSize,
       placement: 'back',
       artMode: 'presets',
       price: prod.basePriceJOD,
-      selectedPreset: 'archive_1' as any, // default placeholder
+      selectedPreset: 'archive_1', // default placeholder
       isPrePrinted: true,
       productTitle: isRtl ? prod.titleAr : prod.titleEn,
     });

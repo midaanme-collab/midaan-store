@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { 
   Language, GarmentType, GarmentColor, GarmentView, GarmentSize, 
   PrintPlacement, ArtMode, PresetArt, TextColor, TextFont, CartItem, PaymentMethod
@@ -75,7 +76,7 @@ interface StoreState {
   setSelectedWorkshop: (workshop: string) => void;
 }
 
-export const useStore = create<StoreState>((set) => ({
+export const useStore = create<StoreState>()(persist((set) => ({
   hasEntered: false,
   setHasEntered: (hasEntered) => set({ hasEntered }),
   lang: 'ar',
@@ -120,19 +121,70 @@ export const useStore = create<StoreState>((set) => ({
   cart: [],
   addToCart: (item) => set((state) => {
     const existingIndex = state.cart.findIndex(i => i.productTitle === item.productTitle && i.size === item.size && i.garment === item.garment);
+    
+    let maxStock = 20; // fallback max
+    if (item.productTitle === 'HELMET WHITE TEE' || item.productTitle === 'تيشيرت الخوذة الأبيض') {
+        if (item.size === 'S') maxStock = 4;
+        if (item.size === 'M') maxStock = 5;
+        if (item.size === 'L') maxStock = 6;
+        if (item.size === 'XL') maxStock = 2;
+        if (item.size === '2XL') maxStock = 4;
+    }
+    if (item.productTitle === 'POSTER WHITE TEE' || item.productTitle === 'تيشيرت البوستر الأبيض') {
+        if (item.size === 'S') maxStock = 3;
+        if (item.size === 'M') maxStock = 1;
+        if (item.size === 'L') maxStock = 1;
+        if (item.size === 'XL') maxStock = 8;
+        if (item.size === '2XL') maxStock = 1;
+    }
+      
     if (existingIndex > -1) {
       const newCart = [...state.cart];
-      newCart[existingIndex] = { ...newCart[existingIndex], quantity: (newCart[existingIndex].quantity || 1) + 1 };
+      const newQty = (newCart[existingIndex].quantity || 1) + 1;
+      
+      if (newQty <= maxStock) {
+        newCart[existingIndex] = { ...newCart[existingIndex], quantity: newQty };
+      } else {
+        newCart[existingIndex] = { ...newCart[existingIndex], quantity: maxStock };
+      }
       return { cart: newCart };
     }
-    return { cart: [...state.cart, { ...item, quantity: 1 }] };
+    
+    // Add new item to cart
+    if (1 <= maxStock) {
+        return { cart: [...state.cart, { ...item, quantity: 1 }] };
+    }
+    return { cart: state.cart }; // Should not happen but fail safe
   }),
   updateCartQuantity: (id, delta) => set((state) => {
     const newCart = [...state.cart];
     const itemIndex = newCart.findIndex(i => i.id === id);
     if (itemIndex > -1) {
-      const newQty = (newCart[itemIndex].quantity || 1) + delta;
-      if (newQty > 0) newCart[itemIndex].quantity = newQty;
+      const item = newCart[itemIndex];
+      // Note: hardcoding stock check purely based on the current FEATURED_PRODUCTS static data
+      let maxStock = 20; // fallback max
+      if (item.productTitle === 'HELMET WHITE TEE' || item.productTitle === 'تيشيرت الخوذة الأبيض') {
+         if (item.size === 'S') maxStock = 4;
+         if (item.size === 'M') maxStock = 5;
+         if (item.size === 'L') maxStock = 6;
+         if (item.size === 'XL') maxStock = 2;
+         if (item.size === '2XL') maxStock = 4;
+      }
+      if (item.productTitle === 'POSTER WHITE TEE' || item.productTitle === 'تيشيرت البوستر الأبيض') {
+         if (item.size === 'S') maxStock = 3;
+         if (item.size === 'M') maxStock = 1;
+         if (item.size === 'L') maxStock = 1;
+         if (item.size === 'XL') maxStock = 8;
+         if (item.size === '2XL') maxStock = 1;
+      }
+      
+      const newQty = (item.quantity || 1) + delta;
+      if (newQty > 0 && newQty <= maxStock) {
+        newCart[itemIndex].quantity = newQty;
+      } else if (newQty > maxStock) {
+        // Enforce max stock
+        newCart[itemIndex].quantity = maxStock;
+      }
     }
     return { cart: newCart };
   }),
@@ -160,4 +212,51 @@ export const useStore = create<StoreState>((set) => ({
   setIsWorkshopModalOpen: (isWorkshopModalOpen) => set({ isWorkshopModalOpen }),
   selectedWorkshop: '',
   setSelectedWorkshop: (selectedWorkshop) => set({ selectedWorkshop }),
+}), {
+  name: 'midaan-storage',
+  partialize: (state) => ({ cart: state.cart }),
+  onRehydrateStorage: () => (state) => {
+    if (state && state.cart) {
+      // Normalize legacy duplicates and enforce bounds on load
+      const normalizedCart = new Map();
+      
+      state.cart.forEach(item => {
+        // Enforce valid item quantity
+        let validQty = parseInt(item.quantity);
+        if (isNaN(validQty) || validQty < 1) validQty = 1;
+        
+        // Remove known deleted items/placeholder
+        // Only helmet-white-tee and poster-white-tee are valid. They cost 20.0 JOD.
+        if (item.productTitle !== 'HELMET WHITE TEE' && item.productTitle !== 'تيشيرت الخوذة الأبيض' && item.productTitle !== 'POSTER WHITE TEE' && item.productTitle !== 'تيشيرت البوستر الأبيض') {
+            return;
+        }
+
+        let maxStock = 20; // fallback max
+        if (item.productTitle === 'HELMET WHITE TEE' || item.productTitle === 'تيشيرت الخوذة الأبيض') {
+            if (item.size === 'S') maxStock = 4;
+            if (item.size === 'M') maxStock = 5;
+            if (item.size === 'L') maxStock = 6;
+            if (item.size === 'XL') maxStock = 2;
+            if (item.size === '2XL') maxStock = 4;
+        }
+        if (item.productTitle === 'POSTER WHITE TEE' || item.productTitle === 'تيشيرت البوستر الأبيض') {
+            if (item.size === 'S') maxStock = 3;
+            if (item.size === 'M') maxStock = 1;
+            if (item.size === 'L') maxStock = 1;
+            if (item.size === 'XL') maxStock = 8;
+            if (item.size === '2XL') maxStock = 1;
+        }
+        
+        const key = `${item.productTitle}-${item.size}`;
+        if (normalizedCart.has(key)) {
+            const existing = normalizedCart.get(key);
+            existing.quantity = Math.min((existing.quantity || 1) + validQty, maxStock);
+        } else {
+            normalizedCart.set(key, { ...item, quantity: Math.min(validQty, maxStock), price: 20.0 }); // force price to avoid legacy cache exploits
+        }
+      });
+      
+      state.cart = Array.from(normalizedCart.values());
+    }
+  },
 }));

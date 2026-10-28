@@ -1,0 +1,13 @@
+--- src/components/Modals.tsx
++++ src/components/Modals.tsx
+@@ -188,6 +188,9 @@
+                   className={`w-full bg-white text-black hover:bg-neutral-200 py-4 font-mono text-sm font-black transition-colors rounded-xl flex items-center justify-center gap-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}
+                 >
+-                  {strings.confirmOrder}
++                  {isRtl ? 'إرسال طلب عبر واتساب' : 'Send Order via WhatsApp'}
+                 </a>
++                <p className="text-[10px] text-neutral-500 font-mono mt-4 text-center">
++                  {isRtl ? 'إرسال الطلب عبر واتساب لا يعني تأكيده. فريقنا سيقوم بمراجعة توفر المخزون وتأكيد السعر النهائي وإجمالي الطلب معكم.' : 'Sending the order via WhatsApp does not confirm it. Our team will verify inventory availability and confirm the final total with you.'}
++                </p>
+               </div>
+             )}

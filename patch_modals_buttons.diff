@@ -1,0 +1,14 @@
+--- src/components/Modals.tsx
++++ src/components/Modals.tsx
+@@ -98,6 +98,11 @@
+                             {item.placement} / {item.artMode}
+                           </p>
+                         )}
++                        <div className="flex items-center gap-2 mt-4 bg-black/40 rounded-lg p-1 w-fit border border-[#262626]">
++                          <button onClick={() => updateCartQuantity(item.id, -1)} className="px-2 py-1 hover:bg-[#262626] rounded text-neutral-400 font-bold">-</button>
++                          <span className="text-xs font-mono font-bold px-2">{item.quantity || 1}</span>
++                          <button onClick={() => updateCartQuantity(item.id, 1)} className="px-2 py-1 hover:bg-[#262626] rounded text-neutral-400 font-bold">+</button>
++                        </div>
+                       </div>
+                       <button 
+                         onClick={() => removeFromCart(item.id)}
