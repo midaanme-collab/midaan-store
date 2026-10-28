@@ -37,17 +37,16 @@ export default function Voice() {
           <div className="md:w-2/3 w-full grid grid-cols-1 md:grid-cols-1 gap-8">
             {/* Magazine Editorial Card */}
             <div className="bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] rounded-2xl overflow-hidden group hover:border-[#D80032] transition-all shadow-2xl flex flex-col h-full transform hover:-translate-y-1">
-              <div className="aspect-[4/3] bg-[#050505] border-b border-[#262626] p-8 flex flex-col justify-between relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
-                  <FileText size={120} />
+              <div className="p-8 flex flex-col justify-between relative overflow-hidden border-b border-[#262626] bg-[#0A0A0A]">
+                <div className="flex items-center justify-between z-10">
+                  <div className="bg-[#1A1A1A] rounded-xl inline-flex p-3 w-fit border border-[#333]">
+                    <BookOpen size={24} className="text-white group-hover:text-[#D80032] transition-colors" />
+                  </div>
+                  <div className="font-mono text-[10px] text-[#D80032] font-bold tracking-normal uppercase text-right">Issue Zero (انتحاب)</div>
                 </div>
-                <div className="bg-[#1A1A1A] rounded-xl inline-flex p-3 w-fit z-10 border border-[#333]">
-                  <BookOpen size={24} className="text-white group-hover:text-[#D80032] transition-colors" />
-                </div>
-                <div className="z-10 mt-8">
-                  <div className="font-mono text-[10px] text-[#D80032] font-bold tracking-normal uppercase mb-2">Issue Zero (انتحاب)</div>
+                <div className="z-10 mt-6">
                   <h3 className="text-3xl font-black text-white uppercase font-sans leading-none">
-                    Midan Mag
+                    Midaan Magazine
                   </h3>
                 </div>
               </div>

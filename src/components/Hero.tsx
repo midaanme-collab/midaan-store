@@ -26,7 +26,7 @@ export default function Hero() {
       </h1>
 
       <p className="max-w-2xl mx-auto text-neutral-400 text-sm md:text-base leading-relaxed mb-10 font-sans">
-        {strings.heroDesc}
+        {lang === 'ar' ? 'اكتشف أرشيف التعاون وتصفح العدد صفر من المجلة المستقلة.' : 'Discover the collaboration archive and read Issue Zero of our independent magazine.'}
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-4">
