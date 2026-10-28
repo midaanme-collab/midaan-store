@@ -21,10 +21,10 @@ export default function Hub() {
 
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-start relative z-10">
         <div className="lg:w-1/3 sticky top-24">
-          <div className="inline-flex items-center gap-2 bg-[#1A1A1A] border border-[#333] text-white px-4 py-1.5 font-mono text-[10px] font-bold tracking-[0.2em] uppercase mb-6 rounded-lg">
+          <div className="inline-flex items-center gap-2 bg-[#1A1A1A] border border-[#333] text-white px-4 py-1.5 font-mono text-[10px] font-bold tracking-normal uppercase mb-6 rounded-lg">
             {strings.hubBadge}
           </div>
-          <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-6 leading-[0.9]">
+          <h2 className="text-5xl md:text-6xl font-black uppercase tracking-normal text-white mb-6 leading-[0.9]">
             {strings.hubSectionTitle}
           </h2>
           <p className="text-neutral-400 leading-relaxed font-sans font-medium text-lg mb-10 border-l-2 border-[#D80032] pl-4 ml-2">
@@ -64,7 +64,7 @@ export default function Hub() {
 
         <div className="lg:w-2/3 w-full">
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#262626]">
-            <h3 className="font-mono text-xs font-bold text-white uppercase tracking-widest">
+            <h3 className="font-mono text-xs font-bold text-white uppercase tracking-normal">
               {strings.upcomingWorkshopsTitle}
             </h3>
             <div className="font-mono text-[9px] text-[#D80032] border border-[#D80032]/30 bg-[#D80032]/10 px-2 py-1 rounded">LIVE SCHEDULE</div>
@@ -76,11 +76,11 @@ export default function Hub() {
                 
                 <div className="space-y-4 flex-1">
                   <div className="flex flex-wrap gap-2">
-                    <span className="bg-[#D80032] text-white text-[9px] font-mono font-bold px-2 py-1 rounded uppercase tracking-wider">
+                    <span className="bg-[#D80032] text-white text-[9px] font-mono font-bold px-2 py-1 rounded uppercase tracking-normal">
                       {isRtl ? 'مقاعد محدودة: 5' : 'Limited Seats: 5 Left'}
                     </span>
                     {idx === 0 && (
-                      <span className="bg-[#1A1A1A] border border-[#333] text-neutral-300 text-[9px] font-mono font-bold px-2 py-1 rounded uppercase tracking-wider flex items-center gap-1">
+                      <span className="bg-[#1A1A1A] border border-[#333] text-neutral-300 text-[9px] font-mono font-bold px-2 py-1 rounded uppercase tracking-normal flex items-center gap-1">
                         <Tag size={10} /> KingJet 602A
                       </span>
                     )}
@@ -107,7 +107,7 @@ export default function Hub() {
                       setSelectedWorkshop(isRtl ? workshop.titleAr : workshop.titleEn);
                       setIsWorkshopModalOpen(true);
                     }}
-                    className="w-full md:w-auto bg-white text-black hover:bg-neutral-200 px-8 py-4 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-transform active:scale-95 rounded-xl whitespace-nowrap shadow-lg"
+                    className="w-full md:w-auto bg-white text-black hover:bg-neutral-200 px-8 py-4 font-mono text-[10px] font-black uppercase tracking-normal transition-transform active:scale-95 rounded-xl whitespace-nowrap shadow-lg"
                   >
                     {strings.joinWorkshopBtn}
                   </button>

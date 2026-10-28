@@ -18,13 +18,13 @@ export default function Home() {
     return (
       <div className="fixed inset-0 bg-[#050505] flex items-center justify-center z-50 text-white" dir="ltr">
         <div className="text-center">
-          <div className="text-sm font-mono text-[#D80032] mb-4 tracking-widest">[ SYSTEM BOOT ]</div>
-          <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-tighter uppercase font-sans">
+          <div className="text-sm font-mono text-[#D80032] mb-4 tracking-normal">[ SYSTEM BOOT ]</div>
+          <h1 className="text-4xl md:text-6xl font-black mb-8 tracking-normal uppercase font-sans">
             MIDAAN COLLECTIVE
           </h1>
           <button
             onClick={() => setHasEntered(true)}
-            className="border border-[#262626] hover:border-white px-8 py-3 text-xs font-mono font-bold uppercase tracking-widest transition-colors rounded-xl"
+            className="border border-[#262626] hover:border-white px-8 py-3 text-xs font-mono font-bold uppercase tracking-normal transition-colors rounded-xl"
           >
             Enter Platform
           </button>

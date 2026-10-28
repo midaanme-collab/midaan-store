@@ -61,7 +61,7 @@ export default function Modals() {
             dir={isRtl ? 'rtl' : 'ltr'}
           >
             <div className="p-6 flex items-center justify-between border-b border-[#1A1A1A]">
-              <h2 className={`text-xl font-black text-white font-sans ${isRtl ? "tracking-normal" : "uppercase tracking-tight"}`}>
+              <h2 className={`text-xl font-black text-white font-sans ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
                 {}
                 {strings.nav.cart} <span className="text-[#D80032] font-mono text-sm ml-2">({cart.length})</span>
               </h2>
@@ -75,7 +75,7 @@ export default function Modals() {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {cart.length === 0 ? (
-                <div className={`text-center text-neutral-500 py-12 font-mono text-xs ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>
+                <div className={`text-center text-neutral-500 py-12 font-mono text-xs ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
                   {isRtl ? 'الحقيبة فارغة' : 'Your cart is empty'}
                 </div>
               ) : (
@@ -91,11 +91,11 @@ export default function Modals() {
                           {item.color} • {item.garment === 'tote' ? 'O/S' : item.size}
                         </p>
                         {item.isPrePrinted ? (
-                          <div className={`text-[10px] bg-green-900/40 text-green-400 font-mono mt-2 px-2 py-1 rounded inline-block ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>
+                          <div className={`text-[10px] bg-green-900/40 text-green-400 font-mono mt-2 px-2 py-1 rounded inline-block ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
                             {isRtl ? 'جاهز للشحن الفوري' : 'In Stock'}
                           </div>
                         ) : (
-                          <p className={`text-[10px] text-neutral-500 font-mono mt-2 ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>
+                          <p className={`text-[10px] text-neutral-500 font-mono mt-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
                             {item.placement} / {item.artMode}
                           </p>
                         )}
@@ -117,7 +117,7 @@ export default function Modals() {
                 <div className="space-y-4 mb-6">
                   {/* Governorate */}
                   <div className="space-y-2">
-                    <label className={`text-[10px] font-mono font-bold text-neutral-500 ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>{strings.governorate}</label>
+                    <label className={`text-[10px] font-mono font-bold text-neutral-500 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>{strings.governorate}</label>
                     <select 
                       value={selectedGov.id}
                       onChange={(e) => {
@@ -134,7 +134,7 @@ export default function Modals() {
 
                   {/* Payment Method */}
                   <div className="space-y-2">
-                    <label className={`text-[10px] font-mono font-bold text-neutral-500 ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>Payment Method</label>
+                    <label className={`text-[10px] font-mono font-bold text-neutral-500 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>Payment Method</label>
                     <div className="flex gap-2">
                       <button 
                         onClick={() => setPaymentMethod('cliq')}
@@ -154,8 +154,8 @@ export default function Modals() {
                   {paymentMethod === 'cliq' && (
                     <div className="bg-[#111] border border-[#D80032]/30 rounded-lg p-3 flex justify-between items-center">
                       <div>
-                        <div className={`text-[9px] text-neutral-500 font-mono mb-1 ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>{strings.cliqModal.aliasLabel}</div>
-                        <div className="font-mono text-sm font-black tracking-widest text-white">{CLIQ_ALIAS}</div>
+                        <div className={`text-[9px] text-neutral-500 font-mono mb-1 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>{strings.cliqModal.aliasLabel}</div>
+                        <div className="font-mono text-sm font-black tracking-normal text-white">{CLIQ_ALIAS}</div>
                       </div>
                       <button onClick={copyToClipboard} className="text-neutral-400 hover:text-white p-2">
                         {copiedCliq ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
@@ -173,7 +173,7 @@ export default function Modals() {
                       <span className="font-mono">{selectedGov.fee.toFixed(2)} JOD</span>
                     </div>
                     <div className="flex justify-between items-end pt-2">
-                      <span className={`text-sm font-bold text-white ${isRtl ? "tracking-normal" : "uppercase tracking-wide"}`}>Total</span>
+                      <span className={`text-sm font-bold text-white ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>Total</span>
                       <span className="text-2xl font-black text-white font-mono">{finalTotal.toFixed(2)} <span className="text-xs text-[#D80032]">JOD</span></span>
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export default function Modals() {
                   href={getWhatsAppOrderUrl()}
                   target="_blank"
                   rel="noreferrer"
-                  className={`w-full bg-white text-black hover:bg-neutral-200 py-4 font-mono text-sm font-black transition-colors rounded-xl flex items-center justify-center gap-2 ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}
+                  className={`w-full bg-white text-black hover:bg-neutral-200 py-4 font-mono text-sm font-black transition-colors rounded-xl flex items-center justify-center gap-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}
                 >
                   {strings.confirmOrder}
                 </a>
@@ -203,7 +203,7 @@ export default function Modals() {
             >
               <X size={20} />
             </button>
-            <h3 className={`font-black text-2xl text-white mb-2 font-sans pr-8 ${isRtl ? "tracking-normal" : "uppercase tracking-tight"}`}>{strings.workshopModalTitle}</h3>
+            <h3 className={`font-black text-2xl text-white mb-2 font-sans pr-8 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>{strings.workshopModalTitle}</h3>
             <div className="bg-[#111] border border-[#262626] p-4 rounded-xl mb-8">
               <span className="text-sm text-[#D80032] font-bold block font-sans">{selectedWorkshop}</span>
             </div>
@@ -212,7 +212,7 @@ export default function Modals() {
               href={getWhatsAppWorkshopUrl()}
               target="_blank"
               rel="noreferrer"
-              className={`w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-colors block text-center ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}
+              className={`w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-xs font-black rounded-xl flex items-center justify-center gap-2 transition-colors block text-center ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}
             >
               {strings.submitWorkshopWhatsApp}
             </a>
@@ -233,19 +233,19 @@ export default function Modals() {
             
             <div className="flex items-center gap-3 mb-8 pb-4 border-b border-[#1A1A1A]">
               <Ruler size={24} className="text-[#D80032]" />
-              <h3 className={`font-black text-xl text-white ${isRtl ? "tracking-normal" : "uppercase tracking-tight"}`}>{strings.studio.sizeLabel}</h3>
+              <h3 className={`font-black text-xl text-white ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>{strings.studio.sizeLabel}</h3>
             </div>
 
             <div className="flex gap-4 mb-8 bg-[#111] p-1 rounded-xl">
               <button 
                 onClick={() => setActiveChartTab('tshirt')}
-                className={`flex-1 py-3 font-mono text-xs font-bold rounded-lg transition-all ${isRtl ? "tracking-normal" : "uppercase tracking-widest"} ${activeChartTab === "tshirt" ? "bg-[#262626] text-white shadow" : "text-neutral-500 hover:text-white"}`}
+                className={`flex-1 py-3 font-mono text-xs font-bold rounded-lg transition-all ${isRtl ? "tracking-normal" : "uppercase tracking-normal"} ${activeChartTab === "tshirt" ? "bg-[#262626] text-white shadow" : "text-neutral-500 hover:text-white"}`}
               >
                 {strings.studio.tee}
               </button>
               <button 
                 onClick={() => setActiveChartTab('hoodie')}
-                className={`flex-1 py-3 font-mono text-xs font-bold rounded-lg transition-all ${isRtl ? "tracking-normal" : "uppercase tracking-widest"} ${activeChartTab === "hoodie" ? "bg-[#262626] text-white shadow" : "text-neutral-500 hover:text-white"}`}
+                className={`flex-1 py-3 font-mono text-xs font-bold rounded-lg transition-all ${isRtl ? "tracking-normal" : "uppercase tracking-normal"} ${activeChartTab === "hoodie" ? "bg-[#262626] text-white shadow" : "text-neutral-500 hover:text-white"}`}
               >
                 {strings.studio.hoodie}
               </button>
@@ -255,9 +255,9 @@ export default function Modals() {
               <table className="w-full text-center font-mono text-sm border-collapse">
                 <thead>
                   <tr className="bg-[#111] border-b border-[#262626]">
-                    <th className="p-4 text-white font-bold text-xs tracking-widest">Size</th>
-                    <th className="p-4 text-neutral-400 font-normal text-xs tracking-widest border-l border-[#262626]">A (Length cm)</th>
-                    <th className="p-4 text-neutral-400 font-normal text-xs tracking-widest border-l border-[#262626]">B (Width cm)</th>
+                    <th className="p-4 text-white font-bold text-xs tracking-normal">Size</th>
+                    <th className="p-4 text-neutral-400 font-normal text-xs tracking-normal border-l border-[#262626]">A (Length cm)</th>
+                    <th className="p-4 text-neutral-400 font-normal text-xs tracking-normal border-l border-[#262626]">B (Width cm)</th>
                   </tr>
                 </thead>
                 <tbody className="bg-[#050505]">
@@ -273,7 +273,7 @@ export default function Modals() {
             </div>
 
             <div className="bg-gradient-to-br from-[#111] to-[#0A0A0A] p-6 rounded-xl text-xs leading-relaxed font-sans border border-[#262626]">
-              <strong className={`text-white block mb-3 font-mono text-[10px] ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>{strings.fabricSpecsTitle}</strong>
+              <strong className={`text-white block mb-3 font-mono text-[10px] ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>{strings.fabricSpecsTitle}</strong>
               <div className="space-y-2 text-neutral-400">
                 <p>• {strings.tshirtSpecs}</p>
                 <p>• {strings.hoodieSpecs}</p>

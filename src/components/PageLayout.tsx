@@ -19,7 +19,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
     <div className={`min-h-screen flex flex-col font-sans ${bgClass} transition-colors duration-500`} dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Editorial Marquee Ticker */}
       <div className="bg-[#D80032] text-white py-2 overflow-hidden whitespace-nowrap border-b border-[#262626]">
-        <div className={`animate-marquee inline-block px-4 font-mono text-[10px] font-black ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>
+        <div className={`animate-marquee inline-block px-4 font-mono text-[10px] font-black ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
           {isRtl 
             ? 'توصيل لكافة محافظات الأردن • طباعة صناعية KingJet 602A DTF • مجلة ميدان: العدد صفر (انتحاب) • إصدارات محدودة'
             : 'HKJ WIDE DELIVERY • KINGJET 602A DTF INDUSTRIAL LAB • MIDAAN MAG: ISSUE ZERO • LIMITED DROPS'}
@@ -35,7 +35,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <MidaanLogo size="sm" />
           
-          <div className={`hidden md:flex items-center gap-8 font-mono text-[10px] font-bold ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>
+          <div className={`hidden md:flex items-center gap-8 font-mono text-[10px] font-bold ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
             <a href="#advocacy" className="hover:text-[#D80032] transition-colors">{}{strings.nav.advocacy}</a>
             <a href="#studio" className="hover:text-[#D80032] transition-colors">{}{strings.nav.studio}</a>
             <a href="#hub" className="hover:text-[#D80032] transition-colors">{}{strings.nav.dome}</a>
@@ -58,7 +58,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             </button>
             <button 
               onClick={() => setIsCartOpen(true)}
-              className={`bg-[#D80032] text-white hover:bg-[#111] px-4 py-1.5 font-mono text-[10px] font-bold flex items-center gap-2 transition-colors rounded-lg shadow-md ${isRtl ? "tracking-normal" : "tracking-widest"}`}
+              className={`bg-[#D80032] text-white hover:bg-[#111] px-4 py-1.5 font-mono text-[10px] font-bold flex items-center gap-2 transition-colors rounded-lg shadow-md ${isRtl ? "tracking-normal" : "tracking-normal"}`}
             >
               <ShoppingBag size={14} />
               <span className="hidden md:inline">{}{strings.nav.cart}</span>
@@ -80,7 +80,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           <Compass size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
           <Globe size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
         </div>
-        <p className={`mt-8 font-mono text-xs text-neutral-600 ${isRtl ? "tracking-normal" : "uppercase tracking-[0.2em]"}`}>
+        <p className={`mt-8 font-mono text-xs text-neutral-600 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
           {}
           {strings.hero.tag} • 2026
         </p>

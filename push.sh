@@ -1,1 +1,1 @@
-git push origin main
+git push origin HEAD:main --force

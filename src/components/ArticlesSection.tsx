@@ -33,7 +33,7 @@ export default function ArticlesSection() {
     <>
       <section id="advocacy" className="w-full bg-[#E5E0D0] text-[#111] py-24 px-4 md:px-8 border-t-4 border-[#D80032] font-sans">
         <div className="max-w-7xl mx-auto flex flex-col items-center justify-between mb-16 pb-8 border-b border-[#111]">
-          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-[#111]">
+          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-normal text-[#111]">
             {isRtl ? 'صوت ميدان | الإعلام المستقل' : 'The Voice | Independent Media'}
           </h2>
         </div>
@@ -41,7 +41,7 @@ export default function ArticlesSection() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Featured Article */}
           <div className="lg:col-span-8 cursor-pointer group" onClick={() => setSelectedArticle(featured)}>
-            <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-3 py-1 font-mono text-[10px] font-bold tracking-[0.2em] uppercase mb-4">
+            <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-3 py-1 font-mono text-[10px] font-bold tracking-normal uppercase mb-4">
               {isRtl ? 'اختيار المحررين' : 'Editor\'s Pick'}
             </div>
             
@@ -53,7 +53,7 @@ export default function ArticlesSection() {
               {isRtl ? featured.excerptAr : featured.excerptEn}
             </p>
             
-            <div className="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-widest text-[#555] border-t border-[#111]/20 pt-4">
+            <div className="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-normal text-[#555] border-t border-[#111]/20 pt-4">
               <span>{isRtl ? featured.authorAr : featured.authorEn}</span>
               <span>|</span>
               <span>{isRtl ? featured.readTimeAr : featured.readTimeEn}</span>
@@ -69,7 +69,7 @@ export default function ArticlesSection() {
                 className="cursor-pointer group mb-10 last:mb-0"
               >
                 <div className="flex justify-between items-end mb-2">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#D80032]">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-normal text-[#D80032]">
                     {isRtl ? article.categoryAr : article.categoryEn}
                   </span>
                   <span className="text-[10px] font-mono font-bold text-[#555]">
@@ -81,7 +81,7 @@ export default function ArticlesSection() {
                   {isRtl ? article.titleAr : article.titleEn}
                 </h4>
                 
-                <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#555]">
+                <div className="text-[10px] font-mono font-bold uppercase tracking-normal text-[#555]">
                   {isRtl ? article.authorAr : article.authorEn}
                 </div>
               </div>
@@ -94,7 +94,7 @@ export default function ArticlesSection() {
       {selectedArticle && (
         <div className="fixed inset-0 z-[70] bg-[#E5E0D0] overflow-y-auto text-[#111] flex flex-col font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
           <div className="sticky top-0 bg-[#E5E0D0]/90 backdrop-blur-md border-b border-[#111]/10 px-6 py-4 flex justify-between items-center z-10">
-            <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#D80032]">
+            <span className="font-mono text-xs font-bold uppercase tracking-normal text-[#D80032]">
               {isRtl ? selectedArticle.categoryAr : selectedArticle.categoryEn}
             </span>
             <button 
@@ -110,7 +110,7 @@ export default function ArticlesSection() {
               <h1 className="text-5xl md:text-7xl font-black uppercase leading-[1.1] mb-8">
                 {isRtl ? selectedArticle.titleAr : selectedArticle.titleEn}
               </h1>
-              <div className="inline-flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-widest text-[#555] bg-white/50 px-6 py-3 rounded-full border border-[#111]/10">
+              <div className="inline-flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-normal text-[#555] bg-white/50 px-6 py-3 rounded-full border border-[#111]/10">
                 <span>{isRtl ? selectedArticle.authorAr : selectedArticle.authorEn}</span>
                 <span>•</span>
                 <span>{isRtl ? selectedArticle.date : selectedArticle.date}</span>
@@ -136,10 +136,10 @@ export default function ArticlesSection() {
 
               {selectedArticle.merchLink && (
                 <div className="mt-16 pt-8 border-t-2 border-[#111]">
-                  <h4 className="text-sm font-mono font-bold uppercase tracking-widest mb-4">Related Merchandise</h4>
+                  <h4 className="text-sm font-mono font-bold uppercase tracking-normal mb-4">Related Merchandise</h4>
                   <button 
                     onClick={() => handleMerchLinkClick(selectedArticle.merchLink!)}
-                    className="bg-[#D80032] hover:bg-[#111] text-white px-8 py-4 text-sm font-black uppercase tracking-[0.2em] transition-colors rounded-xl flex items-center gap-2"
+                    className="bg-[#D80032] hover:bg-[#111] text-white px-8 py-4 text-sm font-black uppercase tracking-normal transition-colors rounded-xl flex items-center gap-2"
                   >
                     View Official Drop <ArrowUpRight size={18} />
                   </button>

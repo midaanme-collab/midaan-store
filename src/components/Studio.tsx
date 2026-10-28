@@ -67,14 +67,14 @@ export default function Studio() {
       if (selectedPreset === 'calligraphy' || selectedPreset === 'archive_2') {
         return <img src="/logo.png" alt={selectedPreset} style={{ transform: placement === 'small_corpo' ? undefined : dynamicTransform }} className={`w-48 invert opacity-80 ${placementBase} transition-all duration-300`} />;
       }
-      return <div style={styleObj} className={`text-5xl font-black uppercase tracking-widest ${placementBase} transition-all duration-300`}>
+      return <div style={styleObj} className={`text-5xl font-black uppercase tracking-normal ${placementBase} transition-all duration-300`}>
         {selectedPreset === 'far3i' ? 'FAR3I' : selectedPreset === 'archive_1' ? 'ENTEHAB' : selectedPreset === 'archive_3' ? 'DIRAA' : 'MIDAAN'}
       </div>;
     }
     
     if (artMode === 'text') {
       return (
-        <div style={styleObj} className={`text-4xl font-black break-words w-48 text-center uppercase tracking-widest ${getFontFamily(customTextFont)} ${placementBase} transition-all duration-300`}>
+        <div style={styleObj} className={`text-4xl font-black break-words w-48 text-center uppercase tracking-normal ${getFontFamily(customTextFont)} ${placementBase} transition-all duration-300`}>
           {customText}
         </div>
       );
@@ -113,11 +113,11 @@ export default function Studio() {
 
       <div className="max-w-7xl mx-auto flex items-end justify-between border-b border-[#262626] pb-6 mb-12 relative z-10">
         <div>
-          <div className={`flex items-center gap-2 font-mono text-xs text-[#D80032] font-bold mb-2 ${isRtl ? "tracking-normal" : "uppercase tracking-widest"}`}>
+          <div className={`flex items-center gap-2 font-mono text-xs text-[#D80032] font-bold mb-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
             <span>{}
             {strings.studio.tag}</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tighter">
+          <h2 className="text-4xl md:text-6xl font-black uppercase text-white tracking-normal">
             {}
             {strings.studio.title}
           </h2>
@@ -130,27 +130,27 @@ export default function Studio() {
           <div className="absolute top-4 start-4 z-20 flex flex-col gap-2">
             <button 
               onClick={() => setView('front')}
-              className={`px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all ${view === 'front' ? 'bg-white text-black shadow-lg scale-105' : 'bg-black/50 text-neutral-400 border border-[#262626] hover:bg-[#1A1A1A] hover:text-white'}`}
+              className={`px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-normal rounded-lg transition-all ${view === 'front' ? 'bg-white text-black shadow-lg scale-105' : 'bg-black/50 text-neutral-400 border border-[#262626] hover:bg-[#1A1A1A] hover:text-white'}`}
             >
               FRONT
             </button>
             <button 
               onClick={() => setView('back')}
-              className={`px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all ${view === 'back' ? 'bg-white text-black shadow-lg scale-105' : 'bg-black/50 text-neutral-400 border border-[#262626] hover:bg-[#1A1A1A] hover:text-white'}`}
+              className={`px-5 py-2 font-mono text-[10px] font-bold uppercase tracking-normal rounded-lg transition-all ${view === 'back' ? 'bg-white text-black shadow-lg scale-105' : 'bg-black/50 text-neutral-400 border border-[#262626] hover:bg-[#1A1A1A] hover:text-white'}`}
             >
               BACK
             </button>
           </div>
 
           <div className="absolute top-4 end-4 z-20">
-             <div className="bg-black/60 backdrop-blur-xl border border-[#262626] px-4 py-2 rounded-lg font-mono text-sm font-bold text-white tracking-widest shadow-lg">
+             <div className="bg-black/60 backdrop-blur-xl border border-[#262626] px-4 py-2 rounded-lg font-mono text-sm font-bold text-white tracking-normal shadow-lg">
                 {}
                 {currentPrice.toFixed(2)} {strings.studio.jod}
              </div>
           </div>
           
           <div className="absolute bottom-4 start-4 end-4 z-20 text-center pointer-events-none">
-             <div className="inline-block bg-black/60 backdrop-blur-md border border-[#262626] px-3 py-1 rounded font-mono text-[9px] font-bold text-[#E5E0D0] tracking-[0.2em] shadow-lg">
+             <div className="inline-block bg-black/60 backdrop-blur-md border border-[#262626] px-3 py-1 rounded font-mono text-[9px] font-bold text-[#E5E0D0] tracking-normal shadow-lg">
                 KingJet 602A DTF • 3200 DPI • CMYK+W
              </div>
           </div>
@@ -174,7 +174,7 @@ export default function Studio() {
           
           {/* Garment Type */}
           <div className="space-y-4">
-            <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-widest block pb-1 border-b border-[#1A1A1A]">
+            <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-normal block pb-1 border-b border-[#1A1A1A]">
               {}
               {strings.studio.garmentLabel}
             </label>
@@ -195,7 +195,7 @@ export default function Studio() {
           {/* Color & Size */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-widest block pb-1 border-b border-[#1A1A1A]">
+              <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-normal block pb-1 border-b border-[#1A1A1A]">
                 {}
                 {strings.studio.colorLabel}
               </label>
@@ -209,7 +209,7 @@ export default function Studio() {
             {garment !== 'tote' && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b border-[#1A1A1A] pb-1">
-                  <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-widest">
+                  <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-normal">
                     {}
                     {strings.studio.sizeLabel}
                   </label>
@@ -234,20 +234,20 @@ export default function Studio() {
 
           {/* Placement */}
           <div className="space-y-4">
-            <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-widest block pb-1 border-b border-[#1A1A1A]">
+            <label className="font-mono text-[10px] text-neutral-500 font-black uppercase tracking-normal block pb-1 border-b border-[#1A1A1A]">
               {}
               {strings.studio.zoneLabel}
             </label>
             <div className="flex gap-4">
               <button 
                 onClick={() => setPlacement('center')}
-                className={`flex-1 py-3 border rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all ${placement === 'center' ? 'border-white bg-[#141414] text-white shadow-lg scale-[1.02]' : 'border-[#262626] bg-[#0A0A0A] text-neutral-500 hover:border-neutral-400 hover:text-neutral-300'}`}
+                className={`flex-1 py-3 border rounded-xl font-mono text-[10px] font-bold uppercase tracking-normal transition-all ${placement === 'center' ? 'border-white bg-[#141414] text-white shadow-lg scale-[1.02]' : 'border-[#262626] bg-[#0A0A0A] text-neutral-500 hover:border-neutral-400 hover:text-neutral-300'}`}
               >
                 {strings.placementCenter}
               </button>
               <button 
                 onClick={() => setPlacement('small_corpo')}
-                className={`flex-1 py-3 border rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest transition-all ${placement === 'small_corpo' ? 'border-white bg-[#141414] text-white shadow-lg scale-[1.02]' : 'border-[#262626] bg-[#0A0A0A] text-neutral-500 hover:border-neutral-400 hover:text-neutral-300'}`}
+                className={`flex-1 py-3 border rounded-xl font-mono text-[10px] font-bold uppercase tracking-normal transition-all ${placement === 'small_corpo' ? 'border-white bg-[#141414] text-white shadow-lg scale-[1.02]' : 'border-[#262626] bg-[#0A0A0A] text-neutral-500 hover:border-neutral-400 hover:text-neutral-300'}`}
               >
                 {strings.placementSmall}
               </button>
@@ -257,7 +257,7 @@ export default function Studio() {
           {/* Interactive Artwork Controls (Studio 2.0) */}
           {placement === 'center' && (
             <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 space-y-6">
-              <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold border-b border-[#1F1F1F] pb-2">
+              <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 uppercase tracking-normal font-bold border-b border-[#1F1F1F] pb-2">
                 <SlidersHorizontal size={14} /> Adjustments
               </div>
               
@@ -294,9 +294,9 @@ export default function Studio() {
           {/* Upload / Text */}
           <div className="space-y-6 border-t border-[#1A1A1A] pt-8">
             <div className="flex gap-6 border-b border-[#1A1A1A]">
-              <button onClick={() => setArtMode('presets')} className={`text-xs font-bold uppercase tracking-widest pb-3 border-b-2 transition-all ${artMode === 'presets' ? 'border-[#D80032] text-white' : 'border-transparent text-neutral-600 hover:text-neutral-400'}`}>Midaan Archive</button>
-              <button onClick={() => setArtMode('text')} className={`text-xs font-bold uppercase tracking-widest pb-3 border-b-2 transition-all ${artMode === 'text' ? 'border-[#D80032] text-white' : 'border-transparent text-neutral-600 hover:text-neutral-400'}`}>Text</button>
-              <button onClick={() => setArtMode('upload')} className={`text-xs font-bold uppercase tracking-widest pb-3 border-b-2 transition-all ${artMode === 'upload' ? 'border-[#D80032] text-white' : 'border-transparent text-neutral-600 hover:text-neutral-400'}`}>Upload</button>
+              <button onClick={() => setArtMode('presets')} className={`text-xs font-bold uppercase tracking-normal pb-3 border-b-2 transition-all ${artMode === 'presets' ? 'border-[#D80032] text-white' : 'border-transparent text-neutral-600 hover:text-neutral-400'}`}>Midaan Archive</button>
+              <button onClick={() => setArtMode('text')} className={`text-xs font-bold uppercase tracking-normal pb-3 border-b-2 transition-all ${artMode === 'text' ? 'border-[#D80032] text-white' : 'border-transparent text-neutral-600 hover:text-neutral-400'}`}>Text</button>
+              <button onClick={() => setArtMode('upload')} className={`text-xs font-bold uppercase tracking-normal pb-3 border-b-2 transition-all ${artMode === 'upload' ? 'border-[#D80032] text-white' : 'border-transparent text-neutral-600 hover:text-neutral-400'}`}>Upload</button>
             </div>
 
             {artMode === 'presets' && (
@@ -309,7 +309,7 @@ export default function Studio() {
                       className={`aspect-square border rounded-xl flex flex-col items-center justify-center gap-2 transition-all ${selectedPreset === preset.id ? 'border-white bg-[#141414] text-white shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 'border-[#262626] text-neutral-500 hover:border-neutral-400 hover:bg-[#0A0A0A]'}`}
                     >
                       <ImageIcon size={20} className={selectedPreset === preset.id ? 'text-[#D80032]' : ''} />
-                      <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-center px-1">{preset.name}</span>
+                      <span className="font-mono text-[9px] font-bold uppercase tracking-normal text-center px-1">{preset.name}</span>
                     </button>
                   ))}
                 </div>
@@ -317,9 +317,9 @@ export default function Studio() {
                   <div className="bg-[#111] border border-[#262626] rounded-xl p-4 flex justify-between items-center">
                     <div>
                       <div className="font-sans font-bold text-white text-sm">{activePreset.name}</div>
-                      <div className="font-mono text-[9px] text-neutral-400 uppercase tracking-widest">{activePreset.meaning}</div>
+                      <div className="font-mono text-[9px] text-neutral-400 uppercase tracking-normal">{activePreset.meaning}</div>
                     </div>
-                    <div className="font-mono text-[9px] text-[#D80032] uppercase tracking-widest border border-[#D80032]/30 px-2 py-1 rounded bg-[#D80032]/10">
+                    <div className="font-mono text-[9px] text-[#D80032] uppercase tracking-normal border border-[#D80032]/30 px-2 py-1 rounded bg-[#D80032]/10">
                       {activePreset.designer}
                     </div>
                   </div>
@@ -367,7 +367,7 @@ export default function Studio() {
                     {}
                     <p className="text-sm font-bold text-white mb-2">{strings.studio.uploadLabel}</p>
                     {}
-                    <p className="text-[10px] text-neutral-500 font-mono tracking-widest">{strings.studio.uploadHelp}</p>
+                    <p className="text-[10px] text-neutral-500 font-mono tracking-normal">{strings.studio.uploadHelp}</p>
                   </div>
                 </button>
               </div>
@@ -376,7 +376,7 @@ export default function Studio() {
 
           <button 
             onClick={handleAddToCart}
-            className="w-full bg-white text-black hover:bg-neutral-200 py-5 font-mono text-sm font-black uppercase tracking-[0.2em] transition-all rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-8"
+            className="w-full bg-white text-black hover:bg-neutral-200 py-5 font-mono text-sm font-black uppercase tracking-normal transition-all rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-8"
           >
             {strings.studio.addToCart}
           </button>

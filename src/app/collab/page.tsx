@@ -99,7 +99,7 @@ export default function CollabPage() {
               <img src="/sotusura.png" alt="Sotusura" className="h-16 md:h-24 object-contain rounded-lg" />
             </div>
 
-            <div className="inline-block bg-[#D80032] text-white px-4 py-1.5 font-mono text-[10px] md:text-xs font-bold tracking-widest uppercase mb-8 rounded shadow-lg">
+            <div className="inline-block bg-[#D80032] text-white px-4 py-1.5 font-mono text-[10px] md:text-xs font-bold tracking-normal uppercase mb-8 rounded shadow-lg">
               MIDAAN COLLECTIVE × SOTUSURA CLOTHING // ARCHIVE 01
             </div>
 
@@ -130,7 +130,7 @@ export default function CollabPage() {
 
               <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
                 <div>
-                  <h3 className="text-white font-mono font-bold tracking-widest text-sm mb-1 uppercase">Trailer: Archive 01</h3>
+                  <h3 className="text-white font-mono font-bold tracking-normal text-sm mb-1 uppercase">Trailer: Archive 01</h3>
                   <p className="text-neutral-400 font-mono text-[10px] uppercase">Dir. Midaan Voice Initiative</p>
                 </div>
                 <div className="text-neutral-500 font-mono text-[10px] uppercase border border-[#333] px-2 py-1 rounded backdrop-blur">
@@ -144,10 +144,10 @@ export default function CollabPage() {
         {/* 3. Interactive 3D T-Shirt Showcase */}
         <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
+            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-normal mb-4">
               {isRtl ? 'القطع الحصرية (جاهزة للتسليم)' : 'EXCLUSIVE DROPS (IN-STOCK)'}
             </h2>
-            <p className="text-neutral-400 font-mono text-xs uppercase tracking-widest">
+            <p className="text-neutral-400 font-mono text-xs uppercase tracking-normal">
               {isRtl ? 'كميات محدودة جداً' : 'Extremely Limited Quantities'}
             </p>
           </div>
@@ -166,14 +166,14 @@ export default function CollabPage() {
                   />
                   
                   <div className="absolute top-6 left-6 z-20">
-                    <div className="bg-[#D80032] text-white text-[10px] font-mono font-bold px-3 py-1.5 uppercase tracking-widest rounded shadow-lg">
+                    <div className="bg-[#D80032] text-white text-[10px] font-mono font-bold px-3 py-1.5 uppercase tracking-normal rounded shadow-lg">
                       {isRtl ? 'طباعة ظهر' : 'BACK PRINT'}
                     </div>
                   </div>
                 </Interactive3DTilt>
 
                 <div className="flex flex-col flex-1" dir={isRtl ? 'rtl' : 'ltr'}>
-                  <h3 className="text-2xl font-black uppercase tracking-tight mb-2">
+                  <h3 className="text-2xl font-black uppercase tracking-normal mb-2">
                     {isRtl ? prod.titleAr : prod.titleEn}
                   </h3>
                   <p className="text-neutral-400 text-sm mb-6 leading-relaxed">
@@ -182,7 +182,7 @@ export default function CollabPage() {
 
                   <div className="mt-auto">
                     <div className="mb-6">
-                      <div className="text-[10px] font-mono text-neutral-500 mb-3 uppercase tracking-widest">
+                      <div className="text-[10px] font-mono text-neutral-500 mb-3 uppercase tracking-normal">
                         {isRtl ? 'اختر المقاس:' : 'Select Size:'}
                       </div>
                       <div className="flex flex-wrap gap-2">
@@ -216,7 +216,7 @@ export default function CollabPage() {
                       </div>
                       <button
                         onClick={() => handleAddToCart(prod)}
-                        className="flex-1 bg-white hover:bg-neutral-200 text-black py-4 rounded-xl font-mono text-sm font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-white/10"
+                        className="flex-1 bg-white hover:bg-neutral-200 text-black py-4 rounded-xl font-mono text-sm font-black uppercase tracking-normal transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-white/10"
                       >
                         <ShoppingBag size={18} /> {isRtl ? 'أضف للحقيبة' : 'ADD TO BAG'}
                       </button>

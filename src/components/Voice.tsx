@@ -22,11 +22,11 @@ export default function Voice() {
 
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-start relative z-10">
           <div className="md:w-1/3 sticky top-24">
-            <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-4 py-1.5 font-mono text-[10px] font-bold tracking-[0.2em] uppercase mb-6 shadow-[0_0_15px_rgba(216,0,50,0.5)]">
+            <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-4 py-1.5 font-mono text-[10px] font-bold tracking-normal uppercase mb-6 shadow-[0_0_15px_rgba(216,0,50,0.5)]">
               <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
               {strings.voiceBadge}
             </div>
-            <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-6 leading-[0.9]">
+            <h2 className="text-5xl md:text-6xl font-black uppercase tracking-normal text-white mb-6 leading-[0.9]">
               {strings.voiceSectionTitle}
             </h2>
             <p className="text-neutral-400 leading-relaxed font-sans font-medium text-lg border-l-2 border-[#262626] pl-4 ml-2">
@@ -45,7 +45,7 @@ export default function Voice() {
                   <BookOpen size={24} className="text-white group-hover:text-[#D80032] transition-colors" />
                 </div>
                 <div className="z-10 mt-8">
-                  <div className="font-mono text-[10px] text-[#D80032] font-bold tracking-widest uppercase mb-2">Issue Zero (انتحاب)</div>
+                  <div className="font-mono text-[10px] text-[#D80032] font-bold tracking-normal uppercase mb-2">Issue Zero (انتحاب)</div>
                   <h3 className="text-3xl font-black text-white uppercase font-sans leading-none">
                     Midan Mag
                   </h3>
@@ -63,7 +63,7 @@ export default function Voice() {
                 </div>
                 <button 
                   onClick={() => setIsPdfModalOpen(true)}
-                  className="w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-colors rounded-xl flex items-center justify-center gap-2"
+                  className="w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-[10px] font-black uppercase tracking-normal transition-colors rounded-xl flex items-center justify-center gap-2"
                 >
                   {strings.readIssueBtn} <ArrowRight size={14} />
                 </button>
@@ -80,7 +80,7 @@ export default function Voice() {
                   <Play size={24} className="text-white group-hover:text-white transition-colors" />
                 </div>
                 <div className="z-10 mt-8">
-                  <div className="font-mono text-[10px] text-neutral-500 font-bold tracking-widest uppercase mb-2">Visual Storytelling</div>
+                  <div className="font-mono text-[10px] text-neutral-500 font-bold tracking-normal uppercase mb-2">Visual Storytelling</div>
                   <h3 className="text-3xl font-black text-white uppercase font-sans leading-none">
                     Cinema
                   </h3>
@@ -93,7 +93,7 @@ export default function Voice() {
                 </p>
                 <button 
                   onClick={() => setIsDossierOpen(true)}
-                  className={`w-full bg-transparent border border-[#333] hover:border-white text-white py-4 font-mono text-[10px] font-bold transition-colors rounded-xl flex items-center justify-center gap-2 ${isRtl ? "tracking-normal" : "uppercase tracking-[0.2em]"}`}
+                  className={`w-full bg-transparent border border-[#333] hover:border-white text-white py-4 font-mono text-[10px] font-bold transition-colors rounded-xl flex items-center justify-center gap-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}
                 >
                   {}
                   {strings.watchProjectBtn}
@@ -111,13 +111,13 @@ export default function Voice() {
             <div className="flex justify-between items-center px-6 py-4 border-b border-[#1A1A1A] bg-[#111]">
               <div className="flex items-center gap-4">
                 <BookOpen size={20} className="text-[#D80032]" />
-                <h3 className="text-white font-bold font-sans uppercase tracking-widest text-xs">
+                <h3 className="text-white font-bold font-sans uppercase tracking-normal text-xs">
                   {strings.magazineTitle}
                 </h3>
               </div>
               <button 
                 onClick={() => setIsPdfModalOpen(false)}
-                className="text-neutral-500 hover:text-white font-mono text-xs uppercase tracking-widest bg-[#1A1A1A] hover:bg-[#262626] px-4 py-2 rounded-lg transition-colors border border-[#333]"
+                className="text-neutral-500 hover:text-white font-mono text-xs uppercase tracking-normal bg-[#1A1A1A] hover:bg-[#262626] px-4 py-2 rounded-lg transition-colors border border-[#333]"
               >
                 {strings.close}
               </button>
@@ -148,8 +148,8 @@ export default function Voice() {
               <Film size={32} className="text-white" />
             </div>
 
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-2">Production Dossier</h2>
-            <div className="text-sm font-mono text-[#D80032] tracking-widest uppercase mb-8">Status: Pre-Production</div>
+            <h2 className="text-3xl font-black text-white uppercase tracking-normal mb-2">Production Dossier</h2>
+            <div className="text-sm font-mono text-[#D80032] tracking-normal uppercase mb-8">Status: Pre-Production</div>
 
             <div className="space-y-6 text-neutral-300 font-sans leading-relaxed">
               <p>Midaan Collective is currently developing a series of independent short films utilizing symbolic cinema and visual drama to explore themes of civil liberties, identity crisis, and grassroots resistance.</p>
