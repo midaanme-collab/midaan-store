@@ -164,12 +164,6 @@ export default function CollabPage() {
                     alt={prod.titleEn} 
                     className="w-3/4 h-auto object-contain z-10 drop-shadow-2xl" 
                   />
-                  
-                  <div className="absolute top-6 left-6 z-20">
-                    <div className="bg-[#D80032] text-white text-[10px] font-mono font-bold px-3 py-1.5 uppercase tracking-normal rounded shadow-lg">
-                      {isRtl ? 'طباعة ظهر' : 'BACK PRINT'}
-                    </div>
-                  </div>
                 </Interactive3DTilt>
 
                 <div className="flex flex-col flex-1" dir={isRtl ? 'rtl' : 'ltr'}>
@@ -243,9 +237,10 @@ export default function CollabPage() {
           <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden border border-[#262626] shadow-2xl">
             {/* Embedded video placeholder - using a generic nature video or similar if direct MP4 isn't available */}
             <video 
-              src="https://www.w3schools.com/html/mov_bbb.mp4" 
+              src="/collab-video.mp4" 
               autoPlay 
               loop 
+              playsInline
               muted={isMuted}
               className="w-full h-full object-cover"
             />

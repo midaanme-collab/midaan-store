@@ -36,12 +36,12 @@ export default function Modals() {
     }).join('\n');
 
     const msg = `مرحباً استوديو ميدان، أود تأكيد طلبي:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr}\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\nالمجموع الكلي: ${finalTotal.toFixed(2)} د.أ`;
-    return `https://wa.me/962790000000?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
   
   const getWhatsAppWorkshopUrl = () => {
     const msg = `مرحباً استوديو ميدان، أود التسجيل أو الاستفسار بخصوص: ${selectedWorkshop}`;
-    return `https://wa.me/962790000000?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
 
   return (

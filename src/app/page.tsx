@@ -38,8 +38,8 @@ export default function Home() {
       <Hero />
       <ArticlesSection />
       <DropShowcase lang="ar" />
-      <Studio />
-      <Hub />
+      {/* <Studio /> */}
+      {/* <Hub /> */}
       <Voice />
       <Modals />
     </PageLayout>

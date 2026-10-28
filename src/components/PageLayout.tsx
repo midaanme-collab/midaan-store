@@ -17,28 +17,15 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className={`min-h-screen flex flex-col font-sans ${bgClass} transition-colors duration-500`} dir={isRtl ? 'rtl' : 'ltr'}>
-      {/* Editorial Marquee Ticker */}
-      <div className="bg-[#D80032] text-white py-2 overflow-hidden whitespace-nowrap border-b border-[#262626]">
-        <div className={`animate-marquee inline-block px-4 font-mono text-[10px] font-black ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
-          {isRtl 
-            ? 'توصيل لكافة محافظات الأردن • طباعة صناعية KingJet 602A DTF • مجلة ميدان: العدد صفر (انتحاب) • إصدارات محدودة'
-            : 'HKJ WIDE DELIVERY • KINGJET 602A DTF INDUSTRIAL LAB • MIDAAN MAG: ISSUE ZERO • LIMITED DROPS'}
-          &nbsp;&nbsp;•&nbsp;&nbsp;
-          {isRtl 
-            ? 'توصيل لكافة محافظات الأردن • طباعة صناعية KingJet 602A DTF • مجلة ميدان: العدد صفر (انتحاب) • إصدارات محدودة'
-            : 'HKJ WIDE DELIVERY • KINGJET 602A DTF INDUSTRIAL LAB • MIDAAN MAG: ISSUE ZERO • LIMITED DROPS'}
-        </div>
-      </div>
-
       {/* Navigation */}
       <nav className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 ${headerBgClass}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <MidaanLogo size="sm" />
+          <div className="h-16 md:h-20 flex items-center">
+             <MidaanLogo size="lg" />
+          </div>
           
           <div className={`hidden md:flex items-center gap-8 font-mono text-[10px] font-bold ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
             <a href="#advocacy" className="hover:text-[#D80032] transition-colors">{}{strings.nav.advocacy}</a>
-            <a href="#studio" className="hover:text-[#D80032] transition-colors">{}{strings.nav.studio}</a>
-            <a href="#hub" className="hover:text-[#D80032] transition-colors">{}{strings.nav.dome}</a>
             <a href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/30 px-3 py-1 rounded bg-[#D80032]/10">Collab // تعاون</a>
           </div>
 

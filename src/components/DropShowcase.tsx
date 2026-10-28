@@ -172,10 +172,6 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
             className="group bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] hover:border-white transition-all rounded-2xl overflow-hidden flex flex-col justify-between shadow-2xl hover:-translate-y-2"
           >
             <div className="relative aspect-[4/5] bg-[#050505] flex items-center justify-center border-b border-[#262626] overflow-hidden">
-              <div className="absolute top-4 start-4 z-10 bg-[#D80032] text-white text-[9px] font-mono font-bold px-3 py-1.5 uppercase tracking-normal rounded-lg shadow-lg">
-                DROP 0{idx + 1}
-              </div>
-
               {prod.isCollab && (
                 <div className="absolute top-4 end-4 z-10 bg-white text-black text-[9px] font-mono font-bold px-3 py-1.5 uppercase tracking-normal rounded-lg shadow-lg">
                   {prod.collabArtist}
@@ -190,11 +186,6 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
                     <PackageCheck size={10} />
                     {isRtl ? "جاهز للشحن الفوري (تسليم 24 ساعة في عمّان)" : "In Stock — Dispatches within 24h"}
                   </div>
-                  {prod.backPrintOnly && (
-                    <div className="bg-[#111]/90 text-neutral-300 text-[9px] font-mono font-bold px-2 py-1 uppercase tracking-normal rounded shadow-lg backdrop-blur border border-[#333] inline-flex items-center">
-                      {isRtl ? "طباعة الظهر (Back Print)" : "Back Print"}
-                    </div>
-                  )}
                  </div>
               )}
 
