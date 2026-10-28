@@ -66,7 +66,7 @@ export default function CollabPage() {
   const handleAddToCart = (prod: Product) => {
     const size = selectedSizes[prod.id];
     if (!size) {
-      alert(isRtl ? 'الرجاء اختيار المقاس' : 'Please select a size');
+      alert(isRtl ? 'يجب اختيار المقاس قبل إضافة القطعة إلى الحقيبة' : 'You must select a size before adding the item to your bag');
       return;
     }
 

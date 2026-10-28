@@ -11,7 +11,7 @@ export default function Modals() {
     lang, isSizeChartOpen, setIsSizeChartOpen,
     isWorkshopModalOpen, setIsWorkshopModalOpen, selectedWorkshop, activeChartTab,
     setActiveChartTab, selectedGov, setSelectedGov, copiedCliq, setCopiedCliq,
-    cart, removeFromCart, isCartOpen, setIsCartOpen, paymentMethod, setPaymentMethod
+    cart, removeFromCart, updateCartQuantity, isCartOpen, setIsCartOpen, paymentMethod, setPaymentMethod
   } = useStore();
   
   const strings = content[lang as keyof typeof content];
@@ -23,16 +23,16 @@ export default function Modals() {
     setTimeout(() => setCopiedCliq(false), 2000);
   };
 
-  const cartSubtotal = cart.reduce((sum, item) => sum + item.price, 0);
+  const cartSubtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
   const finalTotal = cartSubtotal > 0 ? cartSubtotal + selectedGov.fee : 0;
 
   const getWhatsAppOrderUrl = () => {
     const orderDetails = cart.map((item, index) => {
       const sizeStr = item.garment === 'tote' ? 'One Size' : item.size;
       if (item.isPrePrinted) {
-        return `${index + 1}. ${item.productTitle || item.garment} [قطعة جاهزة للتسليم الفوري - طباعة ظهر] - مقاس: ${sizeStr}`;
+        return `${index + 1}. ${item.productTitle || item.garment} [قطعة جاهزة للتسليم الفوري - طباعة ظهر] - مقاس: ${sizeStr} - كمية: ${item.quantity || 1}`;
       }
-      return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Print: ${item.placement} - Art: ${item.artMode}`;
+      return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Print: ${item.placement} - Art: ${item.artMode} - Qty: ${item.quantity || 1}`;
     }).join('\n');
 
     const msg = `مرحباً استوديو ميدان، أود تأكيد طلبي:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr}\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\nالمجموع الكلي: ${finalTotal.toFixed(2)} د.أ`;

@@ -27,6 +27,7 @@ export interface CartItem {
   selectedPreset?: PresetArt;
   isPrePrinted?: boolean;
   productTitle?: string;
+  quantity?: number;
 }
 
 export interface ProductVariant {

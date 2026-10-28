@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ShoppingBag, Globe, Compass, Moon, Sun } from 'lucide-react';
+import Link from 'next/link';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 import MidaanLogo from './MidaanLogo';
@@ -21,14 +22,14 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
       <nav className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 ${headerBgClass}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <div className="h-16 md:h-20 flex items-center">
-             <a href="/" className="cursor-pointer">
+             <Link href="/" className="cursor-pointer">
                <MidaanLogo size="sm" />
-             </a>
+             </Link>
           </div>
           
           <div className={`hidden md:flex items-center gap-8 font-mono text-[10px] font-bold ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
-            <a href="#advocacy" className="hover:text-[#D80032] transition-colors">{}{strings.nav.advocacy}</a>
-            <a href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/30 px-3 py-1 rounded bg-[#D80032]/10">Collab // تعاون</a>
+            <Link href="#advocacy" className="hover:text-[#D80032] transition-colors">{}{strings.nav.advocacy}</Link>
+            <Link href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/30 px-3 py-1 rounded bg-[#D80032]/10">Collab // تعاون</Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -64,16 +65,16 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
 
       {/* Footer */}
       <footer className="bg-[#111] text-[#F4F4F0] py-16 border-t border-[#1A1A1A] text-center">
-        <a href="/" className="inline-block cursor-pointer">
+        <Link href="/" className="inline-block cursor-pointer">
           <MidaanLogo size="sm" />
-        </a>
+        </Link>
         <div className="mt-8 flex justify-center gap-6 text-neutral-500">
           <Compass size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
           <Globe size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
         </div>
         <p className={`mt-8 font-mono text-xs text-neutral-600 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
           {}
-          {strings.hero.tag} • 2026
+          {strings.footerText || "Midaan Collective • Amman, Jordan • All Rights Reserved 2026"}
         </p>
       </footer>
     </div>

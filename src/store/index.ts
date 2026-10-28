@@ -47,6 +47,7 @@ interface StoreState {
   // Cart State
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
+  updateCartQuantity: (id: string, delta: number) => void;
   removeFromCart: (id: string) => void;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
@@ -117,7 +118,24 @@ export const useStore = create<StoreState>((set) => ({
   setCustomTextFont: (customTextFont) => set({ customTextFont }),
 
   cart: [],
-  addToCart: (item) => set((state) => ({ cart: [...state.cart, item] })),
+  addToCart: (item) => set((state) => {
+    const existingIndex = state.cart.findIndex(i => i.productTitle === item.productTitle && i.size === item.size && i.garment === item.garment);
+    if (existingIndex > -1) {
+      const newCart = [...state.cart];
+      newCart[existingIndex] = { ...newCart[existingIndex], quantity: (newCart[existingIndex].quantity || 1) + 1 };
+      return { cart: newCart };
+    }
+    return { cart: [...state.cart, { ...item, quantity: 1 }] };
+  }),
+  updateCartQuantity: (id, delta) => set((state) => {
+    const newCart = [...state.cart];
+    const itemIndex = newCart.findIndex(i => i.id === id);
+    if (itemIndex > -1) {
+      const newQty = (newCart[itemIndex].quantity || 1) + delta;
+      if (newQty > 0) newCart[itemIndex].quantity = newQty;
+    }
+    return { cart: newCart };
+  }),
   removeFromCart: (id) => set((state) => ({ cart: state.cart.filter(i => i.id !== id) })),
   isCartOpen: false,
   setIsCartOpen: (isCartOpen) => set({ isCartOpen }),

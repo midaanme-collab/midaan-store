@@ -34,7 +34,7 @@ export default function Voice() {
             </p>
           </div>
 
-          <div className="md:w-2/3 w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="md:w-2/3 w-full grid grid-cols-1 md:grid-cols-1 gap-8">
             {/* Magazine Editorial Card */}
             <div className="bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] rounded-2xl overflow-hidden group hover:border-[#D80032] transition-all shadow-2xl flex flex-col h-full transform hover:-translate-y-1">
               <div className="aspect-[4/3] bg-[#050505] border-b border-[#262626] p-8 flex flex-col justify-between relative overflow-hidden">
@@ -70,36 +70,6 @@ export default function Voice() {
               </div>
             </div>
 
-            {/* Cinema Card */}
-            <div className="bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] rounded-2xl overflow-hidden group hover:border-white transition-all shadow-2xl flex flex-col h-full transform hover:-translate-y-1">
-              <div className="aspect-[4/3] bg-[#050505] border-b border-[#262626] p-8 flex flex-col justify-between relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
-                  <Film size={120} />
-                </div>
-                <div className="bg-[#1A1A1A] rounded-xl inline-flex p-3 w-fit z-10 border border-[#333]">
-                  <Play size={24} className="text-white group-hover:text-white transition-colors" />
-                </div>
-                <div className="z-10 mt-8">
-                  <div className="font-mono text-[10px] text-neutral-500 font-bold tracking-normal uppercase mb-2">Visual Storytelling</div>
-                  <h3 className="text-3xl font-black text-white uppercase font-sans leading-none">
-                    Cinema
-                  </h3>
-                </div>
-              </div>
-
-              <div className="p-8 flex flex-col flex-1">
-                <p className="text-sm text-neutral-400 font-sans mb-6 flex-1 leading-relaxed border-l border-[#333] pl-4">
-                  {strings.cinemaDesc}
-                </p>
-                <button 
-                  onClick={() => setIsDossierOpen(true)}
-                  className={`w-full bg-transparent border border-[#333] hover:border-white text-white py-4 font-mono text-[10px] font-bold transition-colors rounded-xl flex items-center justify-center gap-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}
-                >
-                  {}
-                  {strings.watchProjectBtn}
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </section>
