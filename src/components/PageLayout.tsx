@@ -35,23 +35,21 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className={`p-2 rounded-full border transition-colors ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
+              className={`flex items-center gap-2 font-mono text-[10px] transition-colors border px-3 py-1.5 rounded-lg ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
             >
-              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+              <span>{isRtl ? (theme === 'dark' ? 'مضيء' : 'داكن') : (theme === 'dark' ? 'Light' : 'Dark')}</span>
             </button>
             <button 
               onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}
               className={`flex items-center gap-2 font-mono text-[10px] transition-colors border px-3 py-1.5 rounded-lg ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
             >
-              <Globe size={14} />
               <span>{strings.langBtn}</span>
             </button>
             <button 
               onClick={() => setIsCartOpen(true)}
               className={`bg-[#D80032] text-white hover:bg-[#111] px-4 py-1.5 font-mono text-[10px] font-bold flex items-center gap-2 transition-colors rounded-lg shadow-md ${isRtl ? "tracking-normal" : "tracking-normal"}`}
             >
-              <ShoppingBag size={14} />
-              <span className="hidden md:inline">{}{strings.nav.cart}</span>
+              <span>{}{strings.nav.cart}</span>
               {cart.length > 0 && <span className="bg-white text-black px-1.5 rounded text-[9px]">{cart.length}</span>}
             </button>
           </div>
@@ -68,13 +66,8 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
         <Link href="/" className="inline-block cursor-pointer">
           <MidaanLogo size="sm" />
         </Link>
-        <div className="mt-8 flex justify-center gap-6 text-neutral-500">
-          <Compass size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
-          <Globe size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
-        </div>
         <p className={`mt-8 font-mono text-xs text-neutral-600 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
-          {}
-          {strings.footerText || "Midaan Collective • Amman, Jordan • All Rights Reserved 2026"}
+          {isRtl ? 'ميدان • جميع الحقوق محفوظة 2026' : 'Midaan Collective • All Rights Reserved 2026'}
         </p>
       </footer>
     </div>

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Sliders, BookOpen } from 'lucide-react';
-import MidaanLogo from './MidaanLogo';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 
@@ -12,14 +11,7 @@ export default function Hero() {
   
   return (
     <section className="relative z-10 pt-20 pb-24 px-6 max-w-5xl mx-auto text-center">
-      <div className="flex justify-center mb-8">
-        <MidaanLogo size="xl" />
-      </div>
 
-      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#262626] bg-[#0A0A0A] text-xs font-medium text-neutral-300 mb-8 font-mono tracking-normal uppercase">
-        <span className="text-[#D80032] font-bold">●</span>
-        <span>{strings.tagline}</span>
-      </div>
 
       <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-normal text-white mb-6 leading-tight uppercase font-sans">
         {strings.heroTitle}
