@@ -17,8 +17,18 @@ const alexandria = Alexandria({
 });
 
 export const metadata: Metadata = {
-  title: "MIDAAN | ميدان — Middle East Official Merchandise",
-  description: "أزياء وثقافة الشارع الأردنية والطباعة الحية DTF — عمّان.",
+  title: "Midaan Collective | ميدان",
+  description: "An independent cultural and intellectual publication exploring identity, social transformations, and the role of art in civic expression. إصدار فكري ثقافي مستقل يبحث في قضايا الهوية، التحولات الاجتماعية، ودور الفن في التعبير المدني.",
+  alternates: {
+    canonical: "https://midaan-store.midaanme.workers.dev"
+  },
+  openGraph: {
+    title: "Midaan Collective",
+    description: "Wearable advocacy and independent publishing from Amman.",
+    url: "https://midaan-store.midaanme.workers.dev",
+    siteName: "Midaan",
+    type: "website"
+  }
 };
 
 export default function RootLayout({

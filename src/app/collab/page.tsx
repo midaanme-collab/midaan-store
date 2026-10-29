@@ -88,6 +88,27 @@ export default function CollabPage() {
 
   return (
     <PageLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "Midaan Official Drop",
+            "description": "Exclusive Midaan wearable advocacy streetwear.",
+            "brand": {
+              "@type": "Brand",
+              "name": "Midaan"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "35.00",
+              "priceCurrency": "JOD",
+              "availability": "https://schema.org/InStock"
+            }
+          })
+        }}
+      />
       <div className="bg-[#050505] min-h-screen text-white font-sans selection:bg-[#D80032] selection:text-white pb-20">
         
         {/* 1. Dual Co-Branded Header */}

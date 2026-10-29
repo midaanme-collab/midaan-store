@@ -12,6 +12,29 @@ export default function IssueZeroReader() {
 
   return (
     <PageLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Midaan Magazine — Issue Zero (انتحاب)",
+            "description": "إصدار فكري ثقافي مستقل يبحث في قضايا الهوية، التحولات الاجتماعية، ودور الفن في التعبير المدني.",
+            "author": {
+              "@type": "Organization",
+              "name": "Midaan Collective"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Midaan Collective",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://midaan-store.midaanme.workers.dev/logo.png"
+              }
+            }
+          })
+        }}
+      />
       <div className="w-full bg-[#050505] min-h-screen py-12 px-4 md:px-8 font-sans border-t border-[#1A1A1A]">
         <div className="max-w-6xl mx-auto flex flex-col h-[85vh]">
           
