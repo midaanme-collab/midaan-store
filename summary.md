@@ -12,6 +12,9 @@ Implementing a Progressive Web App (PWA) using the same website codebase is high
 - **Product Scope Constraints:** Reduced visible catalog in `DropShowcase.tsx` to explicitly only the two approved existing variants: `HELMET WHITE TEE` and `POSTER WHITE TEE`. Removed "El Far3i", heavy hoodie, and related drop labels. Added required size selection verification prior to cart additions. 
 - **Voice/Magazine Constraint:** Removed "Cinema" cards to focus explicitly on the single "Midaan Magazine" card per spec.
 - **Cloudflare Integration:** Enabled `output: "export"` and `images: { unoptimized: true }` in `next.config.ts`. All client functionality behaves perfectly under standard static hosting. Merged cart hydration constraints into the deployment structure.
+- **Magazine Engine:** Integrated Puppeteer static PDF generator (`scripts/generate-magazine.js`) embedding local TrueType font assets to ensure completely offline-capable generation matching authentic Arabic layout norms. Built dedicated Next.js routing architecture under `/magazine`.
+- **Dual Currency:** Standardized global prices internally and added a `JOD`/`USD` layout dropdown resolving exclusively to JOD 35.00 / USD 50.00 base pricing.
+- **SEO Elements:** Scaffolded OpenGraph properties, Canonical URIs, and JSON-LD schema objects onto primary entry routes.
 
 ## Unresolved Blocker(s)
 1. **Server-side Validation Missing:** As requested by the user, explicitly noting this as a blocker. There is currently no active commerce backend connected for authoritative price, availability, and precise stock verification on checkout submission. The frontend implements safeguards against overselling but these checks must be validated server-side.
