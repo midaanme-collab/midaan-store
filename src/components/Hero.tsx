@@ -30,7 +30,7 @@ export default function Hero() {
           <span>{lang === 'ar' ? 'اكتشف التعاون' : 'Discover Collaboration'}</span>
         </a>
         <a
-          href="#voice"
+          href="/magazine"
           className="bg-[#141414] hover:bg-[#1A1A1A] border border-[#262626] text-neutral-200 px-8 py-3.5 text-xs sm:text-sm font-bold rounded-full flex items-center gap-2 transition-transform active:scale-95 font-mono uppercase tracking-normal"
         >
           <BookOpen size={16} className="text-[#D80032]" />

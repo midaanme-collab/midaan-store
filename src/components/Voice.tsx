@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { BookOpen, Film, Play, FileText, ArrowRight } from 'lucide-react';
 import { useStore } from '@/store';
+import Link from 'next/link';
 import { content } from '@/locales/dictionary';
 
 export default function Voice() {
@@ -10,7 +11,6 @@ export default function Voice() {
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   
-  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
   return (
     <>
@@ -60,12 +60,12 @@ export default function Voice() {
                   <span className="bg-[#1A1A1A] text-neutral-300 text-[9px] font-mono px-2 py-1 rounded border border-[#333]">YOUTH</span>
                   <span className="bg-[#1A1A1A] text-neutral-300 text-[9px] font-mono px-2 py-1 rounded border border-[#333]">CULTURE</span>
                 </div>
-                <button 
-                  onClick={() => setIsPdfModalOpen(true)}
+                <Link 
+                  href="/magazine"
                   className="w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-[10px] font-black uppercase tracking-normal transition-colors rounded-xl flex items-center justify-center gap-2"
                 >
                   {strings.readIssueBtn} <ArrowRight size={14} />
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -73,34 +73,7 @@ export default function Voice() {
         </div>
       </section>
 
-      {/* PDF Modal */}
-      {isPdfModalOpen && (
-        <div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="bg-[#050505] border border-[#262626] w-full max-w-6xl h-[95vh] rounded-2xl flex flex-col overflow-hidden relative shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-[#1A1A1A] bg-[#111]">
-              <div className="flex items-center gap-4">
-                <BookOpen size={20} className="text-[#D80032]" />
-                <h3 className="text-white font-bold font-sans uppercase tracking-normal text-xs">
-                  {strings.magazineTitle}
-                </h3>
-              </div>
-              <button 
-                onClick={() => setIsPdfModalOpen(false)}
-                className="text-neutral-500 hover:text-white font-mono text-xs uppercase tracking-normal bg-[#1A1A1A] hover:bg-[#262626] px-4 py-2 rounded-lg transition-colors border border-[#333]"
-              >
-                {strings.close}
-              </button>
-            </div>
-            <div className="flex-1 w-full relative bg-neutral-900">
-              <iframe 
-                src="/magazine/issue-zero.pdf#toolbar=0" 
-                className="absolute inset-0 w-full h-full border-0" 
-                title={strings.magazineTitle}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      
 
       {/* Cinema Dossier Modal */}
       {isDossierOpen && (
