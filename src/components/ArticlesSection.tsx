@@ -40,7 +40,9 @@ export default function ArticlesSection() {
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Featured Article */}
-          <div className="lg:col-span-8 cursor-pointer group" onClick={() => setSelectedArticle(featured)}>
+          <div className="lg:col-span-8 cursor-pointer group" onClick={() => {
+            if (typeof window !== 'undefined') window.location.href = `/magazine/articles/${featured.id}`;
+          }}>
             <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-3 py-1 font-mono text-[10px] font-bold tracking-normal uppercase mb-4">
               {isRtl ? 'اختيار المحررين' : 'Editor\'s Pick'}
             </div>
@@ -65,7 +67,9 @@ export default function ArticlesSection() {
             {dossier.map((article, idx) => (
               <div 
                 key={article.id} 
-                onClick={() => setSelectedArticle(article)}
+                onClick={() => {
+                  if (typeof window !== 'undefined') window.location.href = `/magazine/articles/${article.id}`;
+                }}
                 className="cursor-pointer group mb-10 last:mb-0"
               >
                 <div className="flex justify-between items-end mb-2">

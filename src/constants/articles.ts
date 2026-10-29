@@ -21,100 +21,104 @@ export interface Article {
 export const ARTICLES: Article[] = [
   {
     id: "art-1",
-    categoryAr: "ملف العدد صفر / Issue Zero Dossier",
-    categoryEn: "Issue Zero Dossier",
-    titleAr: "انتحاب | في معنى الفقد والذاكرة الجمعية",
-    titleEn: "Entehab | On Loss and Collective Memory",
+    categoryAr: "افتتاحية | Editorial",
+    categoryEn: "Editorial",
+    titleAr: "صراع الأرض والسماء",
+    titleEn: "The Conflict of Earth and Sky",
     authorAr: "محررو ميدان",
     authorEn: "Midaan Editors",
     date: "2026-10-01",
-    readTimeAr: "٥ دقائق",
-    readTimeEn: "5 min read",
-    excerptAr: "كيف تتشكل الهوية عبر تجارب الفقد المتكررة؟ ملف العدد صفر يطرح أسئلة الوجود والانتماء في الشارع الأردني.",
-    excerptEn: "How is identity shaped through recurring experiences of loss? Issue Zero questions existence and belonging on the Jordanian street.",
-    pullQuoteAr: "«في كل حارة، حكاية نُسجت من خيوط الفقد، نرتديها لئلا ننسى.»",
-    pullQuoteEn: "«In every alleyway, a tale woven from threads of loss, worn lest we forget.»",
+    readTimeAr: "٣ دقائق",
+    readTimeEn: "3 min read",
+    excerptAr: "لماذا لا يمكن فهم قضية فلسطين بعيداً عن العقيدة؟",
+    excerptEn: "Why the Palestinian cause cannot be understood apart from dogma.",
+    pullQuoteAr: "«نكتب لأن الصمت في حضرة هذه التحولات لم يعد خياراً، بل تواطؤاً.»",
+    pullQuoteEn: "«We write because silence in the presence of these transformations is no longer a choice, but complicity.»",
     contentAr: [
-      "في مدينتنا، الفقد ليس مجرد غياب، بل هو حضور دائم يشكل ملامح الشوارع، الوجوه، والأزياء التي نرتديها. العدد صفر من مجلة ميدان، «انتحاب»، يسلط الضوء على هذه الثنائية.",
-      "لقد أردنا من خلال هذا الملف أن نوثق الذاكرة الجمعية عبر الحبر والقماش. الكلمات هنا لا تُقرأ فقط، بل تُرتدى، لتتحول من أفكار مجردة إلى بيانات بصرية تتحرك في الساحات العامة."
+      "عندما تتأمل المشهد الثقافي والمدني في المنطقة، تدرك أن الصراع لم يكن يوماً مجرد صراع على الموارد أو الحدود، بل هو صراع سرديات بامتياز. صراع بين واقع يُفرض بقوة الحديد والنار، وبين أمل يُنسج بخيوط الكلمة، الصورة، والفعل المدني.",
+      "ميدان ليست مجرد مساحة فيزيائية أو علامة تجارية، بل هي امتداد طبيعي للحاجة الملحة لخلق منصات تعبير مستقلة. في هذا العدد الصفر، نؤسس للغة بصرية ونصية تحاول أن تلتقط نبض الشارع، وتوثق لحظات الفقد، الصمود، والبحث المستمر عن المعنى."
     ],
     contentEn: [
-      "In our city, loss is not merely an absence, but a persistent presence that shapes the contours of our streets, our faces, and the garments we wear. Midaan Magazine's Issue Zero, 'Entehab', highlights this duality.",
-      "Through this dossier, we wanted to document collective memory through ink and fabric. Words here are not just read; they are worn, transforming from abstract thoughts into visual statements that move across public squares."
+      "When contemplating the cultural and civic landscape of the region, one realizes that the conflict has never been merely about resources or borders, but rather a profound clash of narratives. A conflict between a reality imposed by iron and fire, and a hope woven with threads of word, image, and civic action.",
+      "Midaan is not just a physical space or a brand; it is a natural extension of the urgent need to create independent platforms for expression. In this Issue Zero, we establish a visual and textual language attempting to capture the pulse of the street, documenting moments of loss, resilience, and the continuous search for meaning."
     ],
-    merchLink: "drop-core-02"
   },
   {
     id: "art-2",
-    categoryAr: "مقابلة / Interview",
-    categoryEn: "Interview",
-    titleAr: "الموسيقى كمنصة للمقاومة | الفرعي",
-    titleEn: "Music as a Platform for Resistance | El Far3i",
-    authorAr: "تجمع ميدان",
-    authorEn: "Midaan Collective",
+    categoryAr: "مقالة | Essay",
+    categoryEn: "Essay",
+    titleAr: "سأموت قبل الأربعين",
+    titleEn: "I Will Die Before Forty",
+    authorAr: "صوت ميدان",
+    authorEn: "Midaan Voice",
     date: "2026-10-10",
-    readTimeAr: "٧ دقائق",
-    readTimeEn: "7 min read",
-    excerptAr: "حوار خاص مع طارق أبو كويك (الفرعي) حول دور موسيقى الراب والهيب هوب الصوتي في تشكيل وعي الشباب.",
-    excerptEn: "An exclusive conversation with Tareq Abu Kwaik (El Far3i) on the role of acoustic hip-hop in shaping youth consciousness.",
-    pullQuoteAr: "«الكلمة التي تخرج من الحنجرة الصادقة، تكسر كل حواجز الصوت.»",
-    pullQuoteEn: "«A word uttered from a sincere throat shatters all sound barriers.»",
+    readTimeAr: "٥ دقائق",
+    readTimeEn: "5 min read",
+    excerptAr: "تشريح لحالة القلق الوجودي التي يعيشها جيل كامل.",
+    excerptEn: "An anatomy of the existential anxiety experienced by an entire generation.",
+    pullQuoteAr: "«أن تفكر في الموت قبل الأربعين في هذا الجزء من العالم ليس بالضرورة حالة اكتئاب فردية، بل هو وعي مبكر بهشاشة الحياة أمام قسوة السياق السياسي والاجتماعي.»",
+    pullQuoteEn: "«To think of death before forty in this part of the world is not necessarily an individual depression, but rather an early awareness of life's fragility against the harshness of the political and social context.»",
     contentAr: [
-      "في هذا الحوار، نجلس مع الفرعي لنناقش تقاطعات الفن المستقل مع قضايا الشارع. كيف يمكن للموسيقى أن تكون أداة حقيقية للتغيير وليست مجرد انعكاس للواقع؟",
-      "يرى الفرعي أن الكلمة المغناة هي امتداد طبيعي للحوار المدني، وهي الوسيلة الأقرب لقلوب وعقول الشباب الباحث عن هوية وصوت."
+      "هذا النص ليس نبوءة تشاؤمية بقدر ما هو تشريح لحالة القلق الوجودي التي يعيشها جيل كامل. جيل وُلد في فجوة بين عصرين، وشهد تقلبات جذرية جعلت من فكرة المستقبل ترفاً يصعب تصوره.",
+      "أن تفكر في الموت قبل الأربعين في هذا الجزء من العالم ليس بالضرورة حالة اكتئاب فردية، بل هو وعي مبكر بهشاشة الحياة أمام قسوة السياق السياسي والاجتماعي. هو انعكاس لواقع تُختطف فيه الأحلام قبل أن تنضج.",
+      "رغم هذه السوداوية الظاهرة، هناك طاقة خفية في هذا الإدراك. عندما تتقبل فكرة النهاية المبكرة، تتخلص من عبء التخطيط الطويل وتندفع نحو الفعل الآني. يصبح الإنتاج الإبداعي، التعبير، والاشتباك مع الواقع ضرورة يومية لا تقبل التأجيل."
     ],
     contentEn: [
-      "In this interview, we sit down with El Far3i to discuss the intersections of independent art and street issues. How can music be a genuine tool for change rather than a mere reflection of reality?",
-      "El Far3i believes that sung lyrics are a natural extension of civic dialogue, the medium closest to the hearts and minds of youth searching for identity and voice."
+      "This text is not a pessimistic prophecy as much as it is an anatomy of the existential anxiety experienced by an entire generation. A generation born in the gap between two eras, witnessing radical shifts that have made the concept of a future an unimaginable luxury.",
+      "To think of death before forty in this part of the world is not necessarily a state of individual depression, but an early awareness of life's fragility in the face of a harsh political and social context. It is a reflection of a reality where dreams are hijacked before they can mature.",
+      "Despite this apparent bleakness, there is a hidden energy in this realization. When you accept the idea of an early end, you shed the burden of long-term planning and rush toward immediate action. Creative production, expression, and engaging with reality become a daily necessity that brooks no delay."
     ],
-    merchLink: "drop-elfar3i-01"
   },
   {
     id: "art-3",
-    categoryAr: "سينما / Cinema",
-    categoryEn: "Cinema",
-    titleAr: "درع التراب | السرد البصري للشارع",
-    titleEn: "Dira'a Al Turab | Visual Storytelling of the Street",
-    authorAr: "نادي ميدان السينمائي",
-    authorEn: "Midaan Film Club",
+    categoryAr: "مقال | Essay",
+    categoryEn: "Essay",
+    titleAr: "حبر اليقين: من مشقة الوداع إلى سكينة الشهادة",
+    titleEn: "The Ink of Certainty: From the Hardship of Farewell to the Tranquility of Martyrdom",
+    authorAr: "صوت ميدان",
+    authorEn: "Midaan Voice",
     date: "2026-10-15",
     readTimeAr: "٤ دقائق",
     readTimeEn: "4 min read",
-    excerptAr: "نظرة متعمقة في مشروع الفيلم القصير 'درع التراب'، وكيف توظف السينما الرمزية لتوثيق التحولات الديمقراطية.",
-    excerptEn: "An in-depth look at the short film project 'Dira'a Al Turab', and how symbolic cinema is employed to document democratic shifts.",
-    pullQuoteAr: "«الصورة لا تكذب، حتى حين تتنكر في ثوب الرمز.»",
-    pullQuoteEn: "«The image does not lie, even when masquerading in the garb of symbol.»",
+    excerptAr: "تُعد كتابة الوصية واحدة من أكثر التجارب الإنسانية عُمقاً.",
+    excerptEn: "Writing a will is considered one of the most profound human experiences.",
+    pullQuoteAr: "«كلمات بين عالمين، ولكن حين تُقرأ وصايا الشهداء، نجد أنفسنا أمام ظاهرة نفسية فريدة.»",
+    pullQuoteEn: "«Words between two worlds, but when reading the wills of martyrs, we find ourselves before a unique psychological phenomenon.»",
     contentAr: [
-      "مشروع 'درع التراب' هو محاولتنا لتقديم سردية بصرية تتجاوز التقريرية الصحفية. نعتمد على الإضاءة الخافتة والوجوه المتعبة لنقل رسالة الشارع.",
-      "الفيلم يسلط الضوء على جهود الشباب في خلق مساحات آمنة للتعبير، وسط ظروف تتسم بالتقلب والتعقيد."
+      "تُعد كتابة الوصية واحدة من أكثر التجارب الإنسانية عُمقاً؛ وقسوة فهي اللحظة التي يواجه فيها الإنسان فكرة الفناء وجهاً لوجه، ويحاول اختزال عمر كامل، بمشاعره وأفكاره، وعلاقاته في سطور معدودة.",
+      "إنها اعتراف خطي بالرحيل، ومحاولة يائسة وصادقة لمد جسر من الكلمات بين عالمين، ولكن حين تُقرأ وصايا الشهداء، نجد أنفسنا أمام ظاهرة نفسية فريدة: كيف يتحول هذا العبء الوجودي الثقيل إلى حالة من السكينة المطلقة والراحة النفسية؟",
+      "مشقة البداية: مواجهة الحبر..."
     ],
     contentEn: [
-      "The 'Dira'a Al Turab' project is our attempt to present a visual narrative that transcends journalistic reporting. We rely on low lighting and weary faces to convey the message of the street.",
-      "The film highlights the efforts of youth to create safe spaces for expression amid volatile and complex conditions."
+      "Writing a will is considered one of the most profound and harsh human experiences; it is the moment a person confronts the idea of mortality face to face, attempting to distill an entire lifetime—with all its feelings, thoughts, and relationships—into a few lines.",
+      "It is a written confession of departure, a desperate and honest attempt to build a bridge of words between two worlds. But when the wills of martyrs are read, we find ourselves facing a unique psychological phenomenon: how does this heavy existential burden transform into a state of absolute tranquility and psychological peace?",
+      "The hardship of the beginning: confronting the ink..."
     ]
   },
   {
     id: "art-4",
-    categoryAr: "مقالة / Essay",
-    categoryEn: "Essay",
-    titleAr: "الاقتصاد الإبداعي | من الاستهلاك إلى الإنتاج",
-    titleEn: "The Creative Economy | From Consumption to Production",
-    authorAr: "عمر الكيلاني",
-    authorEn: "Omar Al-Kilani",
+    categoryAr: "توثيق | Documentation",
+    categoryEn: "Documentation",
+    titleAr: "سجل وصايا الشهداء الفلسطينيين",
+    titleEn: "Register of Palestinian Martyrs' Wills",
+    authorAr: "توثيق ميدان",
+    authorEn: "Midaan Archive",
     date: "2026-10-20",
     readTimeAr: "٦ دقائق",
     readTimeEn: "6 min read",
-    excerptAr: "كيف يمكن لمشاريع مثل قبة ميدان أن تحول الشباب الأردني من مستهلكين للثقافة إلى منتجين فاعلين لها؟",
-    excerptEn: "How can projects like the Midaan Dome transition Jordanian youth from consumers of culture to active producers?",
-    pullQuoteAr: "«الاستقلال المادي للمبادرات هو حجر الزاوية لحرية التعبير.»",
-    pullQuoteEn: "«Financial independence for initiatives is the cornerstone of freedom of expression.»",
+    excerptAr: "وثيقة فكرية وتاريخية تجمع أبرز وصايا الشهداء.",
+    excerptEn: "An intellectual and historical document compiling prominent martyrs' wills.",
+    pullQuoteAr: "«تنوعت بين التأصيل الثقافي والرسائل الميدانية العفوية تحت الرصاص.»",
+    pullQuoteEn: "«Ranging from cultural grounding to spontaneous field messages under fire.»",
     contentAr: [
-      "في ظل التحديات الاقتصادية، يبرز الاقتصاد الإبداعي كحل مستدام. مشغل ميدان للطباعة ليس مجرد أداة إنتاج، بل هو نموذج للاكتفاء الذاتي.",
-      "من خلال إعادة استثمار العوائد، نضمن استمرارية الورش والمبادرات الثقافية، ونخلق بيئة تدعم النمو المستقل بعيداً عن شروط التمويل التقليدية."
+      "وصايا الشهداء: السجل الخالد في الوجدان الفلسطيني.",
+      "وثيقة فكرية وتاريخية تجمع أبرز وصايا الشهداء الفلسطينيين التي شكلت محطات فارقة في الوعي الجمعي، تنوعت بين التأصيل الثقافي والرسائل الميدانية العفوية تحت النيران.",
+      "جدول تعريفي بالوصايا المدرجة يعرض سنة الاستشهاد وطبيعة الوصية من باسل الأعرج إلى إبراهيم النابلسي."
     ],
     contentEn: [
-      "In light of economic challenges, the creative economy emerges as a sustainable solution. The Midaan Print Dome is not just a production tool; it is a model of self-sufficiency.",
-      "By reinvesting revenues, we ensure the continuity of workshops and cultural initiatives, creating an environment that supports independent growth away from the constraints of traditional funding."
+      "Martyrs' Wills: The Immortal Register in the Palestinian Conscience.",
+      "An intellectual and historical document compiling the most prominent wills of Palestinian martyrs that formed milestones in collective awareness, ranging from cultural grounding to spontaneous field messages under fire.",
+      "An introductory table of the listed wills displays the year of martyrdom and the nature of the will, from Basil Al-Araj to Ibrahim Al-Nabulsi."
     ]
   }
 ];

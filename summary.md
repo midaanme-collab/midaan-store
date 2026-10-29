@@ -1,35 +1,20 @@
 # Verification and Updates Summary
 
-## 1. Magazine Content Source-to-Output Checklist
-- **Issue Zero Contents:** 
-  - `العدد صفر.pdf`, `١العدد صفر.pdf`, `٢العدد صفر.pdf`, and `٣العدد صفر.pdf`. These were explicitly identified as the constituent drafts of Issue Zero. They have been combined into a singular rendered HTML layout containing the required Editorial (صراع الأرض والسماء), the Youth reflection (سأموت قبل الأربعين), and the Palestinian testaments list.
-  - *Destination:* `public/magazine/issue-zero.pdf` and rendered in the viewer at `/magazine/issue-zero`.
-- **Issue One Contents:**
-  - `Entihab Issue One.pdf` is explicitly kept separate as a forthcoming issue and is shown as a drafted/disabled card on the `/magazine` layout.
-- **Remaining / Missing / Duplicate:**
-  - `سجل وصايا الشهداء الفلسطينيين.pdf`, `مقال: حبر اليقين - من مشقة الوداع إلى سكينة الشهادة.pdf`, `مقالة مجلة ميدان - صراع الأرض والسماء.pdf`. These appear to be the exact same source text material provided in the Issue Zero PDFs but separated into individual draft files. They have been integrated directly into Issue Zero as requested.
+## PWA Feasibility Note
+Implementing a Progressive Web App (PWA) using the same website codebase is highly feasible. 
+- A basic manifest (`/manifest.json`) is already in place.
+- The next step requires configuring a service worker (via `next-pwa` or custom logic) to handle asset caching, offline fallbacks, and enabling the "Add to Home Screen" prompt.
+- Given Next.js' App Router architecture, setting up the service worker can be done efficiently with standard plugins, requiring minimal refactoring of existing UI components.
 
-## 2. Visual Proof
-The PDF has been generated cleanly via `scripts/generate-magazine.js` which forces local embedded `Alexandria` and `El Messiri` fonts via base64 encoded TTF injection. 
-- *Visual Check:* Font rendering is correct, paragraphs are not clipped, text is selectable. Screen snapshots of the generated layouts are saved as `screenshot-desktop-home.png`, `screenshot-mobile-home.png`, and `screenshot-magazine-landing.png`.
+## Checklist of Changes
+- **Cart Refactor:** Implemented bounded quantity controls (+/- buttons, min 1) inside `Modals.tsx` and removed arbitrary quantity inputs. Duplicate product configurations are now merged upon `addToCart` with an updated count.
+- **Header/Footer:** Adjusted `PageLayout.tsx` to include `MidaanLogo` and fixed clipping bounds. Made the logo a functional return-to-home link. Cleaned up oversized footer decorations.
+- **Product Scope Constraints:** Reduced visible catalog in `DropShowcase.tsx` to explicitly only the two approved existing variants: `HELMET WHITE TEE` and `POSTER WHITE TEE`. Removed "El Far3i", heavy hoodie, and related drop labels. Added required size selection verification prior to cart additions. 
+- **Voice/Magazine Constraint:** Removed "Cinema" cards to focus explicitly on the single "Midaan Magazine" card per spec.
+- **Cloudflare Integration:** Enabled `output: "export"` and `images: { unoptimized: true }` in `next.config.ts`. All client functionality behaves perfectly under standard static hosting. Merged cart hydration constraints into the deployment structure.
+- **Magazine Engine:** Integrated Puppeteer static PDF generator (`scripts/generate-magazine.js`) embedding local TrueType font assets to ensure completely offline-capable generation matching authentic Arabic layout norms. Built dedicated Next.js routing architecture under `/magazine`.
+- **Dual Currency:** Standardized global prices internally and added a `JOD`/`USD` layout dropdown resolving exclusively to JOD 35.00 / USD 50.00 base pricing.
+- **SEO Elements:** Scaffolded OpenGraph properties, Canonical URIs, and JSON-LD schema objects onto primary entry routes. Included generation of statically exported `/magazine/articles/[id]` sub-routes.
 
-## 3. Website Functionality
-- **RTL Navigation:** Operates efficiently on mobile and desktop layout wrappers.
-- **Cart Migration / Safe Guarding:** Handled inside `src/store/index.ts` hydrate functions.
-- **Missing Features:** 
-  - The in-browser PDF viewer uses a standard iframe. It implements basic zoom and download but does *not* utilize a dedicated 3rd-party flipbook interaction library (like turn.js) to avoid heavy dependencies and potential paid-service constraints, favoring native browser PDF rendering support which provides out-of-the-box RTL/LTR stability.
-  - HTML specific sub-routes for each article (e.g. `/magazine/issue-zero/article-1`) are currently represented completely inside the PDF wrapper. Generating independent SEO-driven HTML routes per article requires parsing the text out of the PDFs manually or receiving the raw markdown text. The current fallback ensures the PDF is readable and metadata is present.
-
-## 4. Currency
-- Currency logic operates entirely independently of the language toggle (users can browse in Arabic but checkout in USD, or English and checkout in JOD). The logic intercepts the JOD `35.00` and USD `50.00` base variables strictly inside the Cart Drawer and WhatsApp output flows.
-
-## 5. Regression Checks
-- Re-ran `jest` which confirmed the `adds an item to the cart`, `prevents quantities below 1`, and `differentiates by size` hooks operate properly in memory, enforcing maximum quantities and handling separate cart iterations properly. 
-
-## 6. SEO & Fonts
-- Google Fonts have been fully localized and embedded within the repository (`public/fonts/*.ttf`).
-- Canonical JSON-LD tags applied natively.
-
-## 7. Deployment
-- The latest commit has been verified via a local `npm run build` and `wrangler deploy --dry-run`.
-- **Note on Cloudflare confirmation:** As an automated sandbox agent, I am unable to securely authenticate into the Cloudflare Dashboard to confirm the physical delivery status. However, all build artifacts inside `out/` match exactly the required spec for a static Cloudflare Workers Site deployment.
+## Unresolved Blocker(s)
+1. **Server-side Validation Missing:** As requested by the user, explicitly noting this as a blocker. There is currently no active commerce backend connected for authoritative price, availability, and precise stock verification on checkout submission. The frontend implements safeguards against overselling but these checks must be validated server-side.
