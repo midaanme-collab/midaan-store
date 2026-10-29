@@ -12,12 +12,13 @@ describe('Cart Store Hydration and Normalization', () => {
         productTitle: 'HELMET WHITE TEE',
         size: 'L',
         garment: 'tshirt',
-        price: 20,
+        price: 35,
+        priceUSD: 50,
         quantity: 1,
         color: 'offwhite',
         placement: 'back',
         artMode: 'presets'
-    };
+    } as CartItem;
     
     useStore.getState().addToCart(item);
     expect(useStore.getState().cart.length).toBe(1);
@@ -44,12 +45,13 @@ describe('Cart Store Hydration and Normalization', () => {
         productTitle: 'POSTER WHITE TEE',
         size: 'S',
         garment: 'tshirt',
-        price: 20,
+        price: 35,
+        priceUSD: 50,
         quantity: 1,
         color: 'offwhite',
         placement: 'back',
         artMode: 'presets'
-    };
+    } as CartItem;
     
     useStore.getState().addToCart(item);
     // Try to decrement below 1
@@ -65,24 +67,26 @@ describe('Cart Store Hydration and Normalization', () => {
         productTitle: 'HELMET WHITE TEE',
         size: 'S',
         garment: 'tshirt',
-        price: 20,
+        price: 35,
+        priceUSD: 50,
         quantity: 1,
         color: 'offwhite',
         placement: 'back',
         artMode: 'presets'
-    };
+    } as CartItem;
     
     const itemM = {
         id: '2',
         productTitle: 'HELMET WHITE TEE',
         size: 'M',
         garment: 'tshirt',
-        price: 20,
+        price: 35,
+        priceUSD: 50,
         quantity: 1,
         color: 'offwhite',
         placement: 'back',
         artMode: 'presets'
-    };
+    } as CartItem;
     
     useStore.getState().addToCart(itemS);
     useStore.getState().addToCart(itemM);
