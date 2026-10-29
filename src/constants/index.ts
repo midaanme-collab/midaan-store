@@ -1,7 +1,7 @@
 export const CLIQ_ALIAS = 'MIDAANME';
 
 export const BASE_PRICES = {
-  tshirt: 20,
+  tshirt: 35,
   hoodie: 36,
   tote: 12,
 } as const;

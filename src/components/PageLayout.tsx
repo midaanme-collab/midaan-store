@@ -8,7 +8,7 @@ import { content } from '@/locales/dictionary';
 import MidaanLogo from './MidaanLogo';
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
-  const { lang, setLang, setIsCartOpen, theme, setTheme, cart } = useStore();
+  const { lang, setLang, setIsCartOpen, theme, setTheme, cart, currency, setCurrency } = useStore();
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   
@@ -38,6 +38,12 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
               className={`flex items-center gap-2 font-mono text-[10px] transition-colors border px-3 py-1.5 rounded-lg ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
             >
               <span>{isRtl ? (theme === 'dark' ? 'مضيء' : 'داكن') : (theme === 'dark' ? 'Light' : 'Dark')}</span>
+            </button>
+            <button 
+              onClick={() => setCurrency(currency === 'JOD' ? 'USD' : 'JOD')}
+              className={`flex items-center gap-2 font-mono text-[10px] transition-colors border px-3 py-1.5 rounded-lg ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
+            >
+              <span>{currency}</span>
             </button>
             <button 
               onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}

@@ -17,7 +17,7 @@ const COLLAB_PRODUCTS: Product[] = [
     category: "drops",
     descriptionEn: "100% Bamboo Cotton • High-Definition DTG Print • Crafted in Bali • Palestine Support • Full Back Print.",
     descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
-    basePriceJOD: 20.0,
+    basePriceJOD: 35.0, basePriceUSD: 50.0,
     printSpec: "DTF_INDUSTRIAL_602A",
     images: ["/helmet-back-white.jpg"],
     variants: [
@@ -39,7 +39,7 @@ const COLLAB_PRODUCTS: Product[] = [
     category: "drops",
     descriptionEn: "100% Bamboo Cotton • High-Definition DTG Print • Crafted in Bali • Palestine Support • Full Back Print.",
     descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
-    basePriceJOD: 20.0,
+    basePriceJOD: 35.0, basePriceUSD: 50.0,
     printSpec: "DTF_INDUSTRIAL_602A",
     images: ["/palestine-back-white.jpg"],
     variants: [
@@ -56,7 +56,7 @@ const COLLAB_PRODUCTS: Product[] = [
 ];
 
 export default function CollabPage() {
-  const { lang, addToCart, setIsCartOpen } = useStore();
+  const { lang, addToCart, setIsCartOpen, currency } = useStore();
   const isRtl = lang === 'ar';
   
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -78,6 +78,7 @@ export default function CollabPage() {
       placement: 'back',
       artMode: 'presets',
       price: prod.basePriceJOD,
+      priceUSD: prod.basePriceUSD,
       selectedPreset: 'archive_1', // default placeholder
       isPrePrinted: true,
       productTitle: isRtl ? prod.titleAr : prod.titleEn,
@@ -206,7 +207,7 @@ export default function CollabPage() {
 
                     <div className="flex items-center gap-4">
                       <div className="font-mono text-2xl font-black text-white w-24">
-                        {prod.basePriceJOD.toFixed(2)} <span className="text-xs text-[#D80032]">{isRtl ? 'د.أ' : 'JOD'}</span>
+                        {(currency === 'USD' ? (prod.basePriceUSD || 50) : prod.basePriceJOD).toFixed(2)} <span className="text-xs text-[#D80032]">{currency}</span>
                       </div>
                       <button
                         onClick={() => handleAddToCart(prod)}

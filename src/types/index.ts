@@ -22,6 +22,7 @@ export interface CartItem {
   placement: PrintPlacement;
   artMode: ArtMode;
   price: number;
+  priceUSD?: number;
   previewImage?: string;
   customText?: string;
   selectedPreset?: PresetArt;
@@ -47,6 +48,7 @@ export interface Product {
   descriptionEn: string;
   descriptionAr: string;
   basePriceJOD: number;
+  basePriceUSD?: number;
   printSpec: string;
   images: string[];
   variants: ProductVariant[];

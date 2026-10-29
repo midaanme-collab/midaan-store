@@ -8,7 +8,7 @@ import { GOVERNORATES, TSHIRT_SIZE_CHART, HOODIE_SIZE_CHART, basePrices, CLIQ_AL
 
 export default function Modals() {
   const { 
-    lang, isSizeChartOpen, setIsSizeChartOpen,
+    lang, currency, isSizeChartOpen, setIsSizeChartOpen,
     isWorkshopModalOpen, setIsWorkshopModalOpen, selectedWorkshop, activeChartTab,
     setActiveChartTab, selectedGov, setSelectedGov, copiedCliq, setCopiedCliq,
     cart, removeFromCart, updateCartQuantity, isCartOpen, setIsCartOpen, paymentMethod, setPaymentMethod
@@ -23,8 +23,8 @@ export default function Modals() {
     setTimeout(() => setCopiedCliq(false), 2000);
   };
 
-  const cartSubtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-  const finalTotal = cartSubtotal > 0 ? cartSubtotal + selectedGov.fee : 0;
+  const cartSubtotal = cart.reduce((sum, item) => sum + ((currency === 'USD' ? (item.priceUSD || 50) : item.price) * (item.quantity || 1)), 0);
+  const finalTotal = cartSubtotal > 0 ? cartSubtotal + (currency === 'USD' ? (selectedGov.fee * 1.41) : selectedGov.fee) : 0;
 
   const getWhatsAppOrderUrl = () => {
     const orderDetails = cart.map((item, index) => {
@@ -35,7 +35,7 @@ export default function Modals() {
       return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Print: ${item.placement} - Art: ${item.artMode} - Qty: ${item.quantity || 1}`;
     }).join('\n');
 
-    const msg = `مرحباً استوديو ميدان، أود تأكيد طلبي:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr}\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\nالمجموع الكلي: ${finalTotal.toFixed(2)} د.أ`;
+    const msg = `مرحباً استوديو ميدان، أود تأكيد طلبي:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr}\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\nالمجموع الكلي: ${finalTotal.toFixed(2)} ${currency === 'USD' ? 'USD' : 'د.أ'}`;
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
   
@@ -169,11 +169,11 @@ export default function Modals() {
                   <div className="pt-4 border-t border-[#1A1A1A] space-y-2">
                     <div className="flex justify-between text-xs text-neutral-400">
                       <span>Subtotal</span>
-                      <span className="font-mono">{cartSubtotal.toFixed(2)} JOD</span>
+                      <span className="font-mono">{cartSubtotal.toFixed(2)} {currency}</span>
                     </div>
                     <div className="flex justify-between text-xs text-neutral-400">
                       <span>Shipping</span>
-                      <span className="font-mono">{selectedGov.fee.toFixed(2)} JOD</span>
+                      <span className="font-mono">{(currency === 'USD' ? (selectedGov.fee * 1.41) : selectedGov.fee).toFixed(2)} {currency}</span>
                     </div>
                     <div className="flex justify-between items-end pt-2">
                       <span className={`text-sm font-bold text-white ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>Total</span>

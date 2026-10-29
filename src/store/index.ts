@@ -10,6 +10,8 @@ interface StoreState {
   hasEntered: boolean;
   setHasEntered: (hasEntered: boolean) => void;
   lang: Language;
+  currency: 'JOD' | 'USD';
+  setCurrency: (currency: 'JOD' | 'USD') => void;
   theme: 'dark' | 'light';
   setTheme: (theme: 'dark' | 'light') => void;
   setLang: (lang: Language) => void;
@@ -80,6 +82,8 @@ export const useStore = create<StoreState>()(persist((set) => ({
   hasEntered: false,
   setHasEntered: (hasEntered) => set({ hasEntered }),
   lang: 'ar',
+  currency: 'JOD',
+  setCurrency: (currency) => set({ currency }),
   theme: 'dark',
   setTheme: (theme) => set({ theme }),
   setLang: (lang) => set((state) => {
@@ -252,7 +256,7 @@ export const useStore = create<StoreState>()(persist((set) => ({
             const existing = normalizedCart.get(key);
             existing.quantity = Math.min((existing.quantity || 1) + validQty, maxStock);
         } else {
-            normalizedCart.set(key, { ...item, quantity: Math.min(validQty, maxStock), price: 20.0 }); // force price to avoid legacy cache exploits
+            normalizedCart.set(key, { ...item, quantity: Math.min(validQty, maxStock), price: 35.0, priceUSD: 50.0 }); // force price to avoid legacy cache exploits
         }
       });
       

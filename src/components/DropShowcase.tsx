@@ -21,7 +21,7 @@ const FEATURED_PRODUCTS: Product[] = [
     category: "drops",
     descriptionEn: "100% Bamboo Cotton • High-Definition DTG Print • Crafted in Bali • Palestine Support • Full Back Print.",
     descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
-    basePriceJOD: 20.0,
+    basePriceJOD: 35.0, basePriceUSD: 50.0,
     printSpec: "DTF_INDUSTRIAL_602A",
     images: ["/helmet-back-white.jpg"],
     variants: [
@@ -43,7 +43,7 @@ const FEATURED_PRODUCTS: Product[] = [
     category: "drops",
     descriptionEn: "100% Bamboo Cotton • High-Definition DTG Print • Crafted in Bali • Palestine Support • Full Back Print.",
     descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
-    basePriceJOD: 20.0,
+    basePriceJOD: 35.0, basePriceUSD: 50.0,
     printSpec: "DTF_INDUSTRIAL_602A",
     images: ["/palestine-back-white.jpg"],
     variants: [
@@ -61,7 +61,7 @@ const FEATURED_PRODUCTS: Product[] = [
 
 export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
   const isRtl = lang === "ar";
-  const { addToCart, setIsCartOpen, setGarment, setArtMode, setSelectedPreset } = useStore();
+  const { addToCart, setIsCartOpen, setGarment, setArtMode, setSelectedPreset, currency } = useStore();
 
   const handleCustomize = (prod: Product) => {
     if (prod.id.includes('elfar3i')) {
@@ -104,6 +104,7 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
       placement: prod.backPrintOnly ? 'back' : 'center',
       artMode: 'presets',
       price: prod.basePriceJOD,
+      priceUSD: prod.basePriceUSD,
       selectedPreset: 'calligraphy',
       isPrePrinted: prod.isPrePrinted,
       productTitle: isRtl ? prod.titleAr : prod.titleEn,
@@ -215,7 +216,7 @@ export default function DropShowcase({ lang = "ar" }: DropShowcaseProps) {
                   {!prod.isPrePrinted && prod.variants.length > 3 && <span className="text-[9px] text-neutral-500">+{prod.variants.length - 3}</span>}
                 </div>
                 <span className="font-mono text-lg font-black text-white">
-                  {prod.basePriceJOD.toFixed(2)} <span className="text-[10px] text-[#D80032]">{isRtl ? "د.أ" : "JOD"}</span>
+                  {(currency === 'USD' ? (prod.basePriceUSD || 50) : prod.basePriceJOD).toFixed(2)} <span className="text-[10px] text-[#D80032]">{currency}</span>
                 </span>
               </div>
             </div>
