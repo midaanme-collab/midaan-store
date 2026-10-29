@@ -1,0 +1,28 @@
+{
+  "issues": [
+    {
+      "issueTitle": "Issue Zero (انتحاب)",
+      "files": [
+        "العدد صفر.pdf",
+        "١العدد صفر.pdf",
+        "٢العدد صفر.pdf",
+        "٣العدد صفر.pdf"
+      ]
+    },
+    {
+      "issueTitle": "Issue One (Entihab)",
+      "files": [
+        "Entihab Issue One.pdf"
+      ]
+    },
+    {
+      "issueTitle": "New Articles",
+      "files": [
+        "سأموت قبل الأربعين .pdf",
+        "سجل وصايا الشهداء الفلسطينيين.pdf",
+        "مقال: حبر اليقين - من مشقة الوداع إلى سكينة الشهادة.pdf",
+        "مقالة مجلة ميدان - صراع الأرض والسماء.pdf"
+      ]
+    }
+  ]
+}
