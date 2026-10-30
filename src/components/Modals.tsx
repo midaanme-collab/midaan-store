@@ -23,8 +23,10 @@ export default function Modals() {
     setTimeout(() => setCopiedCliq(false), 2000);
   };
 
+  const hasConfiguredFee = selectedGov.fee !== null && selectedGov.fee !== undefined;
+  const shippingAmount = hasConfiguredFee ? (currency === 'USD' ? (selectedGov.fee * 1.41) : selectedGov.fee) : 0;
   const cartSubtotal = cart.reduce((sum, item) => sum + ((currency === 'USD' ? (item.priceUSD || 50) : item.price) * (item.quantity || 1)), 0);
-  const finalTotal = cartSubtotal > 0 ? cartSubtotal + (currency === 'USD' ? (selectedGov.fee * 1.41) : selectedGov.fee) : 0;
+  const finalTotal = cartSubtotal > 0 ? cartSubtotal + shippingAmount : 0;
 
   const getWhatsAppOrderUrl = () => {
     const isUsd = currency === 'USD';
@@ -39,11 +41,17 @@ export default function Modals() {
       return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Print: ${item.placement} - Art: ${item.artMode} - Qty: ${item.quantity || 1} (${unitP.toFixed(2)} ${currencySuffix})`;
     }).join('\n');
 
-    const shippingFormatted = (isUsd ? (selectedGov.fee * 1.41) : selectedGov.fee).toFixed(2);
+    const shippingInfo = hasConfiguredFee
+      ? `${(isUsd ? (selectedGov.fee * 1.41) : selectedGov.fee).toFixed(2)} ${currencySuffix}`
+      : (isRtl ? 'تُحدد وتؤكد يدوياً مع الفريق' : 'Unconfigured — confirmed manually with team');
+
+    const totalLabel = hasConfiguredFee
+      ? (isRtl ? 'المجموع الإجمالي:' : 'Total:')
+      : (isRtl ? 'المجموع (باستثناء الشحن):' : 'Total (Excluding shipping):');
 
     const msg = isRtl
-      ? `مرحباً فريق ميدان،\n\nأود إرسال طلب الشراء المبدئي التالي (يرجى مراجعة وتأكيد توفر المخزون والسعر النهائي):\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingFormatted} ${currencySuffix})\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\nالمجموع الإجمالي: ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*ملاحظة: هذا طلب مبدئي يتطلب تأكيداً يدوياً من فريق ميدان بعد التحقق من المقاسات وتوفر القطع في المستودع.*`
-      : `Hello Midaan team,\n\nI would like to submit the following order request (subject to manual confirmation of stock and final total):\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingFormatted} ${currencySuffix})\nPayment Method: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\nTotal: ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*Note: This is an order request requiring manual confirmation from the Midaan team after verifying inventory availability.*`;
+      ? `مرحباً فريق ميدان،\n\nأود إرسال طلب الشراء المبدئي التالي (يرجى مراجعة وتأكيد توفر المخزون والسعر النهائي):\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingInfo})\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*ملاحظة: هذا طلب مبدئي يتطلب تأكيداً يدوياً من فريق ميدان بعد التحقق من المقاسات وتوفر القطع في المستودع.*`
+      : `Hello Midaan team,\n\nI would like to submit the following order request (subject to manual confirmation of stock and final total):\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingInfo})\nPayment Method: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*Note: This is an order request requiring manual confirmation from the Midaan team after verifying inventory availability.*`;
 
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
@@ -143,7 +151,9 @@ export default function Modals() {
                       className="w-full bg-[#111] border border-[#262626] rounded-lg p-3 text-white text-sm font-sans outline-none focus:border-[#D80032] transition-colors"
                     >
                       {GOVERNORATES.map(g => (
-                        <option key={g.id} value={g.id}>{isRtl ? g.nameAr : g.nameEn} (+{g.fee} JOD)</option>
+                        <option key={g.id} value={g.id}>
+                          {isRtl ? g.nameAr : g.nameEn} {g.fee !== null ? `(+${g.fee} JOD)` : (isRtl ? '(تأكيد يدوي)' : '(Manual confirmation)')}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -186,10 +196,18 @@ export default function Modals() {
                     </div>
                     <div className="flex justify-between text-xs text-neutral-400">
                       <span>{isRtl ? 'التوصيل' : 'Shipping'}</span>
-                      <span className="font-mono">{(currency === 'USD' ? (selectedGov.fee * 1.41) : selectedGov.fee).toFixed(2)} {currency === 'USD' ? 'USD' : (isRtl ? 'د.أ' : 'JOD')}</span>
+                      <span className="font-mono">
+                        {hasConfiguredFee
+                          ? `${(currency === 'USD' ? (selectedGov.fee! * 1.41) : selectedGov.fee!).toFixed(2)} ${currency === 'USD' ? 'USD' : (isRtl ? 'د.أ' : 'JOD')}`
+                          : (isRtl ? 'تأكيد يدوي مع الفريق' : 'Manual team confirmation')}
+                      </span>
                     </div>
                     <div className="flex justify-between items-end pt-2">
-                      <span className={`text-sm font-bold text-white ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>{isRtl ? 'المجموع الكلي' : 'Total'}</span>
+                      <span className={`text-sm font-bold text-white ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
+                        {hasConfiguredFee 
+                          ? (isRtl ? 'المجموع الكلي' : 'Total') 
+                          : (isRtl ? 'المجموع (بدون الشحن)' : 'Total (Excl. shipping)')}
+                      </span>
                       <span className="text-2xl font-black text-white font-mono">{finalTotal.toFixed(2)} <span className="text-xs text-[#D80032]">{currency === 'USD' ? 'USD' : (isRtl ? 'د.أ' : 'JOD')}</span></span>
                     </div>
                   </div>

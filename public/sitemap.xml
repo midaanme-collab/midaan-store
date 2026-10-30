@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/collab</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/issue-zero</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Article 1: Conflict of Earth and Sky -->
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-1</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-1" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-1" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-1" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-1</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-1" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-1" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-1" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Article 2: I Will Die Before Forty -->
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-2</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-2" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-2" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-2" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-2</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-2" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-2" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-2" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Article 3: Ink of Certainty -->
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-3</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-3" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-3" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-3" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-3</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-3" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-3" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-3" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Article 4: Register of Palestinian Martyrs' Wills -->
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-4</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-4" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-4" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-4" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-4</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-4" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://midaan-store.midaanme.workers.dev/magazine/en/articles/art-4" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://midaan-store.midaanme.workers.dev/magazine/ar/articles/art-4" />
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

@@ -5,7 +5,7 @@ import {
   PrintPlacement, ArtMode, PresetArt, TextColor, TextFont, CartItem, PaymentMethod
 } from '@/types';
 import { GOVERNORATES } from '@/constants';
-import { getMaxStock, isValidCatalogProduct, normalizeSize, isHelmetProduct, isPosterProduct } from '@/constants/products';
+import { getMaxStock, isValidCatalogProduct, normalizeSize, isHelmetProduct, isPosterProduct, migrateCart } from '@/constants/products';
 
 interface StoreState {
   hasEntered: boolean;
@@ -219,39 +219,7 @@ export const useStore = create<StoreState>()(persist((set) => ({
   partialize: (state) => ({ cart: state.cart, currency: state.currency, theme: state.theme }),
   onRehydrateStorage: () => (state) => {
     if (state && state.cart) {
-      const normalizedCart = new Map<string, CartItem>();
-      
-      state.cart.forEach(item => {
-        const title = item.productTitle || '';
-        // Only valid approved products are retained
-        if (!isValidCatalogProduct(title)) {
-          return;
-        }
-
-        const normSize = normalizeSize(item.size);
-        const maxStock = getMaxStock(title, normSize);
-
-        let validQty = parseInt(String(item.quantity), 10);
-        if (isNaN(validQty) || validQty < 1) validQty = 1;
-
-        // Determine canonical product title
-        const canonicalKey = isHelmetProduct(title) ? `helmet-${normSize}` : `poster-${normSize}`;
-        
-        if (normalizedCart.has(canonicalKey)) {
-          const existing = normalizedCart.get(canonicalKey)!;
-          existing.quantity = Math.min((existing.quantity || 1) + validQty, maxStock);
-        } else {
-          normalizedCart.set(canonicalKey, {
-            ...item,
-            size: normSize,
-            quantity: Math.min(validQty, maxStock),
-            price: 35.0,
-            priceUSD: 50.0,
-          });
-        }
-      });
-      
-      state.cart = Array.from(normalizedCart.values());
+      state.cart = migrateCart(state.cart);
     }
   },
 }));

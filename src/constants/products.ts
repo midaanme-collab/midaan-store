@@ -128,3 +128,96 @@ export function getMaxStock(titleOrId: string = '', size: string = 'L'): number 
   }
   return 10;
 }
+
+/**
+ * Maps legacy product IDs (e.g. drop-helmet-05, drop-poster-06) to canonical catalog products.
+ * Normalizes size (XXL -> 2XL) and clamps initial quantity to stock limits.
+ */
+export function migrateLegacyCartItem(rawItem: any): any | null {
+  if (!rawItem) return null;
+
+  const rawId = String(rawItem.id || rawItem.productId || rawItem.slug || '').trim();
+  const rawTitle = String(rawItem.productTitle || rawItem.title || rawItem.productTitleAr || '').trim();
+  const rawSize = String(rawItem.size || 'L').trim();
+
+  let isHelmet = 
+    rawId === 'drop-helmet-05' ||
+    rawId.startsWith('drop-helmet-05') ||
+    isHelmetProduct(rawId) ||
+    isHelmetProduct(rawTitle);
+
+  let isPoster = 
+    rawId === 'drop-poster-06' ||
+    rawId.startsWith('drop-poster-06') ||
+    isPosterProduct(rawId) ||
+    isPosterProduct(rawTitle);
+
+  if (!isHelmet && !isPoster) {
+    return null; // Unknown / retired product safely discarded
+  }
+
+  const catalogId = isHelmet ? 'drop-helmet-white' : 'drop-poster-white';
+  const normSize = normalizeSize(rawSize);
+  const maxStock = getMaxStock(catalogId, normSize);
+
+  let qty = parseInt(String(rawItem.quantity || 1), 10);
+  if (isNaN(qty) || qty < 1) qty = 1;
+
+  const titleAr = isHelmet 
+    ? 'تيشيرت خوذة الكوفية — الإصدار الأبيض' 
+    : 'تيشيرت بوستر فلسطين — الإصدار الأبيض';
+  const titleEn = isHelmet 
+    ? 'Keffiyeh Helmet Tee' 
+    : 'Palestine Poster Tee';
+
+  return {
+    ...rawItem,
+    id: `${catalogId}-${normSize}`,
+    productId: catalogId,
+    productTitle: titleAr,
+    productTitleAr: titleAr,
+    productTitleEn: titleEn,
+    size: normSize,
+    quantity: Math.min(qty, maxStock),
+    price: 35.0,
+    priceUSD: 50.0,
+    garment: 'tshirt',
+    color: 'offwhite',
+    isPrePrinted: true,
+  };
+}
+
+/**
+ * Migrates a whole cart array: maps legacy IDs, normalizes XXL/2XL,
+ * merges duplicates by canonical item ID, and strictly enforces max stock.
+ */
+export function migrateCart(rawCart: any[]): any[] {
+  if (!Array.isArray(rawCart)) return [];
+
+  const merged = new Map<string, any>();
+
+  for (const raw of rawCart) {
+    const migrated = migrateLegacyCartItem(raw);
+    if (!migrated) continue;
+
+    const key = migrated.id; // e.g. drop-helmet-white-2XL
+    const maxStock = getMaxStock(migrated.productId || migrated.productTitle, migrated.size);
+
+    if (merged.has(key)) {
+      const existing = merged.get(key);
+      const combinedQty = Math.min((existing.quantity || 1) + (migrated.quantity || 1), maxStock);
+      merged.set(key, {
+        ...existing,
+        ...migrated,
+        quantity: combinedQty,
+      });
+    } else {
+      merged.set(key, {
+        ...migrated,
+        quantity: Math.min(migrated.quantity || 1, maxStock),
+      });
+    }
+  }
+
+  return Array.from(merged.values());
+}

@@ -15,7 +15,14 @@ export const COLOR_HEX = {
 export const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', 'XXL', '3XL'] as const;
 export type GarmentSize = typeof SIZES[number];
 
-export const GOVERNORATES = [
+export interface Governorate {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  fee: number | null;
+}
+
+export const GOVERNORATES: Governorate[] = [
   { id: 'amman', nameAr: 'العاصمة عمّان', nameEn: 'Amman', fee: 2.5 },
   { id: 'zarqa', nameAr: 'الزرقاء', nameEn: 'Zarqa', fee: 3.5 },
   { id: 'irbid', nameAr: 'إربد', nameEn: 'Irbid', fee: 3.5 },
@@ -28,6 +35,7 @@ export const GOVERNORATES = [
   { id: 'tafilah', nameAr: 'الطفيلة', nameEn: 'Tafilah', fee: 3.5 },
   { id: 'maan', nameAr: 'معان', nameEn: "Ma'an", fee: 3.5 },
   { id: 'aqaba', nameAr: 'العقبة', nameEn: 'Aqaba', fee: 3.5 },
+  { id: 'international_other', nameAr: 'خارج الأردن / أخرى (يُحدد لاحقاً)', nameEn: 'International / Other (Manual Confirmation)', fee: null },
 ];
 
 export const STUDIO_MOCKUPS: Record<string, Record<string, { front: string; back: string }>> = {

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useStore } from '@/store';
 import { ARTICLES, Article } from '@/constants/articles';
 import { X, ArrowUpRight } from 'lucide-react';
@@ -40,9 +41,10 @@ export default function ArticlesSection() {
 
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Featured Article */}
-          <div className="lg:col-span-8 cursor-pointer group" onClick={() => {
-            if (typeof window !== 'undefined') window.location.href = `/magazine/articles/${featured.id}`;
-          }}>
+          <Link 
+            href={isRtl ? `/magazine/ar/articles/${featured.id}` : `/magazine/en/articles/${featured.id}`}
+            className="lg:col-span-8 cursor-pointer group block"
+          >
             <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-3 py-1 font-mono text-[10px] font-bold tracking-normal uppercase mb-4">
               {isRtl ? 'اختيار المحررين' : 'Editor\'s Pick'}
             </div>
@@ -60,17 +62,15 @@ export default function ArticlesSection() {
               <span>|</span>
               <span>{isRtl ? featured.readTimeAr : featured.readTimeEn}</span>
             </div>
-          </div>
+          </Link>
 
           {/* Dossier List */}
           <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-[#111]/20 pt-12 lg:pt-0 lg:pl-12 flex flex-col justify-between">
             {dossier.map((article, idx) => (
-              <div 
+              <Link 
                 key={article.id} 
-                onClick={() => {
-                  if (typeof window !== 'undefined') window.location.href = `/magazine/articles/${article.id}`;
-                }}
-                className="cursor-pointer group mb-10 last:mb-0"
+                href={isRtl ? `/magazine/ar/articles/${article.id}` : `/magazine/en/articles/${article.id}`}
+                className="cursor-pointer group mb-10 last:mb-0 block"
               >
                 <div className="flex justify-between items-end mb-2">
                   <span className="text-[10px] font-mono font-bold uppercase tracking-normal text-[#D80032]">
@@ -88,7 +88,7 @@ export default function ArticlesSection() {
                 <div className="text-[10px] font-mono font-bold uppercase tracking-normal text-[#555]">
                   {isRtl ? article.authorAr : article.authorEn}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
