@@ -1,28 +1,21 @@
 'use client';
 
 import React from 'react';
-import { Copy, Check, ShieldCheck, Ruler, X, Trash2 } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
-import { GOVERNORATES, TSHIRT_SIZE_CHART, HOODIE_SIZE_CHART, basePrices, CLIQ_ALIAS } from '@/constants';
+import { GOVERNORATES } from '@/constants';
 import { formatProductPrice } from '@/constants/products';
 
 export default function Modals() {
   const { 
-    lang, currency, isSizeChartOpen, setIsSizeChartOpen,
-    isWorkshopModalOpen, setIsWorkshopModalOpen, selectedWorkshop, activeChartTab,
-    setActiveChartTab, selectedGov, setSelectedGov, copiedCliq, setCopiedCliq,
+    lang, currency,
+    selectedGov, setSelectedGov,
     cart, removeFromCart, updateCartQuantity, isCartOpen, setIsCartOpen, paymentMethod, setPaymentMethod
   } = useStore();
   
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
-  
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(CLIQ_ALIAS);
-    setCopiedCliq(true);
-    setTimeout(() => setCopiedCliq(false), 2000);
-  };
 
   const hasConfiguredFee = selectedGov.fee !== null && selectedGov.fee !== undefined;
   const shippingAmount = hasConfiguredFee ? (currency === 'USD' ? (selectedGov.fee * 1.41) : selectedGov.fee) : 0;
@@ -62,8 +55,8 @@ export default function Modals() {
       : (isRtl ? 'المجموع (باستثناء الشحن):' : 'Total (Excluding shipping):');
 
     const msg = isRtl
-      ? `مرحباً فريق ميدان،\n\nأود إرسال طلب الشراء المبدئي التالي (يرجى مراجعة وتأكيد توفر المخزون والسعر النهائي):\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingInfo})\nطريقة الدفع: ${paymentMethod === 'cliq' ? 'CliQ' : 'عند الاستلام'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*ملاحظة: هذا طلب مبدئي يتطلب تأكيداً يدوياً من فريق ميدان بعد التحقق من المقاسات وتوفر القطع في المستودع.*`
-      : `Hello Midaan team,\n\nI would like to submit the following order request (subject to manual confirmation of stock and final total):\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingInfo})\nPayment Method: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*Note: This is an order request requiring manual confirmation from the Midaan team after verifying inventory availability.*`;
+      ? `مرحباً فريق ميدان،\n\nأود إرسال طلب الشراء المبدئي التالي (يرجى مراجعة وتأكيد توفر المخزون والسعر النهائي):\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingInfo})\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'تحويل عبر كليك (بانتظار تفاصيل التحويل بعد تأكيد التوفر)' : 'الدفع عند الاستلام (نقداً)'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*ملاحظة: هذا طلب مبدئي يتطلب تأكيداً يدوياً من فريق ميدان بعد التحقق من المقاسات وتوفر القطع في المستودع وحساب تكلفة التوصيل الفعلية.*`
+      : `Hello Midaan team,\n\nI would like to submit the following order request (subject to manual confirmation of stock and final total):\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingInfo})\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ Transfer (Awaiting transfer details upon confirmation)' : 'Cash on Delivery (COD)'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*Note: This is an initial order request requiring manual confirmation from the Midaan team after verifying inventory availability and actual delivery fees.*`;
 
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
@@ -108,48 +101,59 @@ export default function Modals() {
                 <div className="space-y-4">
                   {cart.map((item) => (
                     <div key={item.id} className="bg-[#111] border border-[#262626] p-4 rounded-2xl flex gap-4 items-start shadow-md">
-                      <div className="flex-1 space-y-1.5">
-                        <div className="flex justify-between items-start gap-2">
-                          <h4 className="font-bold text-white text-sm font-sans leading-snug">
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-1">
+                          <h4 className="font-bold text-white text-sm font-sans">
                             {item.productTitle || item.garment}
                           </h4>
-                          <span className="text-xs text-[#D80032] font-bold whitespace-nowrap" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
+                          <span className="text-xs font-black text-white font-sans" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                             {getFormattedItemPrice(item.price, item.quantity || 1)}
                           </span>
                         </div>
-                        <p className="text-xs text-neutral-400 font-sans flex items-center gap-2">
-                          <span>{item.color}</span>
-                          <span>•</span>
-                          <span className="font-bold text-neutral-200" dir="ltr">{item.size}</span>
-                        </p>
-                        <div className="flex items-center gap-2 mt-3 bg-black/50 rounded-lg p-1 w-fit border border-[#262626]">
+                        
+                        <div className="text-xs text-neutral-400 space-y-0.5 font-sans mb-3">
+                          <p>
+                            {strings.size}: <span className="font-bold text-neutral-200" dir="ltr">{item.size}</span>
+                          </p>
+                          <p>
+                            {isRtl ? 'السعر الفردي:' : 'Unit price:'} <span className="font-semibold text-neutral-300" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>{formatProductPrice(currency, isRtl)}</span>
+                          </p>
+                        </div>
+
+                        {/* Quantity Controls */}
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center border border-[#262626] rounded-lg bg-[#050505] overflow-hidden" dir="ltr">
+                            <button
+                              type="button"
+                              onClick={() => updateCartQuantity(item.id, Math.max(1, (item.quantity || 1) - 1))}
+                              className="px-2.5 py-1 text-xs text-neutral-400 hover:text-white hover:bg-[#1A1A1A] transition-colors"
+                              aria-label="Decrease quantity"
+                            >
+                              -
+                            </button>
+                            <span className="px-3 py-1 text-xs font-bold text-white min-w-[28px] text-center">
+                              {item.quantity || 1}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => updateCartQuantity(item.id, (item.quantity || 1) + 1)}
+                              className="px-2.5 py-1 text-xs text-neutral-400 hover:text-white hover:bg-[#1A1A1A] transition-colors"
+                              aria-label="Increase quantity"
+                            >
+                              +
+                            </button>
+                          </div>
+
                           <button 
                             type="button"
-                            onClick={() => updateCartQuantity(item.id, -1)} 
-                            className="px-2 py-0.5 hover:bg-[#262626] rounded text-neutral-300 font-bold"
-                            aria-label="Decrease quantity"
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-neutral-500 hover:text-red-400 transition-colors p-1"
+                            title={isRtl ? 'حذف من الحقيبة' : 'Remove item'}
                           >
-                            -
-                          </button>
-                          <span className="text-xs font-bold px-2 text-white" dir="ltr">{item.quantity || 1}</span>
-                          <button 
-                            type="button"
-                            onClick={() => updateCartQuantity(item.id, 1)} 
-                            className="px-2 py-0.5 hover:bg-[#262626] rounded text-neutral-300 font-bold"
-                            aria-label="Increase quantity"
-                          >
-                            +
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       </div>
-                      <button 
-                        type="button"
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-neutral-500 hover:text-red-500 transition-colors p-1"
-                        aria-label="Remove item"
-                      >
-                        <Trash2 size={16} />
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -172,44 +176,51 @@ export default function Modals() {
                     >
                       {GOVERNORATES.map(g => (
                         <option key={g.id} value={g.id}>
-                          {isRtl ? g.nameAr : g.nameEn} {g.fee !== null ? `(+${g.fee} ${isRtl ? 'د.أ' : 'JOD'})` : (isRtl ? '(تأكيد يدوي)' : '(Manual confirmation)')}
+                          {isRtl ? g.nameAr : g.nameEn} {g.fee !== null ? `(+${g.fee} ${isRtl ? 'د.أ' : 'JOD'})` : (isRtl ? '(تأكيد يدوي مع الفريق)' : '(Manual confirmation)')}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Payment Method */}
+                  {/* Preferred Payment Method */}
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-neutral-300 font-sans">{strings.paymentMethod}</label>
+                    <label className="text-xs font-semibold text-neutral-300 font-sans">
+                      {isRtl ? 'طريقة الدفع المفضلة (عند التأكيد):' : 'Preferred Payment Method (Upon Confirmation):'}
+                    </label>
                     <div className="flex gap-2">
                       <button 
                         type="button"
                         onClick={() => setPaymentMethod('cliq')}
-                        className={`flex-1 py-2.5 border rounded-xl text-xs font-bold transition-colors font-sans ${paymentMethod === 'cliq' ? 'border-[#D80032] bg-[#D80032]/10 text-white' : 'border-[#262626] bg-[#111] text-neutral-400'}`}
+                        className={`flex-1 py-2.5 px-2 border rounded-xl text-xs font-bold transition-colors font-sans text-center ${paymentMethod === 'cliq' ? 'border-[#D80032] bg-[#D80032]/10 text-white' : 'border-[#262626] bg-[#111] text-neutral-400'}`}
                       >
-                        CliQ Instant
+                        {isRtl ? 'كليك (CliQ)' : 'CliQ Transfer'}
                       </button>
                       <button 
                         type="button"
                         onClick={() => setPaymentMethod('cod')}
-                        className={`flex-1 py-2.5 border rounded-xl text-xs font-bold transition-colors font-sans ${paymentMethod === 'cod' ? 'border-white bg-[#1A1A1A] text-white' : 'border-[#262626] bg-[#111] text-neutral-400'}`}
+                        className={`flex-1 py-2.5 px-2 border rounded-xl text-xs font-bold transition-colors font-sans text-center ${paymentMethod === 'cod' ? 'border-white bg-[#1A1A1A] text-white' : 'border-[#262626] bg-[#111] text-neutral-400'}`}
                       >
-                        Cash on Delivery
+                        {isRtl ? 'عند الاستلام (COD)' : 'Cash on Delivery'}
                       </button>
                     </div>
                   </div>
 
-                  {paymentMethod === 'cliq' && (
-                    <div className="bg-[#111] border border-[#D80032]/30 rounded-xl p-3 flex justify-between items-center">
-                      <div>
-                        <div className="text-[11px] text-neutral-400 font-sans mb-1">{isRtl ? 'الاسم المستعار (CliQ Alias):' : 'CliQ Alias:'}</div>
-                        <div className="font-mono text-sm font-black tracking-normal text-white">{CLIQ_ALIAS}</div>
-                      </div>
-                      <button onClick={copyToClipboard} className="text-neutral-400 hover:text-white p-2">
-                        {copiedCliq ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
-                      </button>
+                  {/* Informational Payment Notice (No unapproved details displayed) */}
+                  <div className="bg-[#111] border border-[#262626] rounded-xl p-3 text-[11px] text-neutral-400 font-sans leading-relaxed">
+                    <div className="text-neutral-300 font-medium mb-1 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D80032] inline-block" />
+                      <span>{isRtl ? 'آلية الدفع والتأكيد:' : 'Payment & Confirmation Flow:'}</span>
                     </div>
-                  )}
+                    <p>
+                      {paymentMethod === 'cliq'
+                        ? (isRtl 
+                            ? 'لا يُطلب الدفع الآن. بعد مراجعة توفر المقاسات والمخزون وحساب رسوم التوصيل، سيزودكم فريق ميدان بالاسم المستعار الرسمي لكليك عبر واتساب لإتمام التحويل بأمان.'
+                            : 'No payment is requested now. The Midaan team will verify stock and calculate shipping, then provide official CliQ transfer details via WhatsApp.')
+                        : (isRtl
+                            ? 'يتم الدفع نقداً عند استلام الشحنة بعد مراجعة وتأكيد توفر المقاسات وموعد التسليم من قِبل الفريق.'
+                            : 'Payment is collected in cash upon delivery after stock verification and delivery scheduling by the team.')}
+                    </p>
+                  </div>
 
                   <div className="pt-4 border-t border-[#1A1A1A] space-y-2 font-sans text-xs">
                     <div className="flex justify-between text-neutral-400">
@@ -250,59 +261,6 @@ export default function Modals() {
                 </p>
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* Size Chart Modal */}
-      {isSizeChartOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4" dir={isRtl ? 'rtl' : 'ltr'}>
-          <div className="bg-[#050505] border border-[#262626] rounded-2xl max-w-2xl w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button 
-              type="button"
-              onClick={() => setIsSizeChartOpen(false)}
-              className={`absolute top-6 text-neutral-500 hover:text-white transition-colors ${isRtl ? 'left-6' : 'right-6'}`}
-              aria-label="Close size guide"
-            >
-              <X size={20} />
-            </button>
-            
-            <div className="flex items-center gap-3 mb-8 pb-4 border-b border-[#1A1A1A]">
-              <Ruler size={24} className="text-[#D80032]" />
-              <h3 className="font-black text-xl text-white font-sans">{isRtl ? 'دليل المقاسات' : 'Size Guide'}</h3>
-            </div>
-
-            <div className="overflow-x-auto mb-8 border border-[#262626] rounded-xl" dir="ltr">
-              <table className="w-full text-center font-sans text-sm border-collapse">
-                <thead>
-                  <tr className="bg-[#111] border-b border-[#262626]">
-                    <th className="p-4 text-white font-bold text-xs">Size</th>
-                    <th className="p-4 text-neutral-300 font-normal text-xs border-l border-[#262626]">A (Length cm)</th>
-                    <th className="p-4 text-neutral-300 font-normal text-xs border-l border-[#262626]">B (Width cm)</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-[#050505]">
-                  {TSHIRT_SIZE_CHART.filter(r => ['S', 'M', 'L', 'XL', '2XL'].includes(r.size)).map((row) => (
-                    <tr key={row.size} className="border-b border-[#1A1A1A] last:border-0 hover:bg-[#111] transition-colors">
-                      <td className="p-4 font-black text-white">{row.size}</td>
-                      <td className="p-4 text-neutral-300 border-l border-[#1A1A1A]">{row.a}</td>
-                      <td className="p-4 text-neutral-300 border-l border-[#1A1A1A]">{row.b}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="bg-[#111] p-6 rounded-xl text-xs leading-relaxed font-sans border border-[#262626]">
-              <strong className="text-white block mb-2 font-sans text-sm font-bold">
-                {isRtl ? 'مواصفات القطعة والعناية:' : 'Garment Specs & Care:'}
-              </strong>
-              <div className="space-y-1.5 text-neutral-300">
-                <p>• {isRtl ? 'قطن خيزران 100% (100% Bamboo Cotton)، قصة مريحة للجنسين.' : '100% Bamboo Cotton, relaxed unisex fit.'}</p>
-                <p>• {isRtl ? 'طباعة مباشرة على القماش (DTG) بجودة عالية.' : 'High-definition Direct-to-Garment (DTG) print.'}</p>
-                <p>• {isRtl ? 'يُغسل مقلوباً بالماء البارد. تجنب كي منطقة الطباعة مباشرة.' : 'Wash inside out with cold water. Avoid ironing directly on print.'}</p>
-              </div>
-            </div>
           </div>
         </div>
       )}

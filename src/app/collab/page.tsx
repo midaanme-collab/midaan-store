@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, ShoppingBag, Check, Ruler } from 'lucide-react';
+import { Play, Pause, ShoppingBag, Check, MessageSquare } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Interactive3DTilt from '@/components/Interactive3DTilt';
 import { useStore } from '@/store';
@@ -10,7 +10,7 @@ import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from '@/constants/
 import { content } from '@/locales/dictionary';
 
 export default function CollabPage() {
-  const { lang, currency, addToCart, setIsCartOpen, setIsSizeChartOpen } = useStore();
+  const { lang, currency, addToCart, setIsCartOpen } = useStore();
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   
@@ -255,14 +255,19 @@ export default function CollabPage() {
                         </span>
                         
                         <div className="flex items-center gap-3">
-                          <button
-                            type="button"
-                            onClick={() => setIsSizeChartOpen(true)}
+                          <a
+                            href={`https://wa.me/962770125316?text=${encodeURIComponent(
+                              isRtl 
+                                ? 'مرحباً فريق ميدان، أود الاستفسار عن قياسات وتفاصيل تيشيرتات التعاون (Midaan × Sotusura).' 
+                                : 'Hello Midaan team, I would like to ask about sizing for the Midaan × Sotusura collaboration tees.'
+                            )}`}
+                            target="_blank"
+                            rel="noreferrer"
                             className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 underline underline-offset-4 transition-colors"
                           >
-                            <Ruler size={13} />
-                            <span>{isRtl ? 'دليل المقاسات' : 'Size Guide'}</span>
-                          </button>
+                            <MessageSquare size={13} />
+                            <span>{isRtl ? 'استفسر عن المقاس عبر واتساب' : 'Ask about sizing on WhatsApp'}</span>
+                          </a>
 
                           <span className={`text-xs font-semibold ${isVariantInStock ? 'text-emerald-400' : 'text-neutral-500'}`}>
                             {isVariantInStock ? strings.products.inStock : strings.products.outOfStock}

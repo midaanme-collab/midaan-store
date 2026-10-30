@@ -118,6 +118,28 @@ async function verify() {
   await mobilePage.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'light' }]);
   await mobilePage.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
   
+  await mobilePage.goto('http://localhost:3000/', { waitUntil: 'domcontentloaded' });
+  await mobilePage.evaluate(() => {
+    localStorage.setItem('midaan-storage', JSON.stringify({
+      state: {
+        theme: 'dark',
+        currency: 'JOD',
+        lang: 'ar',
+        cart: [{
+          id: 'drop-helmet-white-L',
+          productTitle: 'تيشيرت خوذة الكوفية — أبيض',
+          size: 'L',
+          quantity: 1,
+          price: 35,
+          priceUSD: 50,
+          isPrePrinted: true
+        }],
+        selectedGov: { id: 'amman', nameAr: 'عمّان', nameEn: 'Amman', fee: 3 },
+        paymentMethod: 'cliq'
+      },
+      version: 0
+    }));
+  });
   await mobilePage.goto('http://localhost:3000/', { waitUntil: 'networkidle0' });
   await new Promise(r => setTimeout(r, 600));
 

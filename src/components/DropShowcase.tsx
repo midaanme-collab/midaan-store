@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Language, Product, GarmentSize } from "@/types";
-import { ShoppingBag, Check, Ruler } from "lucide-react";
+import { ShoppingBag, Check, MessageSquare } from "lucide-react";
 import { useStore } from "@/store";
 import Interactive3DTilt from "./Interactive3DTilt";
 import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from "@/constants/products";
@@ -13,7 +13,7 @@ interface DropShowcaseProps {
 }
 
 export default function DropShowcase({ lang }: DropShowcaseProps) {
-  const { lang: storeLang, currency, addToCart, setIsCartOpen, setIsSizeChartOpen } = useStore();
+  const { lang: storeLang, currency, addToCart, setIsCartOpen } = useStore();
   const effectiveLang = (storeLang || lang || "ar") as "ar" | "en";
   const strings = content[effectiveLang];
   const isRtl = effectiveLang === "ar";
@@ -136,14 +136,19 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                     </span>
                     
                     <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setIsSizeChartOpen(true)}
+                      <a
+                        href={`https://wa.me/962770125316?text=${encodeURIComponent(
+                          isRtl 
+                            ? 'مرحباً فريق ميدان، أود الاستفسار عن قياسات وتفاصيل تيشيرتات التعاون (Midaan × Sotusura).' 
+                            : 'Hello Midaan team, I would like to ask about sizing for the Midaan × Sotusura collaboration tees.'
+                        )}`}
+                        target="_blank"
+                        rel="noreferrer"
                         className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 underline underline-offset-4 transition-colors"
                       >
-                        <Ruler size={13} />
-                        <span>{isRtl ? "دليل المقاسات" : "Size Guide"}</span>
-                      </button>
+                        <MessageSquare size={13} />
+                        <span>{isRtl ? "استفسر عن المقاس عبر واتساب" : "Ask about sizing on WhatsApp"}</span>
+                      </a>
 
                       <span className={`text-xs font-semibold ${isVariantInStock ? "text-emerald-400" : "text-neutral-500"}`}>
                         {isVariantInStock ? strings.products.inStock : strings.products.outOfStock}
