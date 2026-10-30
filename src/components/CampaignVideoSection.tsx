@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, Play, Pause, ShoppingBag } from 'lucide-react';
+import { Play, Pause, ShoppingBag } from 'lucide-react';
 import { useStore } from '@/store';
 
 export default function CampaignVideoSection() {
@@ -9,30 +9,13 @@ export default function CampaignVideoSection() {
   const isRtl = lang === 'ar';
   
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
-
-  const toggleMute = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!videoRef.current) return;
-    const nextMuted = !videoRef.current.muted;
-    videoRef.current.muted = nextMuted;
-    setIsMuted(nextMuted);
-    if (videoRef.current.paused) {
-      videoRef.current.play().then(() => {
-        setIsPlaying(true);
-        setHasStarted(true);
-      }).catch(() => {});
-    }
-  };
 
   const togglePlay = () => {
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
       videoRef.current.play().then(() => {
         setIsPlaying(true);
-        setHasStarted(true);
       }).catch(() => {});
     } else {
       videoRef.current.pause();
@@ -41,14 +24,11 @@ export default function CampaignVideoSection() {
   };
 
   useEffect(() => {
-    // Attempt muted autoplay without blocking initial load
     if (videoRef.current) {
-      videoRef.current.muted = true;
       videoRef.current.play().then(() => {
         setIsPlaying(true);
-        setHasStarted(true);
       }).catch(() => {
-        // Autoplay prevented by browser, poster will be visible
+        // Autoplay with sound may be deferred by browser policy until interaction
         setIsPlaying(false);
       });
     }
@@ -111,8 +91,8 @@ export default function CampaignVideoSection() {
               src="/collab-video.mp4"
               poster="/video-poster.png"
               preload="metadata"
+              autoPlay
               loop
-              muted={isMuted}
               playsInline
               onClick={togglePlay}
               className="w-full h-full object-cover cursor-pointer"
@@ -138,7 +118,7 @@ export default function CampaignVideoSection() {
                 type="button"
                 onClick={togglePlay}
                 className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] cursor-pointer w-full h-full border-none"
-                aria-label="Play Campaign Video"
+                aria-label={isRtl ? 'تشغيل الفيديو' : 'Play Campaign Video'}
               >
                 <div className="w-16 h-16 rounded-full bg-white/20 border border-white/30 backdrop-blur-md flex items-center justify-center text-white hover:scale-105 transition-transform">
                   <Play size={28} className="ml-1" />
@@ -147,51 +127,25 @@ export default function CampaignVideoSection() {
             )}
 
             {/* Bottom Controls Bar */}
-            <div className="absolute bottom-6 inset-x-6 z-30 flex flex-col items-center gap-3">
-              <div className="flex items-center gap-2 w-full">
-                {/* Play/Pause Button */}
-                <button
-                  type="button"
-                  onClick={togglePlay}
-                  className="bg-black/60 hover:bg-black/80 text-white p-3.5 rounded-2xl border border-white/20 backdrop-blur-md transition-colors active:scale-95"
-                  aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                >
-                  {isPlaying ? <Pause size={16} /> : <Play size={16} className="ml-0.5" />}
-                </button>
-
-                {/* Prominent Unmute / Sound Toggle Button */}
-                <button
-                  type="button"
-                  onClick={toggleMute}
-                  className={`flex-1 py-3.5 px-4 rounded-2xl font-mono text-xs font-black flex items-center justify-center gap-2.5 shadow-xl transition-all duration-300 active:scale-95 border ${
-                    isMuted 
-                      ? 'bg-[#D80032] hover:bg-[#B00028] text-white border-white/30 shadow-[#D80032]/40' 
-                      : 'bg-white hover:bg-neutral-200 text-black border-transparent shadow-white/20'
-                  }`}
-                  aria-label={isMuted ? 'Unmute video sound' : 'Mute video sound'}
-                >
-                  {isMuted ? (
-                    <>
-                      <VolumeX size={16} />
-                      <span className="tracking-normal">
-                        {isRtl ? '🔊 تشغيل الصوت' : '🔊 UNMUTE SOUND'}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Volume2 size={16} className="text-[#D80032]" />
-                      <span className="tracking-normal">
-                        {isRtl ? '🔊 كتم الصوت' : '🔊 MUTE SOUND'}
-                      </span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <div className="text-[10px] font-mono text-neutral-400/80 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span>{isRtl ? 'صوت أصلي بدقة عالية' : 'HD Master Audio Track'}</span>
-              </div>
+            <div className="absolute bottom-6 inset-x-6 z-30 flex items-center justify-center">
+              <button
+                type="button"
+                onClick={togglePlay}
+                className="w-full py-3.5 px-6 rounded-2xl font-mono text-xs font-bold flex items-center justify-center gap-2.5 bg-black/60 hover:bg-black/80 text-white border border-white/20 backdrop-blur-md shadow-xl transition-all active:scale-95"
+                aria-label={isPlaying ? (isRtl ? 'إيقاف الفيديو مؤقتاً' : 'Pause video') : (isRtl ? 'تشغيل الفيديو' : 'Play video')}
+              >
+                {isPlaying ? (
+                  <>
+                    <Pause size={16} />
+                    <span className="tracking-normal">{isRtl ? 'إيقاف مؤقت' : 'PAUSE'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Play size={16} className="ml-0.5" />
+                    <span className="tracking-normal">{isRtl ? 'تشغيل الفيديو' : 'PLAY'}</span>
+                  </>
+                )}
+              </button>
             </div>
 
           </div>

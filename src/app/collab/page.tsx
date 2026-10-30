@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Volume2, VolumeX, Play, Pause, ShoppingBag, Check } from 'lucide-react';
+import { Play, Pause, ShoppingBag, Check } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Interactive3DTilt from '@/components/Interactive3DTilt';
 import { useStore } from '@/store';
@@ -13,24 +13,12 @@ export default function CollabPage() {
   const isRtl = lang === 'ar';
   
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
     'drop-helmet-white': 'L',
     'drop-poster-white': 'XL',
   });
   const [addedItem, setAddedItem] = useState<string | null>(null);
-
-  const toggleMute = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!videoRef.current) return;
-    const nextMuted = !videoRef.current.muted;
-    videoRef.current.muted = nextMuted;
-    setIsMuted(nextMuted);
-    if (videoRef.current.paused) {
-      videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
-    }
-  };
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -44,7 +32,6 @@ export default function CollabPage() {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.muted = true;
       videoRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     }
   }, []);
@@ -134,8 +121,8 @@ export default function CollabPage() {
                   src="/collab-video.mp4"
                   poster="/video-poster.png"
                   preload="metadata"
+                  autoPlay
                   loop
-                  muted={isMuted}
                   playsInline
                   onClick={togglePlay}
                   className="w-full h-full object-cover cursor-pointer"
@@ -160,7 +147,7 @@ export default function CollabPage() {
                     type="button"
                     onClick={togglePlay}
                     className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] cursor-pointer w-full h-full border-none"
-                    aria-label="Play Video"
+                    aria-label={isRtl ? 'تشغيل الفيديو' : 'Play Video'}
                   >
                     <div className="w-16 h-16 rounded-full bg-white/20 border border-white/30 backdrop-blur-md flex items-center justify-center text-white hover:scale-105 transition-transform">
                       <Play size={28} className="ml-1" />
@@ -169,40 +156,25 @@ export default function CollabPage() {
                 )}
 
                 {/* Bottom Controls Bar */}
-                <div className="absolute bottom-6 inset-x-6 z-30 flex flex-col items-center gap-3">
-                  <div className="flex items-center gap-2 w-full">
-                    <button
-                      type="button"
-                      onClick={togglePlay}
-                      className="bg-black/60 hover:bg-black/80 text-white p-3.5 rounded-2xl border border-white/20 backdrop-blur-md transition-colors active:scale-95"
-                      aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                    >
-                      {isPlaying ? <Pause size={16} /> : <Play size={16} className="ml-0.5" />}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={toggleMute}
-                      className={`flex-1 py-3.5 px-4 rounded-2xl font-mono text-xs font-black flex items-center justify-center gap-2.5 shadow-xl transition-all duration-300 active:scale-95 border ${
-                        isMuted 
-                          ? 'bg-[#D80032] hover:bg-[#B00028] text-white border-white/30 shadow-[#D80032]/40' 
-                          : 'bg-white hover:bg-neutral-200 text-black border-transparent shadow-white/20'
-                      }`}
-                      aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
-                    >
-                      {isMuted ? (
-                        <>
-                          <VolumeX size={16} />
-                          <span className="tracking-normal">{isRtl ? '🔊 تشغيل الصوت' : '🔊 UNMUTE SOUND'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Volume2 size={16} className="text-[#D80032]" />
-                          <span className="tracking-normal">{isRtl ? '🔊 كتم الصوت' : '🔊 MUTE SOUND'}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                <div className="absolute bottom-6 inset-x-6 z-30 flex items-center justify-center">
+                  <button
+                    type="button"
+                    onClick={togglePlay}
+                    className="w-full py-3.5 px-6 rounded-2xl font-mono text-xs font-bold flex items-center justify-center gap-2.5 bg-black/60 hover:bg-black/80 text-white border border-white/20 backdrop-blur-md shadow-xl transition-all active:scale-95"
+                    aria-label={isPlaying ? (isRtl ? 'إيقاف الفيديو مؤقتاً' : 'Pause video') : (isRtl ? 'تشغيل الفيديو' : 'Play video')}
+                  >
+                    {isPlaying ? (
+                      <>
+                        <Pause size={16} />
+                        <span className="tracking-normal">{isRtl ? 'إيقاف مؤقت' : 'PAUSE'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play size={16} className="ml-0.5" />
+                        <span className="tracking-normal">{isRtl ? 'تشغيل الفيديو' : 'PLAY'}</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
               </div>
