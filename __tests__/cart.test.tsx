@@ -93,4 +93,25 @@ describe('Cart Store Hydration and Normalization', () => {
     
     expect(useStore.getState().cart.length).toBe(2);
   });
+
+  it('normalizes XXL to 2XL and respects 2XL inventory', () => {
+    const itemXXL = {
+      id: 'drop-helmet-white-2XL',
+      productTitle: 'تيشيرت خوذة الكوفية — الإصدار الأبيض',
+      size: 'XXL',
+      garment: 'tshirt',
+      price: 35,
+      priceUSD: 50,
+      quantity: 1,
+      color: 'offwhite',
+      placement: 'back',
+      artMode: 'presets',
+      isPrePrinted: true,
+    } as CartItem;
+
+    useStore.getState().addToCart(itemXXL);
+    expect(useStore.getState().cart[0].size).toBe('2XL');
+    expect(useStore.getState().cart[0].price).toBe(35);
+    expect(useStore.getState().cart[0].priceUSD).toBe(50);
+  });
 });

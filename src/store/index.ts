@@ -5,6 +5,7 @@ import {
   PrintPlacement, ArtMode, PresetArt, TextColor, TextFont, CartItem, PaymentMethod
 } from '@/types';
 import { GOVERNORATES } from '@/constants';
+import { getMaxStock, isValidCatalogProduct, normalizeSize, isHelmetProduct, isPosterProduct } from '@/constants/products';
 
 interface StoreState {
   hasEntered: boolean;
@@ -124,74 +125,71 @@ export const useStore = create<StoreState>()(persist((set) => ({
 
   cart: [],
   addToCart: (item) => set((state) => {
-    const existingIndex = state.cart.findIndex(i => i.productTitle === item.productTitle && i.size === item.size && i.garment === item.garment);
+    const normSize = normalizeSize(item.size);
+    const title = item.productTitle || '';
+    const maxStock = getMaxStock(title, normSize);
+
+    // Find existing item by matching product type (helmet or poster) and normalized size
+    const existingIndex = state.cart.findIndex(i => {
+      const matchProduct = 
+        (isHelmetProduct(i.productTitle) && isHelmetProduct(title)) ||
+        (isPosterProduct(i.productTitle) && isPosterProduct(title)) ||
+        (i.productTitle === title && i.garment === item.garment);
+      return matchProduct && normalizeSize(i.size) === normSize;
+    });
     
-    let maxStock = 20; // fallback max
-    if (item.productTitle === 'HELMET WHITE TEE' || item.productTitle === 'تيشيرت الخوذة الأبيض') {
-        if (item.size === 'S') maxStock = 4;
-        if (item.size === 'M') maxStock = 5;
-        if (item.size === 'L') maxStock = 6;
-        if (item.size === 'XL') maxStock = 2;
-        if (item.size === '2XL') maxStock = 4;
-    }
-    if (item.productTitle === 'POSTER WHITE TEE' || item.productTitle === 'تيشيرت البوستر الأبيض') {
-        if (item.size === 'S') maxStock = 3;
-        if (item.size === 'M') maxStock = 1;
-        if (item.size === 'L') maxStock = 1;
-        if (item.size === 'XL') maxStock = 8;
-        if (item.size === '2XL') maxStock = 1;
-    }
-      
     if (existingIndex > -1) {
       const newCart = [...state.cart];
-      const newQty = (newCart[existingIndex].quantity || 1) + 1;
-      
-      if (newQty <= maxStock) {
-        newCart[existingIndex] = { ...newCart[existingIndex], quantity: newQty };
-      } else {
-        newCart[existingIndex] = { ...newCart[existingIndex], quantity: maxStock };
-      }
+      const currentQty = newCart[existingIndex].quantity || 1;
+      const newQty = Math.min(currentQty + (item.quantity || 1), maxStock);
+      newCart[existingIndex] = {
+        ...newCart[existingIndex],
+        quantity: newQty,
+        size: normSize,
+        price: 35.0,
+        priceUSD: 50.0,
+      };
       return { cart: newCart };
     }
     
-    // Add new item to cart
-    if (1 <= maxStock) {
-        return { cart: [...state.cart, { ...item, quantity: 1 }] };
+    // Add new item with normalized size and stock bounds
+    const initialQty = Math.min(item.quantity || 1, maxStock);
+    if (initialQty > 0) {
+      return {
+        cart: [
+          ...state.cart,
+          {
+            ...item,
+            size: normSize,
+            quantity: initialQty,
+            price: 35.0,
+            priceUSD: 50.0,
+          },
+        ],
+      };
     }
-    return { cart: state.cart }; // Should not happen but fail safe
+    return { cart: state.cart };
   }),
+
   updateCartQuantity: (id, delta) => set((state) => {
     const newCart = [...state.cart];
     const itemIndex = newCart.findIndex(i => i.id === id);
     if (itemIndex > -1) {
       const item = newCart[itemIndex];
-      // Note: hardcoding stock check purely based on the current FEATURED_PRODUCTS static data
-      let maxStock = 20; // fallback max
-      if (item.productTitle === 'HELMET WHITE TEE' || item.productTitle === 'تيشيرت الخوذة الأبيض') {
-         if (item.size === 'S') maxStock = 4;
-         if (item.size === 'M') maxStock = 5;
-         if (item.size === 'L') maxStock = 6;
-         if (item.size === 'XL') maxStock = 2;
-         if (item.size === '2XL') maxStock = 4;
-      }
-      if (item.productTitle === 'POSTER WHITE TEE' || item.productTitle === 'تيشيرت البوستر الأبيض') {
-         if (item.size === 'S') maxStock = 3;
-         if (item.size === 'M') maxStock = 1;
-         if (item.size === 'L') maxStock = 1;
-         if (item.size === 'XL') maxStock = 8;
-         if (item.size === '2XL') maxStock = 1;
-      }
+      const maxStock = getMaxStock(item.productTitle || '', item.size);
+      const currentQty = item.quantity || 1;
+      const newQty = currentQty + delta;
       
-      const newQty = (item.quantity || 1) + delta;
-      if (newQty > 0 && newQty <= maxStock) {
+      // Enforce lower bound of 1 (prevent below 1), and upper bound of maxStock
+      if (newQty >= 1 && newQty <= maxStock) {
         newCart[itemIndex].quantity = newQty;
       } else if (newQty > maxStock) {
-        // Enforce max stock
         newCart[itemIndex].quantity = maxStock;
       }
     }
     return { cart: newCart };
   }),
+
   removeFromCart: (id) => set((state) => ({ cart: state.cart.filter(i => i.id !== id) })),
   isCartOpen: false,
   setIsCartOpen: (isCartOpen) => set({ isCartOpen }),
@@ -218,45 +216,38 @@ export const useStore = create<StoreState>()(persist((set) => ({
   setSelectedWorkshop: (selectedWorkshop) => set({ selectedWorkshop }),
 }), {
   name: 'midaan-storage',
-  partialize: (state) => ({ cart: state.cart }),
+  partialize: (state) => ({ cart: state.cart, currency: state.currency, theme: state.theme }),
   onRehydrateStorage: () => (state) => {
     if (state && state.cart) {
-      // Normalize legacy duplicates and enforce bounds on load
-      const normalizedCart = new Map();
+      const normalizedCart = new Map<string, CartItem>();
       
       state.cart.forEach(item => {
-        // Enforce valid item quantity
-        let validQty = parseInt(item.quantity);
-        if (isNaN(validQty) || validQty < 1) validQty = 1;
-        
-        // Remove known deleted items/placeholder
-        // Only helmet-white-tee and poster-white-tee are valid. They cost 20.0 JOD.
-        if (item.productTitle !== 'HELMET WHITE TEE' && item.productTitle !== 'تيشيرت الخوذة الأبيض' && item.productTitle !== 'POSTER WHITE TEE' && item.productTitle !== 'تيشيرت البوستر الأبيض') {
-            return;
+        const title = item.productTitle || '';
+        // Only valid approved products are retained
+        if (!isValidCatalogProduct(title)) {
+          return;
         }
 
-        let maxStock = 20; // fallback max
-        if (item.productTitle === 'HELMET WHITE TEE' || item.productTitle === 'تيشيرت الخوذة الأبيض') {
-            if (item.size === 'S') maxStock = 4;
-            if (item.size === 'M') maxStock = 5;
-            if (item.size === 'L') maxStock = 6;
-            if (item.size === 'XL') maxStock = 2;
-            if (item.size === '2XL') maxStock = 4;
-        }
-        if (item.productTitle === 'POSTER WHITE TEE' || item.productTitle === 'تيشيرت البوستر الأبيض') {
-            if (item.size === 'S') maxStock = 3;
-            if (item.size === 'M') maxStock = 1;
-            if (item.size === 'L') maxStock = 1;
-            if (item.size === 'XL') maxStock = 8;
-            if (item.size === '2XL') maxStock = 1;
-        }
+        const normSize = normalizeSize(item.size);
+        const maxStock = getMaxStock(title, normSize);
+
+        let validQty = parseInt(String(item.quantity), 10);
+        if (isNaN(validQty) || validQty < 1) validQty = 1;
+
+        // Determine canonical product title
+        const canonicalKey = isHelmetProduct(title) ? `helmet-${normSize}` : `poster-${normSize}`;
         
-        const key = `${item.productTitle}-${item.size}`;
-        if (normalizedCart.has(key)) {
-            const existing = normalizedCart.get(key);
-            existing.quantity = Math.min((existing.quantity || 1) + validQty, maxStock);
+        if (normalizedCart.has(canonicalKey)) {
+          const existing = normalizedCart.get(canonicalKey)!;
+          existing.quantity = Math.min((existing.quantity || 1) + validQty, maxStock);
         } else {
-            normalizedCart.set(key, { ...item, quantity: Math.min(validQty, maxStock), price: 35.0, priceUSD: 50.0 }); // force price to avoid legacy cache exploits
+          normalizedCart.set(canonicalKey, {
+            ...item,
+            size: normSize,
+            quantity: Math.min(validQty, maxStock),
+            price: 35.0,
+            priceUSD: 50.0,
+          });
         }
       });
       

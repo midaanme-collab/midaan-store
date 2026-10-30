@@ -1,29 +1,25 @@
-import type { Metadata } from "next";
-import { El_Messiri, Alexandria } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-const elMessiri = El_Messiri({
-  subsets: ["arabic", "latin"],
-  weight: ["600", "700"],
-  variable: "--font-heading",
-  display: "swap",
-});
-
-const alexandria = Alexandria({
-  subsets: ["arabic", "latin"],
-  weight: ["300", "400", "600", "700", "900"],
-  variable: "--font-sans",
-  display: "swap",
-});
+export const viewport: Viewport = {
+  themeColor: "#070707",
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "Midaan Collective | ميدان",
-  description: "An independent cultural and intellectual publication exploring identity, social transformations, and the role of art in civic expression. إصدار فكري ثقافي مستقل يبحث في قضايا الهوية، التحولات الاجتماعية، ودور الفن في التعبير المدني.",
+  description: "An independent cultural and intellectual publication and streetwear initiative exploring identity, social transformations, and civic expression. إصدار فكري ثقافي ومبادرة أزياء مستقلة تبحث في قضايا الهوية والتعبير المدني.",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   alternates: {
     canonical: "https://midaan-store.midaanme.workers.dev"
   },
   openGraph: {
-    title: "Midaan Collective",
+    title: "Midaan Collective | ميدان",
     description: "Wearable advocacy and independent publishing from Amman.",
     url: "https://midaan-store.midaanme.workers.dev",
     siteName: "Midaan",
@@ -37,17 +33,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="auto" className={`${elMessiri.variable} ${alexandria.variable}`}>
+    <html lang="ar" dir="auto">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <script src="https://cdn.tailwindcss.com" async></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;600;700;900&family=El+Messiri:wght@600;700&display=swap" rel="stylesheet" />
-        <style dangerouslySetInnerHTML={{ __html: `
-          body { font-family: 'Alexandria', sans-serif; }
-          .font-midaan { font-family: 'El Messiri', sans-serif; }
-        `}} />
+        <link rel="apple-touch-icon" href="/logo.png" />
       </head>
       <body className="bg-[#080808] text-[#F4F4F0] antialiased selection:bg-[#D80032] selection:text-white">
         {children}

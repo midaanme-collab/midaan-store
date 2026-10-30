@@ -174,6 +174,71 @@ const generatePdf = async () => {
             <div class="page-number">5</div>
         </div>
 
+        <!-- Article 3 -->
+        <div class="page">
+            <h2 class="article-title">حبر اليقين: من مشقة الوداع إلى سكينة الشهادة</h2>
+            <div class="author">صوت ميدان | مقال فكري</div>
+            
+            <div class="content">
+                <p>تُعد كتابة الوصية واحدة من أكثر التجارب الإنسانية عُمقاً وقسوة؛ فهي اللحظة التي يواجه فيها الإنسان فكرة الفناء وجهاً لوجه، ويحاول اختزال عمر كامل بمشاعره وأفكاره وعلاقاته في سطور معدودة.</p>
+                <p>إنها اعتراف خطي بالرحيل، ومحاولة صادقة لمد جسر من الكلمات بين عالمين. ولكن حين تُقرأ وصايا الشهداء، نجد أنفسنا أمام ظاهرة نفسية وفريدة: كيف يتحول هذا العبء الوجودي الثقيل إلى حالة من السكينة المطلقة واليقين؟</p>
+                
+                <div class="pull-quote">
+                    "كلمات بين عالمين؛ حين تُقرأ وصايا الشهداء نجد أنفسنا أمام تحول العبء إلى يقين خالص."
+                </div>
+                
+                <p>مشقة البداية هي مواجهة الحبر، لكن ختامها هو التسليم الكامل لقضية تتجاوز الفرد وحدود الجسد الفاني. يصبح النص هنا ليس مجرد وداع، بل إعلاناً لميلاد معنى جديد للحرية والكرامة الإنسانية.</p>
+            </div>
+            <div class="page-number">7</div>
+        </div>
+
+        <!-- Article 4 -->
+        <div class="page">
+            <h2 class="article-title">سجل وصايا الشهداء الفلسطينيين</h2>
+            <div class="author">توثيق ميدان | وثيقة تاريخية</div>
+            
+            <div class="content">
+                <p>وصايا الشهداء: السجل الخالد في الوجدان الفلسطيني. وثيقة فكرية وتاريخية تجمع أبرز وصايا الشهداء الفلسطينيين التي شكلت محطات فارقة في الوعي الجمعي، تنوعت بين التأصيل الثقافي والرسائل الميدانية العفوية تحت النيران.</p>
+                
+                <div style="margin: 1.5rem 0; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10pt; text-align: right;">
+                        <tr style="background: #222; color: #fff;">
+                            <th style="padding: 8px 12px;">الشهيد</th>
+                            <th style="padding: 8px 12px;">العام</th>
+                            <th style="padding: 8px 12px;">طبيعة الوصية</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 8px 12px; font-weight: bold;">باسل الأعرج</td>
+                            <td style="padding: 8px 12px;">2017</td>
+                            <td style="padding: 8px 12px;">فكرية / ثقافية ثورية</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 8px 12px; font-weight: bold;">بهاء عليان</td>
+                            <td style="padding: 8px 12px;">2015</td>
+                            <td style="padding: 8px 12px;">الوصايا العشر (اجتماعية وفكرية)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 8px 12px; font-weight: bold;">دلال المغربي</td>
+                            <td style="padding: 8px 12px;">1978</td>
+                            <td style="padding: 8px 12px;">سياسية وعسكرية</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; font-weight: bold;">إبراهيم النابلسي</td>
+                            <td style="padding: 8px 12px;">2022</td>
+                            <td style="padding: 8px 12px;">ميدانية وصوتية</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="pull-quote">
+                    "تنوعت بين التأصيل الثقافي والرسائل الميدانية تحت الرصاص."
+                </div>
+
+                <p>إن توثيق هذه الوصايا في أرشيف ميدان هو فعل مقاومة للنسيان، وتأكيد على أن كل كلمة خُطت قبل الارتقاء هي جزء من السردية الوطنية المستمرة.</p>
+            </div>
+            <div class="page-number">9</div>
+        </div>
+
     </body>
     </html>
     `;
