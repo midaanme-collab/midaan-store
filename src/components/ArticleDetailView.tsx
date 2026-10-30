@@ -89,10 +89,20 @@ export default function ArticleDetailView({ article, lang }: ArticleDetailViewPr
               {title}
             </h1>
 
-            <div className="inline-flex items-center justify-center gap-3 sm:gap-4 text-xs font-mono font-bold text-[#666] bg-white/70 backdrop-blur-sm px-5 py-2.5 rounded-full border border-[#E0DCD0] flex-wrap shadow-sm">
-              <span>{author}</span>
-              <span>•</span>
-              <span dir="ltr">{article.date}</span>
+            <div className="inline-flex items-center justify-center gap-3 sm:gap-4 text-xs font-mono font-bold text-[#333] bg-white/90 backdrop-blur-sm px-5 py-2.5 rounded-full border border-[#D5D0C0] flex-wrap shadow-sm">
+              <span>{isAr ? 'مجلة ميدان — العدد صفر (انتحاب)' : 'Midaan Magazine — Issue Zero (Entihab)'}</span>
+              {author && (
+                <>
+                  <span>•</span>
+                  <span>{author}</span>
+                </>
+              )}
+              {article.date && (
+                <>
+                  <span>•</span>
+                  <span dir="ltr">{article.date}</span>
+                </>
+              )}
               <span>•</span>
               <span>{readTime}</span>
             </div>

@@ -57,8 +57,8 @@ export default function ArticlesSection() {
               {isRtl ? featured.excerptAr : featured.excerptEn}
             </p>
             
-            <div className="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-normal text-[#555] border-t border-[#111]/20 pt-4">
-              <span>{isRtl ? featured.authorAr : featured.authorEn}</span>
+            <div className="flex items-center gap-4 text-xs font-mono font-bold uppercase tracking-normal text-[#333] border-t border-[#111]/20 pt-4">
+              <span>{isRtl ? 'مجلة ميدان — العدد صفر (انتحاب)' : 'Midaan Magazine — Issue Zero'}</span>
               <span>|</span>
               <span>{isRtl ? featured.readTimeAr : featured.readTimeEn}</span>
             </div>
@@ -85,8 +85,10 @@ export default function ArticlesSection() {
                   {isRtl ? article.titleAr : article.titleEn}
                 </h4>
                 
-                <div className="text-[10px] font-mono font-bold uppercase tracking-normal text-[#555]">
-                  {isRtl ? article.authorAr : article.authorEn}
+                <div className="text-[10px] font-mono font-bold uppercase tracking-normal text-[#444] flex items-center gap-2">
+                  <span>{isRtl ? 'العدد صفر' : 'Issue Zero'}</span>
+                  <span>•</span>
+                  <span>{isRtl ? article.readTimeAr : article.readTimeEn}</span>
                 </div>
               </Link>
             ))}

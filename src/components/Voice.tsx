@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { BookOpen, Film, Play, FileText, ArrowRight } from 'lucide-react';
+import { BookOpen, ArrowRight } from 'lucide-react';
 import { useStore } from '@/store';
 import Link from 'next/link';
 import { content } from '@/locales/dictionary';
 
 export default function Voice() {
-  const { lang, isDossierOpen, setIsDossierOpen } = useStore();
+  const { lang } = useStore();
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   
@@ -72,48 +72,6 @@ export default function Voice() {
           </div>
         </div>
       </section>
-
-      
-
-      {/* Cinema Dossier Modal */}
-      {isDossierOpen && (
-        <div className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-[#111] to-[#050505] border border-[#262626] w-full max-w-2xl rounded-2xl p-8 relative shadow-2xl">
-            <button 
-              onClick={() => setIsDossierOpen(false)}
-              className="absolute top-6 right-6 text-neutral-500 hover:text-white transition-colors"
-            >
-              <ArrowRight size={24} className={isRtl ? 'rotate-180' : ''} />
-            </button>
-            
-            <div className="mb-8 inline-flex p-4 bg-[#1A1A1A] border border-[#333] rounded-2xl">
-              <Film size={32} className="text-white" />
-            </div>
-
-            <h2 className="text-3xl font-black text-white uppercase tracking-normal mb-2">Production Dossier</h2>
-            <div className="text-sm font-mono text-[#D80032] tracking-normal uppercase mb-8">Status: Pre-Production</div>
-
-            <div className="space-y-6 text-neutral-300 font-sans leading-relaxed">
-              <p>Midaan Collective is currently developing a series of independent short films utilizing symbolic cinema and visual drama to explore themes of civil liberties, identity crisis, and grassroots resistance.</p>
-              
-              <div className="bg-[#0A0A0A] border border-[#262626] p-6 rounded-xl space-y-4">
-                <div className="flex justify-between border-b border-[#1A1A1A] pb-2">
-                  <span className="font-mono text-xs text-neutral-500 uppercase">Working Title</span>
-                  <span className="font-bold text-white">Project Aleph</span>
-                </div>
-                <div className="flex justify-between border-b border-[#1A1A1A] pb-2">
-                  <span className="font-mono text-xs text-neutral-500 uppercase">Format</span>
-                  <span className="font-bold text-white">16mm / Digital Hybrid</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-mono text-xs text-neutral-500 uppercase">Release</span>
-                  <span className="font-bold text-white">Q4 2026</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

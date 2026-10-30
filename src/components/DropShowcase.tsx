@@ -95,7 +95,7 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                 <div className="absolute top-5 start-5 z-20 bg-black/80 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono font-bold px-3 py-1.5 rounded-full flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
                   <span>
-                    {isRtl ? `${totalStock} متوفرة فقط` : `Only ${totalStock} in Stock`}
+                    {isRtl ? "إصدار محدود متوفر" : "Limited Edition In Stock"}
                   </span>
                 </div>
 
@@ -137,10 +137,10 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                       {isRtl ? "اختر المقاس:" : "Select Size:"}
                     </span>
                     {activeVariant && (
-                      <span className="text-emerald-400 font-mono text-[11px]">
-                        {isRtl
-                          ? `المتوفر: ${activeVariant.stockCount} قطع`
-                          : `Stock: ${activeVariant.stockCount} left`}
+                      <span className={`font-mono text-[11px] ${activeVariant.stockCount > 0 ? "text-emerald-400" : "text-neutral-500"}`}>
+                        {activeVariant.stockCount > 0 
+                          ? (isRtl ? "متوفر" : "In Stock")
+                          : (isRtl ? "نفدت الكمية" : "Out of Stock")}
                       </span>
                     )}
                   </div>
@@ -156,7 +156,7 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                           type="button"
                           disabled={isOutOfStock}
                           onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
-                          className={`relative py-3 rounded-xl font-mono text-sm font-black border transition-all flex flex-col items-center justify-center ${
+                          className={`relative py-3.5 rounded-xl font-mono text-sm font-black border transition-all flex items-center justify-center ${
                             isOutOfStock
                               ? "bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-40 line-through"
                               : isSelected
@@ -165,13 +165,6 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                           }`}
                         >
                           <span>{v.size}</span>
-                          <span
-                            className={`text-[9px] mt-0.5 ${
-                              isSelected ? "text-neutral-700 font-bold" : "text-neutral-500"
-                            }`}
-                          >
-                            ({v.stockCount})
-                          </span>
                         </button>
                       );
                     })}

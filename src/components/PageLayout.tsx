@@ -77,7 +77,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
         <Link href="/" className="inline-block cursor-pointer">
           <MidaanLogo size="md" />
         </Link>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-400 font-mono">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-300 font-mono font-medium">
           <a 
             href="https://wa.me/962770125316" 
             target="_blank" 
@@ -88,13 +88,13 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             <span dir="ltr">+962 7 7012 5316</span>
           </a>
           <Link href="/magazine" className="hover:text-white transition-colors">
-            {isRtl ? 'المجلة' : 'Magazine'}
+            {isRtl ? 'المجلة المستقلة' : 'Magazine'}
           </Link>
           <Link href="/collab" className="hover:text-white transition-colors">
             {isRtl ? 'التعاون' : 'Collaboration'}
           </Link>
         </div>
-        <p className={`mt-6 font-mono text-xs text-neutral-600 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
+        <p className={`mt-6 font-mono text-xs text-neutral-400 font-medium ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
           {isRtl ? 'ميدان • جميع الحقوق محفوظة 2026' : 'Midaan • All Rights Reserved 2026'}
         </p>
       </footer>
