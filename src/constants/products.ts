@@ -16,6 +16,20 @@ export function normalizeSize(size: string): GarmentSize {
 }
 
 /**
+ * Helper to display prices consistently:
+ * Fixed 35 JOD (Arabic: ٣٥ د.أ) / 50 USD independently of language.
+ */
+export function formatProductPrice(currency: 'JOD' | 'USD', lang: 'ar' | 'en'): string {
+  if (currency === 'USD') {
+    return '50 USD';
+  }
+  if (lang === 'ar') {
+    return '٣٥ د.أ';
+  }
+  return '35 JOD';
+}
+
+/**
  * Centralized shared product catalog.
  * Strict inventory matching pre-printed physical stock:
  * - Helmet Tee: S:4, M:5, L:6, XL:2, 2XL:4 (Total: 21)
@@ -25,11 +39,11 @@ export const SHARED_PRODUCTS: Product[] = [
   {
     id: 'drop-helmet-white',
     slug: 'keffiyeh-helmet-tee',
-    titleEn: 'Keffiyeh Helmet Tee',
-    titleAr: 'تيشيرت خوذة الكوفية — الإصدار الأبيض',
+    titleEn: 'Keffiyeh Helmet Tee — White',
+    titleAr: 'تيشيرت خوذة الكوفية — أبيض',
     category: 'drops',
-    descriptionEn: '100% Bamboo Cotton • Production in Indonesia • DTG Print • Palestine Support',
-    descriptionAr: 'قطن خيزران 100% • إنتاج إندونيسيا • طباعة DTG رقمية • دعم فلسطين',
+    descriptionEn: '100% Bamboo Cotton • Made in Indonesia • Direct-to-Garment (DTG) Print',
+    descriptionAr: 'قطن خيزران 100% • صنع في إندونيسيا • طباعة مباشرة على القماش (DTG)',
     basePriceJOD: 35.0,
     basePriceUSD: 50.0,
     printSpec: 'DTG_DIRECT_TO_GARMENT',
@@ -47,11 +61,11 @@ export const SHARED_PRODUCTS: Product[] = [
   {
     id: 'drop-poster-white',
     slug: 'palestine-poster-tee',
-    titleEn: 'Palestine Poster Tee',
-    titleAr: 'تيشيرت بوستر فلسطين — الإصدار الأبيض',
+    titleEn: 'Palestine Poster Tee — White',
+    titleAr: 'تيشيرت بوستر فلسطين — أبيض',
     category: 'drops',
-    descriptionEn: '100% Bamboo Cotton • Production in Indonesia • DTG Print • Palestine Support',
-    descriptionAr: 'قطن خيزران 100% • إنتاج إندونيسيا • طباعة DTG رقمية • دعم فلسطين',
+    descriptionEn: '100% Bamboo Cotton • Made in Indonesia • Direct-to-Garment (DTG) Print',
+    descriptionAr: 'قطن خيزران 100% • صنع في إندونيسيا • طباعة مباشرة على القماش (DTG)',
     basePriceJOD: 35.0,
     basePriceUSD: 50.0,
     printSpec: 'DTG_DIRECT_TO_GARMENT',
@@ -74,8 +88,10 @@ const HELMET_ALIASES = [
   'keffiyeh-helmet-tee',
   'helmet-white-tee',
   'keffiyeh helmet tee',
+  'keffiyeh helmet tee — white',
   'helmet white tee',
   'keffiyeh helmet heavy tee',
+  'تيشيرت خوذة الكوفية — أبيض',
   'تيشيرت خوذة الكوفية — الإصدار الأبيض',
   'تيشيرت الخوذة الأبيض',
   'تيشيرت الخوذة والكوفية الأبيض',
@@ -87,8 +103,10 @@ const POSTER_ALIASES = [
   'palestine-poster-tee',
   'poster-white-tee',
   'palestine poster tee',
+  'palestine poster tee — white',
   'poster white tee',
   'palestine graphic poster tee',
+  'تيشيرت بوستر فلسطين — أبيض',
   'تيشيرت بوستر فلسطين — الإصدار الأبيض',
   'تيشيرت البوستر الأبيض',
   'تيشيرت البوستر الجرافيكي الأبيض',
@@ -164,11 +182,11 @@ export function migrateLegacyCartItem(rawItem: any): any | null {
   if (isNaN(qty) || qty < 1) qty = 1;
 
   const titleAr = isHelmet 
-    ? 'تيشيرت خوذة الكوفية — الإصدار الأبيض' 
-    : 'تيشيرت بوستر فلسطين — الإصدار الأبيض';
+    ? 'تيشيرت خوذة الكوفية — أبيض' 
+    : 'تيشيرت بوستر فلسطين — أبيض';
   const titleEn = isHelmet 
-    ? 'Keffiyeh Helmet Tee' 
-    : 'Palestine Poster Tee';
+    ? 'Keffiyeh Helmet Tee — White' 
+    : 'Palestine Poster Tee — White';
 
   return {
     ...rawItem,

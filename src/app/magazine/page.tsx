@@ -3,98 +3,130 @@
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
-import { BookOpen, FileText, ArrowRight } from 'lucide-react';
+import { BookOpen, Download, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useStore } from '@/store';
+import { content } from '@/locales/dictionary';
 
 export default function MagazineLanding() {
   const { lang } = useStore();
+  const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
-  
+  const coverThumb = isRtl 
+    ? '/magazine/issue-zero-cover-thumb.png' 
+    : '/magazine/issue-zero-cover-thumb-en.png';
+
   return (
     <PageLayout>
-      <div className="w-full bg-[#050505] min-h-screen py-24 px-4 md:px-8 font-sans border-t border-[#1A1A1A] relative">
-        <div className="absolute inset-0 opacity-5 pointer-events-none" 
-             style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
-        </div>
+      <div className="w-full bg-[#050505] min-h-screen py-20 px-4 md:px-8 font-sans border-t border-[#1A1A1A] relative" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div 
+          className="absolute inset-0 opacity-5 pointer-events-none" 
+          style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+        />
 
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="mb-16">
-            <h1 className="text-4xl md:text-6xl font-black uppercase text-white tracking-normal mb-4">
-              Midaan Magazine
+            <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-3.5 py-1 text-xs font-bold rounded-full mb-4">
+              <span>{strings.magazine.badge}</span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-6xl font-black text-white tracking-normal mb-4 font-sans leading-tight">
+              {strings.magazine.heading}
             </h1>
-            <p className="text-neutral-400 font-sans text-lg max-w-2xl border-l-2 border-[#D80032] pl-4 ml-2">
-              {isRtl 
-                ? "إصدار فكري ثقافي مستقل يبحث في قضايا الهوية، التحولات الاجتماعية، ودور الفن في التعبير المدني." 
-                : "An independent cultural and intellectual publication exploring identity, social transformations, and the role of art in civic expression."}
+            
+            <p className="text-neutral-300 font-sans text-base md:text-lg max-w-2xl leading-relaxed">
+              {strings.magazine.desc}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Issue Zero */}
-            <div className="bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] rounded-2xl overflow-hidden group hover:border-[#D80032] transition-all shadow-2xl flex flex-col h-full transform hover:-translate-y-1">
-              <div className="p-8 flex flex-col justify-between relative overflow-hidden border-b border-[#262626] bg-[#0A0A0A]">
-                <div className="flex items-center justify-between z-10">
-                  <div className="bg-[#1A1A1A] rounded-xl inline-flex p-3 w-fit border border-[#333]">
-                    <BookOpen size={24} className="text-white group-hover:text-[#D80032] transition-colors" />
-                  </div>
-                  <div className="font-mono text-[10px] text-[#D80032] font-bold tracking-normal uppercase text-right">
-                    Issue Zero (انتحاب)
-                  </div>
-                </div>
-                <div className="z-10 mt-6">
-                  <h3 className="text-3xl font-black text-white uppercase font-sans leading-none">
-                    {isRtl ? 'العدد صفر' : 'Issue Zero'}
-                  </h3>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            {/* Issue Zero Card */}
+            <div className="md:col-span-8 bg-gradient-to-br from-[#121212] via-[#0E0E0E] to-[#0A0A0A] border border-[#262626] rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col sm:flex-row gap-6 items-center">
+              {/* Cover Thumbnail */}
+              <div className="w-full sm:w-1/2 max-w-[220px] flex-shrink-0">
+                <div className="relative aspect-[1/1.414] rounded-xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.8)] border border-neutral-700/60 group">
+                  <img 
+                    src={coverThumb} 
+                    alt={strings.magazine.issueZeroTitle} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="eager"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                 </div>
               </div>
-              
-              <div className="p-8 flex flex-col flex-1">
-                <p className="text-sm text-neutral-400 font-sans mb-6 flex-1 leading-relaxed border-l border-[#333] pl-4">
-                   {isRtl ? 'صراع الأرض والسماء، سأموت قبل الأربعين، وسجل وصايا الشهداء.' : 'The conflict of earth and sky, existential youth reflections, and the Palestinian martyr testaments.'}
-                </p>
-                <div className="flex gap-2 flex-wrap mb-8">
-                  <span className="bg-[#1A1A1A] text-neutral-300 text-[9px] font-mono px-2 py-1 rounded border border-[#333]">EDITORIAL</span>
-                  <span className="bg-[#1A1A1A] text-neutral-300 text-[9px] font-mono px-2 py-1 rounded border border-[#333]">YOUTH</span>
-                  <span className="bg-[#1A1A1A] text-neutral-300 text-[9px] font-mono px-2 py-1 rounded border border-[#333]">RESISTANCE</span>
+
+              {/* Card Body & Actions */}
+              <div className="flex-1 flex flex-col justify-between self-stretch py-2">
+                <div>
+                  <div className="text-xs font-bold text-[#D80032] uppercase mb-2">
+                    {isRtl ? 'الإصدار التأسيسي // خريف 2026' : 'FOUNDING ISSUE // AUTUMN 2026'}
+                  </div>
+                  
+                  <h2 className="text-2xl sm:text-3xl font-black text-white font-sans leading-tight mb-3">
+                    {strings.magazine.issueZeroTitle}
+                  </h2>
+                  
+                  <p className="text-xs sm:text-sm text-neutral-300 font-sans leading-relaxed mb-6">
+                    {isRtl 
+                      ? 'توثيق سردية الشارع، صراع الأرض والسماء، وسجل وصايا الخالدين. منصة للرواية المستقلة والتعبير المدني الحر.' 
+                      : 'Documenting the street narrative, the conflict of earth and sky, and the testaments of the immortal.'}
+                  </p>
                 </div>
-                <Link 
-                  href="/magazine/issue-zero"
-                  className="w-full bg-white hover:bg-neutral-200 text-black py-4 font-mono text-[10px] font-black uppercase tracking-normal transition-colors rounded-xl flex items-center justify-center gap-2"
-                >
-                  {isRtl ? 'اقرأ العدد' : 'Read Issue'} <ArrowRight size={14} />
-                </Link>
+
+                <div className="space-y-2.5 pt-4 border-t border-[#262626]">
+                  <Link 
+                    href="/magazine/issue-zero"
+                    className="w-full bg-white hover:bg-neutral-200 text-black py-3.5 px-4 font-sans text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                  >
+                    <BookOpen size={16} className="text-[#D80032]" />
+                    <span>{strings.magazine.actionRead}</span>
+                    {isRtl ? <ArrowLeft size={14} /> : <ArrowRight size={14} />}
+                  </Link>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <a 
+                      href="/magazine/issue-zero.pdf"
+                      download="Midaan_Magazine_Issue_Zero_AR.pdf"
+                      className="bg-[#141414] hover:bg-[#1C1C1C] text-neutral-200 hover:text-white border border-[#2A2A2A] py-2.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors text-center"
+                    >
+                      <Download size={13} className="text-[#D80032]" />
+                      <span>{strings.magazine.actionDownloadAr}</span>
+                    </a>
+
+                    <a 
+                      href="/magazine/issue-zero-en.pdf"
+                      download="Midaan_Magazine_Issue_Zero_EN.pdf"
+                      className="bg-[#141414] hover:bg-[#1C1C1C] text-neutral-200 hover:text-white border border-[#2A2A2A] py-2.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors text-center"
+                    >
+                      <Download size={13} className="text-[#D80032]" />
+                      <span>{strings.magazine.actionDownloadEn}</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Issue One (Draft) */}
-            <div className="bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] rounded-2xl overflow-hidden shadow-2xl flex flex-col h-full opacity-60">
-              <div className="p-8 flex flex-col justify-between relative overflow-hidden border-b border-[#262626] bg-[#0A0A0A]">
-                <div className="flex items-center justify-between z-10">
-                  <div className="bg-[#1A1A1A] rounded-xl inline-flex p-3 w-fit border border-[#333]">
-                    <FileText size={24} className="text-neutral-600" />
-                  </div>
-                  <div className="font-mono text-[10px] text-neutral-500 font-bold tracking-normal uppercase text-right">
-                    Issue One (Entihab)
-                  </div>
+            {/* Issue One (Upcoming) */}
+            <div className="md:col-span-4 bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col justify-between opacity-70">
+              <div>
+                <div className="text-xs font-bold text-neutral-500 uppercase mb-2">
+                  {isRtl ? 'الإصدار القادم' : 'UPCOMING ISSUE'}
                 </div>
-                <div className="z-10 mt-6">
-                  <h3 className="text-3xl font-black text-neutral-500 uppercase font-sans leading-none">
-                    {isRtl ? 'العدد الأول' : 'Issue One'}
-                  </h3>
-                </div>
-              </div>
-              
-              <div className="p-8 flex flex-col flex-1">
-                <p className="text-sm text-neutral-500 font-sans mb-6 flex-1 leading-relaxed border-l border-[#333] pl-4">
-                  {isRtl ? 'قيد التحرير والمراجعة. سيتم الإعلان عن موعد النشر قريباً.' : 'Currently in drafting and editorial review. Publication date will be announced soon.'}
+                
+                <h2 className="text-2xl font-black text-neutral-400 font-sans leading-tight mb-3">
+                  {strings.magazine.comingSoonHeading}
+                </h2>
+                
+                <p className="text-xs sm:text-sm text-neutral-400 font-sans leading-relaxed mb-6">
+                  {strings.magazine.comingSoonDesc}
                 </p>
-                <button 
-                  disabled
-                  className="w-full bg-[#1A1A1A] text-neutral-600 border border-[#333] cursor-not-allowed py-4 font-mono text-[10px] font-black uppercase tracking-normal rounded-xl flex items-center justify-center gap-2"
-                >
-                  {isRtl ? 'قريباً' : 'Coming Soon'}
-                </button>
               </div>
+
+              <button 
+                disabled
+                className="w-full bg-[#161616] text-neutral-500 border border-[#262626] cursor-not-allowed py-3 font-sans text-xs font-bold rounded-xl flex items-center justify-center gap-2 mt-auto"
+              >
+                <span>{strings.magazine.comingSoonBtn}</span>
+              </button>
             </div>
 
           </div>

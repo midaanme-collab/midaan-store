@@ -14,7 +14,7 @@ export default function Home() {
     <PageLayout>
       <Hero />
       <CampaignVideoSection />
-      <DropShowcase lang="ar" />
+      <DropShowcase />
       <ArticlesSection />
       <Voice />
       <Modals />

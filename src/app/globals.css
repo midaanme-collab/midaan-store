@@ -35,6 +35,13 @@
 :root {
   --background: #050505;
   --foreground: #F4F4F0;
+  color-scheme: dark;
+}
+
+html {
+  background-color: #050505;
+  color: #F4F4F0;
+  color-scheme: dark;
 }
 
 body {
@@ -42,6 +49,15 @@ body {
   color: var(--foreground);
   background: var(--background);
   scroll-behavior: smooth;
+}
+
+/* Enforce permanent dark appearance regardless of OS light mode */
+@media (prefers-color-scheme: light) {
+  :root, html, body {
+    color-scheme: dark;
+    background-color: #050505;
+    color: #F4F4F0;
+  }
 }
 
 .font-midaan, .font-heading {

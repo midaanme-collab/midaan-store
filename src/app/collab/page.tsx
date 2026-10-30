@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, ShoppingBag, Check } from 'lucide-react';
+import { Play, Pause, ShoppingBag, Check, Ruler } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Interactive3DTilt from '@/components/Interactive3DTilt';
 import { useStore } from '@/store';
 import { Product, GarmentSize } from '@/types';
-import { SHARED_PRODUCTS, normalizeSize } from '@/constants/products';
+import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from '@/constants/products';
+import { content } from '@/locales/dictionary';
 
 export default function CollabPage() {
-  const { lang, currency, addToCart, setIsCartOpen } = useStore();
+  const { lang, currency, addToCart, setIsCartOpen, setIsSizeChartOpen } = useStore();
+  const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -22,6 +24,7 @@ export default function CollabPage() {
 
   const togglePlay = () => {
     if (!videoRef.current) return;
+    videoRef.current.muted = true;
     if (videoRef.current.paused) {
       videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
     } else {
@@ -32,14 +35,18 @@ export default function CollabPage() {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      videoRef.current.muted = true;
+      const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReducedMotion) {
+        videoRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      }
     }
   }, []);
 
   const handleAddToCart = (prod: Product) => {
     const rawSize = selectedSizes[prod.id];
     if (!rawSize) {
-      alert(isRtl ? 'يجب اختيار المقاس قبل إضافة القطعة إلى الحقيبة' : 'You must select a size before adding the item to your bag');
+      alert(isRtl ? 'الرجاء اختيار المقاس أولاً' : 'Please select a size first');
       return;
     }
 
@@ -62,9 +69,11 @@ export default function CollabPage() {
     setIsCartOpen(true);
   };
 
+  const displayPrice = formatProductPrice(currency, lang);
+
   return (
     <PageLayout>
-      <div className="bg-[#050505] min-h-screen text-white font-sans selection:bg-[#D80032] selection:text-white pb-24">
+      <div className="bg-[#050505] min-h-screen text-white font-sans selection:bg-[#D80032] selection:text-white pb-24" dir={isRtl ? 'rtl' : 'ltr'}>
         
         {/* 1. Dual Collaboration Header */}
         <header className="pt-20 pb-16 px-4 md:px-8 border-b border-[#262626]">
@@ -84,18 +93,16 @@ export default function CollabPage() {
               />
             </div>
 
-            <div className="inline-block bg-[#D80032] text-white px-4 py-1.5 font-mono text-xs font-bold tracking-normal uppercase mb-6 rounded-full shadow-lg shadow-[#D80032]/25">
-              MIDAAN COLLECTIVE × SOTUSURA CLOTHING // ARCHIVE 01
+            <div className="inline-block bg-[#D80032] text-white px-4 py-1.5 font-sans text-xs font-bold tracking-normal uppercase mb-6 rounded-full shadow-lg shadow-[#D80032]/25">
+              {strings.campaign.badge}
             </div>
 
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-normal mb-6 leading-tight">
-              {isRtl ? 'التعاون الحصري: أرشيف 01' : 'EXCLUSIVE COLLABORATION: ARCHIVE 01'}
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-normal mb-6 leading-tight font-sans text-balance">
+              {strings.campaign.heading}
             </h1>
 
-            <p className="max-w-2xl mx-auto text-base md:text-lg text-neutral-300 leading-relaxed font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
-              {isRtl 
-                ? 'اندماج بين منصة ميدان للمناصرة عبر الأزياء، وثقافة الشارع المستقلة لصوت صورة. مجموعة "أرشيف 01" تعيد صياغة الذاكرة البصرية وتوثق السردية البديلة على قطع قطنية ثقيلة ومستدامة.'
-                : 'A synergy between Midaan\'s Wearable Advocacy and Sotusura\'s independent underground street culture. The "Archive 01" capsule reframes visual memory, documenting the alternative narrative on heavyweight cotton.'}
+            <p className="max-w-2xl mx-auto text-base md:text-lg text-neutral-300 leading-relaxed font-sans">
+              {strings.campaign.desc}
             </p>
           </div>
         </header>
@@ -103,15 +110,7 @@ export default function CollabPage() {
         {/* 2. Embedded 9:16 Vertical Cinema Frame Video Section */}
         <section className="py-20 px-4 md:px-8 border-b border-[#262626] bg-[#0A0A0A]">
           <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
-            <div className="mb-8">
-              <div className="text-xs font-mono text-[#D80032] font-bold uppercase mb-2">
-                {isRtl ? 'فيديو الحملة الرسمي' : 'Official Campaign Film'}
-              </div>
-              <h2 className="text-3xl md:text-4xl font-black text-white uppercase font-sans">
-                {isRtl ? 'صوت وسردية الذاكرة' : 'Sound & The Narrative of Memory'}
-              </h2>
-            </div>
-
+            
             {/* 9:16 Vertical Cinema Frame */}
             <div className="relative w-full max-w-[340px] sm:max-w-[380px] aspect-[9/16] mx-auto rounded-[2.5rem] p-2 bg-gradient-to-b from-[#2a2a2a] via-[#141414] to-[#0a0a0a] border border-neutral-700/60 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95),0_0_50px_rgba(216,0,50,0.15)]">
               <div className="relative w-full h-full rounded-[2.2rem] overflow-hidden bg-black flex items-center justify-center">
@@ -123,6 +122,7 @@ export default function CollabPage() {
                   preload="metadata"
                   autoPlay
                   loop
+                  muted
                   playsInline
                   onClick={togglePlay}
                   className="w-full h-full object-cover cursor-pointer"
@@ -132,12 +132,12 @@ export default function CollabPage() {
 
                 {/* Top Overlay Badge */}
                 <div className="absolute top-4 inset-x-4 flex items-center justify-between z-20 pointer-events-none">
-                  <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-[10px] font-mono text-neutral-300">
+                  <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-[11px] font-sans text-neutral-200">
                     <span className="w-1.5 h-1.5 bg-[#D80032] rounded-full animate-ping" />
-                    <span>MIDAAN × SOTUSURA</span>
+                    <span>{strings.campaign.filmBadge}</span>
                   </div>
                   <div className="bg-black/60 backdrop-blur-md border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-mono text-neutral-400">
-                    9:16 CINEMA
+                    9:16
                   </div>
                 </div>
 
@@ -147,10 +147,10 @@ export default function CollabPage() {
                     type="button"
                     onClick={togglePlay}
                     className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] cursor-pointer w-full h-full border-none"
-                    aria-label={isRtl ? 'تشغيل الفيديو' : 'Play Video'}
+                    aria-label={strings.campaign.playBtn}
                   >
                     <div className="w-16 h-16 rounded-full bg-white/20 border border-white/30 backdrop-blur-md flex items-center justify-center text-white hover:scale-105 transition-transform">
-                      <Play size={28} className="ml-1" />
+                      <Play size={28} className={isRtl ? 'mr-0.5' : 'ml-0.5'} />
                     </div>
                   </button>
                 )}
@@ -160,18 +160,18 @@ export default function CollabPage() {
                   <button
                     type="button"
                     onClick={togglePlay}
-                    className="w-full py-3.5 px-6 rounded-2xl font-mono text-xs font-bold flex items-center justify-center gap-2.5 bg-black/60 hover:bg-black/80 text-white border border-white/20 backdrop-blur-md shadow-xl transition-all active:scale-95"
-                    aria-label={isPlaying ? (isRtl ? 'إيقاف الفيديو مؤقتاً' : 'Pause video') : (isRtl ? 'تشغيل الفيديو' : 'Play video')}
+                    className="w-full py-3.5 px-6 rounded-2xl font-sans text-xs font-bold flex items-center justify-center gap-2.5 bg-black/60 hover:bg-black/80 text-white border border-white/20 backdrop-blur-md shadow-xl transition-all active:scale-95"
+                    aria-label={isPlaying ? strings.campaign.pauseBtn : strings.campaign.playBtn}
                   >
                     {isPlaying ? (
                       <>
                         <Pause size={16} />
-                        <span className="tracking-normal">{isRtl ? 'إيقاف مؤقت' : 'PAUSE'}</span>
+                        <span>{strings.campaign.pauseBtn}</span>
                       </>
                     ) : (
                       <>
-                        <Play size={16} className="ml-0.5" />
-                        <span className="tracking-normal">{isRtl ? 'تشغيل الفيديو' : 'PLAY'}</span>
+                        <Play size={16} className={isRtl ? 'mr-0.5' : 'ml-0.5'} />
+                        <span>{strings.campaign.playBtn}</span>
                       </>
                     )}
                   </button>
@@ -184,25 +184,29 @@ export default function CollabPage() {
 
         {/* 3. Approved Products Showcase */}
         <section id="collab-drops" className="py-20 px-4 md:px-8 max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-normal mb-4 font-sans">
-              {isRtl ? 'القطع الحصرية الجاهزة للشحن الفوري' : 'EXCLUSIVE DROPS (IN-STOCK)'}
-            </h2>
-            <p className="text-neutral-400 font-mono text-sm uppercase tracking-normal">
-              {isRtl 
-                ? (currency === 'USD' ? 'سعر موحد: 50 USD • كميات محدودة' : 'سعر موحد: 35 د.أ • كميات محدودة')
-                : (currency === 'USD' ? 'Fixed Price: 50 USD • Limited Stock' : 'Fixed Price: 35 JOD • Limited Stock')}
-            </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#262626] pb-8 mb-16 gap-6">
+            <div>
+              <div className="inline-block bg-[#D80032]/10 border border-[#D80032]/30 text-[#D80032] px-3.5 py-1 rounded-full text-xs font-bold uppercase mb-3">
+                <span>{strings.products.label}</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-normal font-sans leading-tight">
+                {strings.products.heading}
+              </h2>
+            </div>
+            
+            <div className="text-sm text-neutral-300 font-medium">
+              <span className="text-neutral-400">{strings.products.fixedPriceLabel}:</span>{" "}
+              <span className="text-white font-bold text-xl ml-1" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
+                {displayPrice}
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
             {SHARED_PRODUCTS.map((prod) => {
-              const totalStock = prod.variants.reduce((sum, v) => sum + v.stockCount, 0);
-              const currentSelectedSize = selectedSizes[prod.id];
+              const currentSelectedSize = selectedSizes[prod.id] || 'L';
               const activeVariant = prod.variants.find((v) => v.size === currentSelectedSize);
-              const displayPrice = currency === 'USD' 
-                ? `${prod.basePriceUSD || 50} USD` 
-                : `${prod.basePriceJOD} ${isRtl ? 'د.أ' : 'JOD'}`;
+              const isVariantInStock = activeVariant ? activeVariant.stockCount > 0 : true;
 
               return (
                 <Interactive3DTilt
@@ -213,12 +217,12 @@ export default function CollabPage() {
                   className="bg-gradient-to-br from-[#121212] via-[#0E0E0E] to-[#080808] border border-[#262626] hover:border-neutral-500 rounded-3xl overflow-hidden flex flex-col justify-between shadow-2xl transition-colors duration-300"
                 >
                   <div className="relative aspect-[4/5] bg-gradient-to-b from-[#181818] to-[#0A0A0A] flex items-center justify-center border-b border-[#222] p-8 overflow-hidden group">
-                    <div className="absolute top-5 start-5 z-20 bg-black/80 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono font-bold px-3 py-1.5 rounded-full flex items-center gap-2">
+                    <div className="absolute top-5 start-5 z-20 bg-black/80 backdrop-blur-md border border-white/10 text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                      <span>{isRtl ? 'إصدار محدود متوفر' : 'Limited Edition In Stock'}</span>
+                      <span>{strings.products.label}</span>
                     </div>
 
-                    <div className="absolute top-5 end-5 z-20 bg-[#D80032] text-white text-xs font-mono font-black px-3.5 py-1.5 rounded-full shadow-lg">
+                    <div className="absolute top-5 end-5 z-20 bg-[#D80032] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-lg" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                       {displayPrice}
                     </div>
 
@@ -228,83 +232,98 @@ export default function CollabPage() {
                       className="w-4/5 h-auto max-h-[380px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105 select-none" 
                     />
 
-                    <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-[11px] font-mono text-neutral-400 bg-black/70 backdrop-blur-md px-4 py-2 rounded-xl border border-white/5">
-                      <span>100% Bamboo Cotton</span>
-                      <span className="text-white font-bold">DTG Print</span>
+                    <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-xs text-neutral-300 bg-black/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
+                      <span>{strings.products.bambooFabric}</span>
+                      <span className="text-white font-bold">{strings.products.dtgPrint}</span>
                     </div>
                   </div>
 
-                  <div className="p-7 md:p-8 flex flex-col flex-1" dir={isRtl ? 'rtl' : 'ltr'}>
-                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-normal mb-3 font-sans">
-                      {isRtl ? prod.titleAr : prod.titleEn}
-                    </h3>
-                    <p className="text-xs md:text-sm text-neutral-300 font-mono leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3 mb-6">
-                      {isRtl ? prod.descriptionAr : prod.descriptionEn}
-                    </p>
+                  <div className="p-7 md:p-8 flex flex-col flex-1">
+                    <div className="mb-6">
+                      <h3 className="text-2xl md:text-3xl font-black text-white leading-tight font-sans mb-3">
+                        {isRtl ? prod.titleAr : prod.titleEn}
+                      </h3>
+                      <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3.5">
+                        {isRtl ? prod.descriptionAr : prod.descriptionEn}
+                      </p>
+                    </div>
 
-                    <div className="mt-auto">
-                      <div className="mb-6">
-                        <div className="flex justify-between items-center text-xs font-mono text-neutral-400 mb-2.5">
-                          <span className="font-bold uppercase tracking-normal">
-                            {isRtl ? 'اختر المقاس:' : 'Select Size:'}
+                    <div className="mb-6">
+                      <div className="flex justify-between items-center text-xs text-neutral-300 mb-3">
+                        <span className="font-bold">
+                          {strings.products.selectSize}:
+                        </span>
+                        
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setIsSizeChartOpen(true)}
+                            className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 underline underline-offset-4 transition-colors"
+                          >
+                            <Ruler size={13} />
+                            <span>{isRtl ? 'دليل المقاسات' : 'Size Guide'}</span>
+                          </button>
+
+                          <span className={`text-xs font-semibold ${isVariantInStock ? 'text-emerald-400' : 'text-neutral-500'}`}>
+                            {isVariantInStock ? strings.products.inStock : strings.products.outOfStock}
                           </span>
-                          {activeVariant && (
-                            <span className={`font-mono text-[11px] ${activeVariant.stockCount > 0 ? 'text-emerald-400' : 'text-neutral-500'}`}>
-                              {activeVariant.stockCount > 0
-                                ? (isRtl ? 'متوفر' : 'In Stock')
-                                : (isRtl ? 'نفدت الكمية' : 'Out of Stock')}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="grid grid-cols-5 gap-2">
-                          {prod.variants.map((v) => {
-                            const isSelected = selectedSizes[prod.id] === v.size;
-                            const isOutOfStock = v.stockCount === 0;
-
-                            return (
-                              <button
-                                key={v.id}
-                                type="button"
-                                disabled={isOutOfStock}
-                                onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
-                                className={`relative py-3.5 rounded-xl font-mono text-sm font-black border transition-all flex items-center justify-center ${
-                                  isOutOfStock
-                                    ? 'bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-40 line-through'
-                                    : isSelected
-                                      ? 'bg-white border-white text-black shadow-lg shadow-white/20'
-                                      : 'bg-[#161616] border-[#2a2a2a] text-neutral-300 hover:border-neutral-400 hover:text-white'
-                                }`}
-                              >
-                                <span>{v.size}</span>
-                              </button>
-                            );
-                          })}
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between gap-4 pt-4 border-t border-[#1F1F1F]">
-                        <div className="font-mono text-2xl font-black text-white">
+                      <div className="grid grid-cols-5 gap-2.5" dir="ltr">
+                        {prod.variants.map((v) => {
+                          const isSelected = selectedSizes[prod.id] === v.size;
+                          const isOutOfStock = v.stockCount === 0;
+
+                          return (
+                            <button
+                              key={v.id}
+                              type="button"
+                              disabled={isOutOfStock}
+                              onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
+                              className={`relative py-3.5 rounded-xl text-sm font-bold border transition-all flex items-center justify-center ${
+                                isOutOfStock
+                                  ? 'bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-40 line-through'
+                                  : isSelected
+                                    ? 'bg-white border-white text-black shadow-lg shadow-white/20'
+                                    : 'bg-[#161616] border-[#2A2A2A] text-neutral-200 hover:border-neutral-400 hover:text-white'
+                              }`}
+                              aria-label={`Size ${v.size}`}
+                            >
+                              <span>{v.size}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 pt-5 border-t border-[#1F1F1F] mt-auto">
+                      <div>
+                        <div className="text-xs text-neutral-400 font-medium">
+                          {strings.products.fixedPriceLabel}
+                        </div>
+                        <div className="text-2xl md:text-3xl font-black text-white" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                           {displayPrice}
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleAddToCart(prod)}
-                          className="flex-1 max-w-[200px] bg-white hover:bg-neutral-200 text-black py-4 px-5 rounded-2xl font-mono text-xs md:text-sm font-black uppercase tracking-normal transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-white/20 active:scale-95"
-                        >
-                          {addedItem === prod.id ? (
-                            <>
-                              <Check size={16} className="text-emerald-600" />
-                              <span>{isRtl ? 'تمت الإضافة' : 'Added'}</span>
-                            </>
-                          ) : (
-                            <>
-                              <ShoppingBag size={16} />
-                              <span>{isRtl ? 'أضف للحقيبة' : 'Add to Bag'}</span>
-                            </>
-                          )}
-                        </button>
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleAddToCart(prod)}
+                        className="flex-1 max-w-[210px] bg-white hover:bg-neutral-200 text-black py-4 px-5 rounded-2xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-white/20 active:scale-95"
+                      >
+                        {addedItem === prod.id ? (
+                          <>
+                            <Check size={16} className="text-emerald-600" />
+                            <span>{strings.products.added}</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag size={16} />
+                            <span>{strings.products.addToBag}</span>
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
                 </Interactive3DTilt>

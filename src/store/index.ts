@@ -86,7 +86,7 @@ export const useStore = create<StoreState>()(persist((set) => ({
   currency: 'JOD',
   setCurrency: (currency) => set({ currency }),
   theme: 'dark',
-  setTheme: (theme) => set({ theme }),
+  setTheme: () => set({ theme: 'dark' }),
   setLang: (lang) => set((state) => {
     let customText = state.customText;
     if (customText === 'مَـيـدَان' && lang === 'en') customText = 'MIDAAN';
@@ -216,10 +216,15 @@ export const useStore = create<StoreState>()(persist((set) => ({
   setSelectedWorkshop: (selectedWorkshop) => set({ selectedWorkshop }),
 }), {
   name: 'midaan-storage',
-  partialize: (state) => ({ cart: state.cart, currency: state.currency, theme: state.theme }),
+  partialize: (state) => ({ cart: state.cart, currency: state.currency, theme: 'dark' }),
   onRehydrateStorage: () => (state) => {
-    if (state && state.cart) {
-      state.cart = migrateCart(state.cart);
+    if (state) {
+      if (state.theme && state.theme !== 'dark') {
+        state.theme = 'dark';
+      }
+      if (state.cart) {
+        state.cart = migrateCart(state.cart);
+      }
     }
   },
 }));

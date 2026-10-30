@@ -33,12 +33,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="auto">
+    <html lang="ar" dir="auto" className="dark" style={{ colorScheme: 'dark', backgroundColor: '#050505' }}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var storage = localStorage.getItem('midaan-storage');
+                if (storage) {
+                  var parsed = JSON.parse(storage);
+                  if (parsed && parsed.state && parsed.state.theme !== 'dark') {
+                    parsed.state.theme = 'dark';
+                    localStorage.setItem('midaan-storage', JSON.stringify(parsed));
+                  }
+                }
+              } catch (e) {}
+              document.documentElement.classList.add('dark');
+              document.documentElement.style.colorScheme = 'dark';
+            `
+          }}
+        />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/logo.png" />
       </head>
-      <body className="bg-[#080808] text-[#F4F4F0] antialiased selection:bg-[#D80032] selection:text-white">
+      <body className="bg-[#050505] text-[#F4F4F0] min-h-screen antialiased selection:bg-[#D80032] selection:text-white">
         {children}
       </body>
     </html>

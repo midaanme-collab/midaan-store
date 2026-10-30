@@ -2,18 +2,20 @@
 
 import React, { useState } from "react";
 import { Language, Product, GarmentSize } from "@/types";
-import { Flame, ShoppingBag, Check } from "lucide-react";
+import { ShoppingBag, Check, Ruler } from "lucide-react";
 import { useStore } from "@/store";
 import Interactive3DTilt from "./Interactive3DTilt";
-import { SHARED_PRODUCTS, normalizeSize } from "@/constants/products";
+import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from "@/constants/products";
+import { content } from "@/locales/dictionary";
 
 interface DropShowcaseProps {
   lang?: Language;
 }
 
 export default function DropShowcase({ lang }: DropShowcaseProps) {
-  const { lang: storeLang, currency, addToCart, setIsCartOpen } = useStore();
-  const effectiveLang = storeLang || lang || "ar";
+  const { lang: storeLang, currency, addToCart, setIsCartOpen, setIsSizeChartOpen } = useStore();
+  const effectiveLang = (storeLang || lang || "ar") as "ar" | "en";
+  const strings = content[effectiveLang];
   const isRtl = effectiveLang === "ar";
 
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
@@ -49,23 +51,25 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
     setIsCartOpen(true);
   };
 
+  const displayPrice = formatProductPrice(currency, effectiveLang);
+
   return (
-    <section id="drops" dir={isRtl ? "rtl" : "ltr"} className="w-full bg-[#050505] py-20 px-4 md:px-8 font-sans border-t border-[#1F1F1F]">
+    <section id="drops" dir={isRtl ? "rtl" : "ltr"} className="w-full bg-[#050505] py-20 px-4 md:px-8 font-sans border-t border-[#1F1F1F] scroll-mt-24">
       {/* Section Header */}
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between border-b border-[#262626] pb-8 mb-16 gap-6">
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between border-b border-[#262626] pb-8 mb-16 gap-6">
         <div>
-          <div className="flex items-center gap-2 font-mono text-xs text-[#D80032] uppercase font-bold tracking-normal mb-2">
-            <Flame size={16} />
-            <span>{isRtl ? "المخزون الفعلي // قطع جاهزة للشحن" : "PHYSICAL INVENTORY // READY TO SHIP"}</span>
+          <div className="inline-block bg-[#D80032]/10 border border-[#D80032]/30 text-[#D80032] px-3.5 py-1 rounded-full text-xs font-bold uppercase mb-3">
+            <span>{strings.products.label}</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-normal font-sans">
-            {isRtl ? "الإصدارات الحصرية الرسمية" : "OFFICIAL ARCHIVE DROPS"}
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-normal font-sans leading-tight">
+            {strings.products.heading}
           </h2>
         </div>
-        <div className="text-sm font-mono text-neutral-400">
-          <span className="text-white font-bold">{isRtl ? "السعر الموحد:" : "Fixed Price:"}</span>{" "}
-          <span className="text-[#D80032] font-black text-lg">
-            {currency === "USD" ? "50 USD" : "35 JOD"}
+        
+        <div className="text-sm text-neutral-300 font-medium">
+          <span className="text-neutral-400">{strings.products.fixedPriceLabel}:</span>{" "}
+          <span className="text-white font-bold text-xl ml-1" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
+            {displayPrice}
           </span>
         </div>
       </div>
@@ -73,13 +77,9 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
       {/* Two Approved Products Grid with Subtle 3D Tilt */}
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
         {SHARED_PRODUCTS.map((prod) => {
-          const totalStock = prod.variants.reduce((sum, v) => sum + v.stockCount, 0);
-          const currentSelectedSize = selectedSizes[prod.id];
+          const currentSelectedSize = selectedSizes[prod.id] || "L";
           const activeVariant = prod.variants.find((v) => v.size === currentSelectedSize);
-
-          const displayPrice = currency === "USD" 
-            ? `${prod.basePriceUSD || 50} USD`
-            : `${prod.basePriceJOD} ${isRtl ? "د.أ" : "JOD"}`;
+          const isVariantInStock = activeVariant ? activeVariant.stockCount > 0 : true;
 
           return (
             <Interactive3DTilt
@@ -91,16 +91,14 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
             >
               {/* Product Image Frame */}
               <div className="relative aspect-[4/5] bg-gradient-to-b from-[#181818] to-[#0A0A0A] flex items-center justify-center border-b border-[#222] p-8 overflow-hidden group">
-                {/* Stock Counter Badge */}
-                <div className="absolute top-5 start-5 z-20 bg-black/80 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono font-bold px-3 py-1.5 rounded-full flex items-center gap-2">
+                {/* Limited Edition Badge */}
+                <div className="absolute top-5 start-5 z-20 bg-black/80 backdrop-blur-md border border-white/10 text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span>
-                    {isRtl ? "إصدار محدود متوفر" : "Limited Edition In Stock"}
-                  </span>
+                  <span>{strings.products.label}</span>
                 </div>
 
                 {/* Price Badge on Card */}
-                <div className="absolute top-5 end-5 z-20 bg-[#D80032] text-white text-xs font-mono font-black px-3.5 py-1.5 rounded-full shadow-lg">
+                <div className="absolute top-5 end-5 z-20 bg-[#D80032] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-lg" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                   {displayPrice}
                 </div>
 
@@ -112,40 +110,49 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                   loading="eager"
                 />
 
-                {/* Bottom Bar Specs Overlay */}
-                <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-[11px] font-mono text-neutral-400 bg-black/70 backdrop-blur-md px-4 py-2 rounded-xl border border-white/5">
-                  <span>100% Bamboo Cotton</span>
-                  <span className="text-white font-bold">DTG Print</span>
+                {/* Localized Bottom Bar Specs */}
+                <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-xs text-neutral-300 bg-black/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
+                  <span>{strings.products.bambooFabric}</span>
+                  <span className="text-white font-bold">{strings.products.dtgPrint}</span>
                 </div>
               </div>
 
               {/* Product Info & Controls */}
               <div className="p-7 md:p-8 flex flex-col flex-1">
-                <div className="mb-4">
-                  <h3 className="font-black text-2xl md:text-3xl text-white leading-tight font-sans mb-2">
+                <div className="mb-6">
+                  <h3 className="font-black text-2xl md:text-3xl text-white leading-tight font-sans mb-3">
                     {isRtl ? prod.titleAr : prod.titleEn}
                   </h3>
-                  <p className="text-xs md:text-sm text-neutral-300 font-mono leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3">
+                  <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3.5">
                     {isRtl ? prod.descriptionAr : prod.descriptionEn}
                   </p>
                 </div>
 
                 {/* Size Selection */}
                 <div className="mb-6">
-                  <div className="flex justify-between items-center text-xs font-mono text-neutral-400 mb-2.5">
-                    <span className="font-bold uppercase tracking-normal">
-                      {isRtl ? "اختر المقاس:" : "Select Size:"}
+                  <div className="flex justify-between items-center text-xs text-neutral-300 mb-3">
+                    <span className="font-bold">
+                      {strings.products.selectSize}:
                     </span>
-                    {activeVariant && (
-                      <span className={`font-mono text-[11px] ${activeVariant.stockCount > 0 ? "text-emerald-400" : "text-neutral-500"}`}>
-                        {activeVariant.stockCount > 0 
-                          ? (isRtl ? "متوفر" : "In Stock")
-                          : (isRtl ? "نفدت الكمية" : "Out of Stock")}
+                    
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setIsSizeChartOpen(true)}
+                        className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 underline underline-offset-4 transition-colors"
+                      >
+                        <Ruler size={13} />
+                        <span>{isRtl ? "دليل المقاسات" : "Size Guide"}</span>
+                      </button>
+
+                      <span className={`text-xs font-semibold ${isVariantInStock ? "text-emerald-400" : "text-neutral-500"}`}>
+                        {isVariantInStock ? strings.products.inStock : strings.products.outOfStock}
                       </span>
-                    )}
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-5 gap-2">
+                  {/* Size Choice in Predictable S, M, L, XL, 2XL Order */}
+                  <div className="grid grid-cols-5 gap-2.5" dir="ltr">
                     {prod.variants.map((v) => {
                       const isSelected = selectedSizes[prod.id] === v.size;
                       const isOutOfStock = v.stockCount === 0;
@@ -156,13 +163,14 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                           type="button"
                           disabled={isOutOfStock}
                           onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
-                          className={`relative py-3.5 rounded-xl font-mono text-sm font-black border transition-all flex items-center justify-center ${
+                          className={`relative py-3.5 rounded-xl text-sm font-bold border transition-all flex items-center justify-center ${
                             isOutOfStock
                               ? "bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-40 line-through"
                               : isSelected
                               ? "bg-white border-white text-black shadow-lg shadow-white/20"
-                              : "bg-[#161616] border-[#2a2a2a] text-neutral-300 hover:border-neutral-400 hover:text-white"
+                              : "bg-[#161616] border-[#2A2A2A] text-neutral-200 hover:border-neutral-400 hover:text-white"
                           }`}
+                          aria-label={`Size ${v.size}`}
                         >
                           <span>{v.size}</span>
                         </button>
@@ -172,12 +180,12 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                 </div>
 
                 {/* Pricing & Add to Cart Button */}
-                <div className="flex items-center justify-between gap-4 pt-4 border-t border-[#1F1F1F] mt-auto">
+                <div className="flex items-center justify-between gap-4 pt-5 border-t border-[#1F1F1F] mt-auto">
                   <div>
-                    <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-normal">
-                      {isRtl ? "السعر الموحد" : "Fixed Price"}
+                    <div className="text-xs text-neutral-400 font-medium">
+                      {strings.products.fixedPriceLabel}
                     </div>
-                    <div className="font-mono text-2xl md:text-3xl font-black text-white">
+                    <div className="text-2xl md:text-3xl font-black text-white" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                       {displayPrice}
                     </div>
                   </div>
@@ -185,17 +193,17 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                   <button
                     type="button"
                     onClick={() => handleAddToCart(prod)}
-                    className="flex-1 max-w-[200px] bg-white hover:bg-neutral-200 text-black py-4 px-5 rounded-2xl font-mono text-xs md:text-sm font-black uppercase tracking-normal transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-white/20 active:scale-95"
+                    className="flex-1 max-w-[210px] bg-white hover:bg-neutral-200 text-black py-4 px-5 rounded-2xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-white/20 active:scale-95"
                   >
                     {addedItem === prod.id ? (
                       <>
                         <Check size={16} className="text-emerald-600" />
-                        <span>{isRtl ? "تمت الإضافة" : "Added"}</span>
+                        <span>{strings.products.added}</span>
                       </>
                     ) : (
                       <>
                         <ShoppingBag size={16} />
-                        <span>{isRtl ? "أضف للحقيبة" : "Add to Bag"}</span>
+                        <span>{strings.products.addToBag}</span>
                       </>
                     )}
                   </button>
