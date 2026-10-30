@@ -1,7 +1,7 @@
 export const CLIQ_ALIAS = 'MIDAANME';
 
 export const BASE_PRICES = {
-  tshirt: 20,
+  tshirt: 35,
   hoodie: 36,
   tote: 12,
 } as const;
@@ -12,7 +12,7 @@ export const COLOR_HEX = {
   charcoal: '#242424',
 } as const;
 
-export const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'] as const;
+export const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', 'XXL', '3XL'] as const;
 export type GarmentSize = typeof SIZES[number];
 
 export const GOVERNORATES = [
@@ -55,6 +55,7 @@ export const TSHIRT_SIZE_CHART = [
   { size: 'L', a: 75, b: 52 },
   { size: 'XL', a: 77, b: 56 },
   { size: '2XL', a: 79, b: 64 },
+  { size: 'XXL', a: 79, b: 64 },
   { size: '3XL', a: 81, b: 67 },
 ];
 
@@ -78,7 +79,7 @@ export const HUB_WORKSHOPS = [
     durationAr: '3 ساعات تطبيقية',
     durationEn: '3 Practical Hours',
     instructorAr: 'فريق مشغل ميدان',
-    instructorEn: 'Midan Studio Team',
+    instructorEn: 'Midaan Studio Team',
     descAr: 'تدريب عملي مباشر على تجهيز الملفات، تشغيل مكائن الـ DTF الصناعية، وكبس التيشيرتات والأقمشة باحترافية.',
     descEn: 'Hands-on practical training on file pre-flight, industrial DTF machine operation, and heat pressing.',
     priceAr: 'مشمول بمنح الشباب / رمزي للمؤسسات',

@@ -132,7 +132,11 @@ export const useStore = create<StoreState>((set) => ({
     const itemIndex = newCart.findIndex(i => i.id === id);
     if (itemIndex > -1) {
       const newQty = (newCart[itemIndex].quantity || 1) + delta;
-      if (newQty > 0) newCart[itemIndex].quantity = newQty;
+      if (newQty > 0) {
+        newCart[itemIndex].quantity = newQty;
+      } else {
+        return { cart: newCart.filter(i => i.id !== id) };
+      }
     }
     return { cart: newCart };
   }),

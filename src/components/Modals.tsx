@@ -30,7 +30,7 @@ export default function Modals() {
     const orderDetails = cart.map((item, index) => {
       const sizeStr = item.garment === 'tote' ? 'One Size' : item.size;
       if (item.isPrePrinted) {
-        return `${index + 1}. ${item.productTitle || item.garment} [قطعة جاهزة للتسليم الفوري - طباعة ظهر] - مقاس: ${sizeStr} - كمية: ${item.quantity || 1}`;
+        return `${index + 1}. ${item.productTitle || item.garment} [قطعة جاهزة للشحن الفوري] - مقاس: ${sizeStr} - كمية: ${item.quantity || 1}`;
       }
       return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Print: ${item.placement} - Art: ${item.artMode} - Qty: ${item.quantity || 1}`;
     }).join('\n');
@@ -91,14 +91,31 @@ export default function Modals() {
                           {item.color} • {item.garment === 'tote' ? 'O/S' : item.size}
                         </p>
                         {item.isPrePrinted ? (
-                          <div className={`text-[10px] bg-green-900/40 text-green-400 font-mono mt-2 px-2 py-1 rounded inline-block ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
+                          <div className={`text-[10px] bg-green-900/40 text-green-400 font-mono mt-1.5 px-2 py-0.5 rounded inline-block ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
                             {isRtl ? 'جاهز للشحن الفوري' : 'In Stock'}
                           </div>
                         ) : (
-                          <p className={`text-[10px] text-neutral-500 font-mono mt-2 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
+                          <p className={`text-[10px] text-neutral-500 font-mono mt-1.5 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
                             {item.placement} / {item.artMode}
                           </p>
                         )}
+                        <div className="flex items-center gap-2 mt-3 bg-black/60 rounded-lg p-1 w-fit border border-[#262626]">
+                          <button 
+                            type="button"
+                            onClick={() => updateCartQuantity(item.id, -1)} 
+                            className="w-6 h-6 flex items-center justify-center hover:bg-[#262626] rounded text-neutral-400 font-bold transition-colors"
+                          >
+                            -
+                          </button>
+                          <span className="text-xs font-mono font-bold px-2 text-white">{item.quantity || 1}</span>
+                          <button 
+                            type="button"
+                            onClick={() => updateCartQuantity(item.id, 1)} 
+                            className="w-6 h-6 flex items-center justify-center hover:bg-[#262626] rounded text-neutral-400 font-bold transition-colors"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                       <button 
                         onClick={() => removeFromCart(item.id)}

@@ -1,67 +1,54 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Play, Volume2, VolumeX, ShoppingBag, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Volume2, VolumeX, Play, ShoppingBag, Check } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Interactive3DTilt from '@/components/Interactive3DTilt';
 import { useStore } from '@/store';
-import { Product } from '@/types';
-
-// Hardcoded for now since they are needed on this specific collab page
-const COLLAB_PRODUCTS: Product[] = [
-  {
-    id: "drop-helmet-05",
-    slug: "helmet-white-tee",
-    titleEn: "KEFFIYEH HELMET HEAVY TEE",
-    titleAr: "تيشيرت الخوذة والكوفية الأبيض",
-    category: "drops",
-    descriptionEn: "100% Bamboo Cotton • High-Definition DTG Print • Crafted in Bali • Palestine Support • Full Back Print.",
-    descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
-    basePriceJOD: 20.0,
-    printSpec: "DTF_INDUSTRIAL_602A",
-    images: ["/helmet-back-white.jpg"],
-    variants: [
-      { id: "v10", sku: "HLM-S", size: "S", inStock: true, stockCount: 4 },
-      { id: "v11", sku: "HLM-M", size: "M", inStock: true, stockCount: 5 },
-      { id: "v12", sku: "HLM-L", size: "L", inStock: true, stockCount: 6 },
-      { id: "v13", sku: "HLM-XL", size: "XL", inStock: true, stockCount: 2 },
-      { id: "v14", sku: "HLM-2XL", size: "2XL", inStock: true, stockCount: 4 },
-    ],
-    orderToPrintTimeHours: 24,
-    isPrePrinted: true,
-    backPrintOnly: true,
-  },
-  {
-    id: "drop-poster-06",
-    slug: "poster-white-tee",
-    titleEn: "PALESTINE GRAPHIC POSTER TEE",
-    titleAr: "تيشيرت البوستر الجرافيكي الأبيض",
-    category: "drops",
-    descriptionEn: "100% Bamboo Cotton • High-Definition DTG Print • Crafted in Bali • Palestine Support • Full Back Print.",
-    descriptionAr: "قطن خيزران فاخر ومستدام • طباعة الظهر • دعم فلسطين.",
-    basePriceJOD: 20.0,
-    printSpec: "DTF_INDUSTRIAL_602A",
-    images: ["/palestine-back-white.jpg"],
-    variants: [
-      { id: "v15", sku: "PST-S", size: "S", inStock: true, stockCount: 3 },
-      { id: "v16", sku: "PST-M", size: "M", inStock: true, stockCount: 1 },
-      { id: "v17", sku: "PST-L", size: "L", inStock: true, stockCount: 1 },
-      { id: "v18", sku: "PST-XL", size: "XL", inStock: true, stockCount: 8 },
-      { id: "v19", sku: "PST-2XL", size: "2XL", inStock: true, stockCount: 1 },
-    ],
-    orderToPrintTimeHours: 24,
-    isPrePrinted: true,
-    backPrintOnly: true,
-  }
-];
+import { Product, GarmentSize } from '@/types';
+import { REAL_PRODUCTS } from '@/components/DropShowcase';
 
 export default function CollabPage() {
   const { lang, addToCart, setIsCartOpen } = useStore();
   const isRtl = lang === 'ar';
   
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
+    'drop-helmet-white': 'L',
+    'drop-poster-white': 'XL',
+  });
+  const [addedItem, setAddedItem] = useState<string | null>(null);
+
+  const toggleMute = () => {
+    if (!videoRef.current) return;
+    const nextMuted = !videoRef.current.muted;
+    videoRef.current.muted = nextMuted;
+    setIsMuted(nextMuted);
+    if (videoRef.current.paused) {
+      videoRef.current.play().catch(() => {});
+      setIsPlaying(true);
+    }
+  };
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play().catch(() => {});
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
 
   const handleAddToCart = (prod: Product) => {
     const size = selectedSizes[prod.id];
@@ -71,191 +58,268 @@ export default function CollabPage() {
     }
 
     addToCart({
-      id: crypto.randomUUID(),
+      id: `${prod.id}-${size}`,
       garment: 'tshirt',
       color: 'offwhite',
-      size: size as any,
+      size: size as GarmentSize,
       placement: 'back',
       artMode: 'presets',
-      price: prod.basePriceJOD,
-      selectedPreset: 'archive_1' as any, // default placeholder
+      price: prod.basePriceJOD, // 35 JOD
       isPrePrinted: true,
       productTitle: isRtl ? prod.titleAr : prod.titleEn,
     });
+    setAddedItem(prod.id);
+    setTimeout(() => setAddedItem(null), 1800);
     setIsCartOpen(true);
   };
 
   return (
     <PageLayout>
-      <div className="bg-[#050505] min-h-screen text-white font-sans selection:bg-[#D80032] selection:text-white pb-20">
+      <div className="bg-[#050505] min-h-screen text-white font-sans selection:bg-[#D80032] selection:text-white pb-24">
         
         {/* 1. Dual Co-Branded Header */}
-        <header className="pt-32 pb-16 px-4 md:px-8 border-b border-[#262626]">
+        <header className="pt-24 pb-16 px-4 md:px-8 border-b border-[#262626]">
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
             
-            <div className="flex items-center justify-center gap-6 md:gap-12 mb-12">
-              <img src="/logo.png" alt="Midaan" className="h-16 md:h-24 object-contain brightness-0 invert" />
-              <div className="text-4xl md:text-6xl font-light text-neutral-500">×</div>
-              <img src="/sotusura.png" alt="Sotusura" className="h-16 md:h-24 object-contain rounded-lg" />
+            <div className="flex items-center justify-center gap-6 md:gap-12 mb-8">
+              <img 
+                src="/logo.png" 
+                alt="Midaan" 
+                className="h-16 md:h-24 w-auto object-contain brightness-0 invert drop-shadow-[0_4px_20px_rgba(255,255,255,0.2)]" 
+              />
+              <div className="text-3xl md:text-5xl font-light text-neutral-600">×</div>
+              <img 
+                src="/sotusura.png" 
+                alt="Sotusura" 
+                className="h-16 md:h-24 w-auto object-contain rounded-xl shadow-2xl" 
+              />
             </div>
 
-            <div className="inline-block bg-[#D80032] text-white px-4 py-1.5 font-mono text-[10px] md:text-xs font-bold tracking-normal uppercase mb-8 rounded shadow-lg">
+            <div className="inline-block bg-[#D80032] text-white px-4 py-1.5 font-mono text-xs font-bold tracking-normal uppercase mb-6 rounded-full shadow-lg shadow-[#D80032]/30">
               MIDAAN COLLECTIVE × SOTUSURA CLOTHING // ARCHIVE 01
             </div>
 
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-neutral-300 leading-relaxed font-serif" dir={isRtl ? 'rtl' : 'ltr'}>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-normal mb-6 leading-tight">
+              {isRtl ? 'التعاون الحصري: أرشيف 01' : 'EXCLUSIVE COLLABORATION: ARCHIVE 01'}
+            </h1>
+
+            <p className="max-w-2xl mx-auto text-base md:text-lg text-neutral-300 leading-relaxed font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
               {isRtl 
-                ? 'اندماج بين منصة ميدان للمناصرة عبر الأزياء، وثقافة الشارع المستقلة لصوت صورة. مجموعة "أرشيف 01" تعيد صياغة الذاكرة البصرية وتوثق السردية البديلة على قطع قطنية ثقيلة.'
+                ? 'اندماج بين منصة ميدان للمناصرة عبر الأزياء، وثقافة الشارع المستقلة لصوت صورة. مجموعة "أرشيف 01" تعيد صياغة الذاكرة البصرية وتوثق السردية البديلة على قطع قطنية ثقيلة ومستدامة.'
                 : 'A synergy between Midaan\'s Wearable Advocacy and Sotusura\'s independent underground street culture. The "Archive 01" capsule reframes visual memory, documenting the alternative narrative on heavyweight cotton.'}
             </p>
           </div>
         </header>
 
-        {/* 2. Cinematic Video Showcase Section */}
-        <section className="py-20 px-4 md:px-8 border-b border-[#262626] bg-[#111]">
-          <div className="max-w-5xl mx-auto">
-            <div 
-              className="relative aspect-video bg-[#050505] border border-[#262626] rounded-2xl overflow-hidden group cursor-pointer shadow-2xl"
-              onClick={() => setIsVideoModalOpen(true)}
-            >
-              {/* Poster frame overlay placeholder - normally an img */}
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1599557608244-9388df6718d0?q=80&w=2940&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:opacity-60 transition-opacity duration-700"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-              
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-white transition-all duration-500 z-10">
-                  <Play size={32} className="text-white group-hover:text-black ml-2" />
-                </div>
+        {/* 2. Embedded 9:16 Vertical Cinema Frame Video Section */}
+        <section className="py-20 px-4 md:px-8 border-b border-[#262626] bg-[#0A0A0A]">
+          <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
+            <div className="mb-8">
+              <div className="text-xs font-mono text-[#D80032] font-bold uppercase mb-2">
+                {isRtl ? 'فيديو الحملة الرسمي' : 'Official Campaign Film'}
               </div>
+              <h2 className="text-3xl md:text-4xl font-black text-white uppercase font-sans">
+                {isRtl ? 'صوت وسردية الذاكرة' : 'Sound & The Narrative of Memory'}
+              </h2>
+            </div>
 
-              <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
-                <div>
-                  <h3 className="text-white font-mono font-bold tracking-normal text-sm mb-1 uppercase">Trailer: Archive 01</h3>
-                  <p className="text-neutral-400 font-mono text-[10px] uppercase">Dir. Midaan Voice Initiative</p>
+            {/* 9:16 Vertical Cinema Frame */}
+            <div className="relative w-full max-w-[340px] sm:max-w-[380px] aspect-[9/16] mx-auto rounded-[2.5rem] p-2.5 bg-gradient-to-b from-[#2a2a2a] via-[#141414] to-[#0a0a0a] border border-neutral-700/60 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95),0_0_50px_rgba(216,0,50,0.2)]">
+              <div className="relative w-full h-full rounded-[2.2rem] overflow-hidden bg-black flex items-center justify-center">
+                
+                <video
+                  ref={videoRef}
+                  src="/collab-video.mp4"
+                  autoPlay
+                  loop
+                  muted={isMuted}
+                  playsInline
+                  onClick={togglePlay}
+                  className="w-full h-full object-cover cursor-pointer"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
+
+                {/* Top Overlay Badge */}
+                <div className="absolute top-4 inset-x-4 flex items-center justify-between z-20 pointer-events-none">
+                  <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-[10px] font-mono text-neutral-300">
+                    <span className="w-1.5 h-1.5 bg-[#D80032] rounded-full animate-ping" />
+                    <span>MIDAAN × SOTUSURA</span>
+                  </div>
+                  <div className="bg-black/60 backdrop-blur-md border border-white/10 px-2.5 py-1 rounded-full text-[10px] font-mono text-neutral-400">
+                    9:16 CINEMA
+                  </div>
                 </div>
-                <div className="text-neutral-500 font-mono text-[10px] uppercase border border-[#333] px-2 py-1 rounded backdrop-blur">
-                  01:45
+
+                {/* Play/Pause state */}
+                {!isPlaying && (
+                  <div 
+                    onClick={togglePlay}
+                    className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] cursor-pointer"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-white/20 border border-white/30 backdrop-blur-md flex items-center justify-center text-white">
+                      <Play size={28} className="ml-1" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Prominent Sound Toggle Button */}
+                <div className="absolute bottom-6 inset-x-6 z-30 flex flex-col items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className={`w-full py-3.5 px-5 rounded-2xl font-mono text-xs md:text-sm font-black flex items-center justify-center gap-3 shadow-2xl transition-all duration-300 active:scale-95 border ${
+                      isMuted 
+                        ? 'bg-[#D80032] hover:bg-[#B00028] text-white border-white/30 animate-pulse shadow-[#D80032]/50' 
+                        : 'bg-white hover:bg-neutral-200 text-black border-transparent shadow-white/20'
+                    }`}
+                  >
+                    {isMuted ? (
+                      <>
+                        <VolumeX size={18} />
+                        <span className="tracking-normal">{isRtl ? '🔊 تشغيل الصوت' : '🔊 UNMUTE SOUND'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 size={18} className="text-[#D80032]" />
+                        <span className="tracking-normal">{isRtl ? '🔊 الصوت يعمل (كتم)' : '🔊 SOUND ACTIVE (MUTE)'}</span>
+                      </>
+                    )}
+                  </button>
                 </div>
+
               </div>
             </div>
           </div>
         </section>
 
-        {/* 3. Interactive 3D T-Shirt Showcase */}
-        <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
+        {/* 3. Interactive 3D T-Shirt Showcase (35 JOD / $50 USD) */}
+        <section id="collab-drops" className="py-24 px-4 md:px-8 max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-normal mb-4">
-              {isRtl ? 'القطع الحصرية (جاهزة للتسليم)' : 'EXCLUSIVE DROPS (IN-STOCK)'}
+            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-normal mb-4 font-sans">
+              {isRtl ? 'القطع الحصرية الجاهزة للشحن الفوري' : 'EXCLUSIVE DROPS (IN-STOCK)'}
             </h2>
-            <p className="text-neutral-400 font-mono text-xs uppercase tracking-normal">
-              {isRtl ? 'كميات محدودة جداً' : 'Extremely Limited Quantities'}
+            <p className="text-neutral-400 font-mono text-sm uppercase tracking-normal">
+              {isRtl ? 'سعر موحد: 35 د.أ / $50 USD • كميات محدودة جداً' : 'Uniform Price: 35 JOD / $50 USD • Extremely Limited'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24">
-            {COLLAB_PRODUCTS.map((prod) => (
-              <div key={prod.id} className="flex flex-col">
-                <Interactive3DTilt className="aspect-[4/5] bg-gradient-to-br from-[#111] to-[#0A0A0A] border border-[#262626] rounded-2xl flex items-center justify-center overflow-hidden mb-8 shadow-2xl">
-                  {/* Backdrop glow */}
-                  <div className="absolute inset-0 bg-white/5 opacity-0 hover:opacity-100 transition-opacity duration-500 blur-3xl"></div>
-                  
-                  <img 
-                    src={prod.images[0]} 
-                    alt={prod.titleEn} 
-                    className="w-3/4 h-auto object-contain z-10 drop-shadow-2xl" 
-                  />
-                </Interactive3DTilt>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14">
+            {REAL_PRODUCTS.map((prod) => {
+              const totalStock = prod.variants.reduce((sum, v) => sum + v.stockCount, 0);
+              const currentSelectedSize = selectedSizes[prod.id];
+              const activeVariant = prod.variants.find((v) => v.size === currentSelectedSize);
 
-                <div className="flex flex-col flex-1" dir={isRtl ? 'rtl' : 'ltr'}>
-                  <h3 className="text-2xl font-black uppercase tracking-normal mb-2">
-                    {isRtl ? prod.titleAr : prod.titleEn}
-                  </h3>
-                  <p className="text-neutral-400 text-sm mb-6 leading-relaxed">
-                    {isRtl ? prod.descriptionAr : prod.descriptionEn}
-                  </p>
-
-                  <div className="mt-auto">
-                    <div className="mb-6">
-                      <div className="text-[10px] font-mono text-neutral-500 mb-3 uppercase tracking-normal">
-                        {isRtl ? 'اختر المقاس:' : 'Select Size:'}
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {prod.variants.map((v) => (
-                          <button
-                            key={v.id}
-                            disabled={v.stockCount === 0}
-                            onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
-                            className={`text-sm font-mono font-bold w-12 h-12 rounded-lg border transition-all ${
-                              v.stockCount === 0
-                                ? 'bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-50 relative overflow-hidden before:absolute before:inset-0 before:bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lIHgxPSIwIiB5MT0iMCIgeDI9IjEwMCUiIHkyPSIxMDAlIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMSIvPjwvc3ZnPg==")]'
-                                : selectedSizes[prod.id] === v.size
-                                  ? 'bg-white border-white text-black shadow-[0_0_15px_rgba(255,255,255,0.3)]'
-                                  : 'bg-[#1A1A1A] border-[#333] text-neutral-400 hover:border-neutral-400 hover:text-white'
-                            }`}
-                          >
-                            <span className="block">{v.size}</span>
-                            {false && (
-                              <span className="block text-[8px] text-[#D80032] -mt-1 leading-none">
-                                {v.stockCount} {isRtl ? 'فقط' : 'left'}
-                              </span>
-                            )}
-                          </button>
-                        ))}
-                      </div>
+              return (
+                <Interactive3DTilt
+                  key={prod.id}
+                  maxRotation={10}
+                  scale={1.02}
+                  showGlare={true}
+                  className="bg-gradient-to-br from-[#121212] via-[#0E0E0E] to-[#080808] border border-[#262626] hover:border-neutral-500 rounded-3xl overflow-hidden flex flex-col justify-between shadow-2xl transition-all duration-300"
+                >
+                  <div className="relative aspect-[4/5] bg-gradient-to-b from-[#181818] to-[#0A0A0A] flex items-center justify-center border-b border-[#222] p-8 overflow-hidden group">
+                    <div className="absolute top-5 start-5 z-20 bg-black/80 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono font-bold px-3 py-1.5 rounded-full flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>{isRtl ? `${totalStock} متوفرة فقط` : `Only ${totalStock} left`}</span>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                      <div className="font-mono text-2xl font-black text-white w-24">
-                        {prod.basePriceJOD.toFixed(2)} <span className="text-xs text-[#D80032]">{isRtl ? 'د.أ' : 'JOD'}</span>
-                      </div>
-                      <button
-                        onClick={() => handleAddToCart(prod)}
-                        className="flex-1 bg-white hover:bg-neutral-200 text-black py-4 rounded-xl font-mono text-sm font-black uppercase tracking-normal transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-white/10"
-                      >
-                        <ShoppingBag size={18} /> {isRtl ? 'أضف للحقيبة' : 'ADD TO BAG'}
-                      </button>
+                    <div className="absolute top-5 end-5 z-20 bg-[#D80032] text-white text-xs font-mono font-black px-3 py-1.5 rounded-full shadow-lg">
+                      35 JOD / $50 USD
+                    </div>
+
+                    <img 
+                      src={prod.images[0]} 
+                      alt={isRtl ? prod.titleAr : prod.titleEn} 
+                      className="w-4/5 h-auto max-h-[380px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)] transition-transform duration-700 group-hover:scale-105 select-none" 
+                    />
+
+                    <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-[11px] font-mono text-neutral-400 bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/5">
+                      <span>100% Bamboo Cotton</span>
+                      <span className="text-white font-bold">DTG Print</span>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+
+                  <div className="p-7 md:p-8 flex flex-col flex-1" dir={isRtl ? 'rtl' : 'ltr'}>
+                    <h3 className="text-2xl md:text-3xl font-black uppercase tracking-normal mb-3 font-sans">
+                      {isRtl ? prod.titleAr : prod.titleEn}
+                    </h3>
+                    <p className="text-xs md:text-sm text-neutral-300 font-mono leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3 mb-6">
+                      {isRtl ? prod.descriptionAr : prod.descriptionEn}
+                    </p>
+
+                    <div className="mt-auto">
+                      <div className="mb-6">
+                        <div className="flex justify-between items-center text-xs font-mono text-neutral-400 mb-2.5">
+                          <span className="font-bold uppercase tracking-normal">
+                            {isRtl ? 'اختر المقاس:' : 'Select Size:'}
+                          </span>
+                          {activeVariant && (
+                            <span className="text-emerald-400 font-mono text-[11px]">
+                              {isRtl ? `المتوفر: ${activeVariant.stockCount} قطع` : `Stock: ${activeVariant.stockCount} left`}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-5 gap-2">
+                          {prod.variants.map((v) => {
+                            const isSelected = selectedSizes[prod.id] === v.size;
+                            const isOutOfStock = v.stockCount === 0;
+
+                            return (
+                              <button
+                                key={v.id}
+                                disabled={isOutOfStock}
+                                onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
+                                className={`relative py-3 rounded-xl font-mono text-sm font-black border transition-all flex flex-col items-center justify-center ${
+                                  isOutOfStock
+                                    ? 'bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-40 line-through'
+                                    : isSelected
+                                      ? 'bg-white border-white text-black shadow-lg shadow-white/20 scale-[1.02]'
+                                      : 'bg-[#161616] border-[#2a2a2a] text-neutral-300 hover:border-neutral-400 hover:text-white'
+                                }`}
+                              >
+                                <span>{v.size}</span>
+                                <span className={`text-[9px] mt-0.5 ${isSelected ? 'text-neutral-700 font-bold' : 'text-neutral-500'}`}>
+                                  ({v.stockCount})
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-4 pt-4 border-t border-[#1F1F1F]">
+                        <div className="font-mono text-2xl font-black text-white">
+                          35 <span className="text-xs text-[#D80032]">{isRtl ? 'د.أ' : 'JOD'}</span>
+                          <span className="text-xs text-neutral-400 font-normal ml-2">($50 USD)</span>
+                        </div>
+                        <button
+                          onClick={() => handleAddToCart(prod)}
+                          className="flex-1 max-w-[200px] bg-white hover:bg-neutral-200 text-black py-4 px-5 rounded-2xl font-mono text-xs md:text-sm font-black uppercase tracking-normal transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-white/20 active:scale-95"
+                        >
+                          {addedItem === prod.id ? (
+                            <>
+                              <Check size={16} className="text-emerald-600" />
+                              <span>{isRtl ? 'تمت الإضافة' : 'Added'}</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag size={16} />
+                              <span>{isRtl ? 'أضف للحقيبة' : 'Add to Bag'}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </Interactive3DTilt>
+              );
+            })}
           </div>
         </section>
 
       </div>
-
-      {/* Video Modal */}
-      {isVideoModalOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4">
-          <button 
-            onClick={() => setIsVideoModalOpen(false)}
-            className="absolute top-6 right-6 text-neutral-500 hover:text-white transition-colors z-[110] bg-black/50 p-2 rounded-full backdrop-blur-md border border-white/10"
-          >
-            <X size={24} />
-          </button>
-
-          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden border border-[#262626] shadow-2xl">
-            {/* Embedded video placeholder - using a generic nature video or similar if direct MP4 isn't available */}
-            <video 
-              src="/collab-video.mp4" 
-              autoPlay 
-              loop 
-              playsInline
-              muted={isMuted}
-              className="w-full h-full object-cover"
-            />
-            
-            <div className="absolute bottom-6 right-6 z-[110]">
-              <button 
-                onClick={() => setIsMuted(!isMuted)}
-                className="bg-black/50 hover:bg-black/80 text-white p-3 rounded-full backdrop-blur-md border border-white/10 transition-colors"
-              >
-                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </PageLayout>
   );
 }

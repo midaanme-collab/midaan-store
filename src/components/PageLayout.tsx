@@ -14,45 +14,67 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
   
   // Theme logic map
   const bgClass = theme === 'dark' ? 'bg-[#050505] text-[#F4F4F0]' : 'bg-[#F4F0EA] text-[#111]';
-  const headerBgClass = theme === 'dark' ? 'bg-[#050505]/90 border-[#1A1A1A]' : 'bg-[#F4F0EA]/90 border-[#111]/10';
+  const headerBgClass = theme === 'dark' ? 'bg-[#050505]/95 border-[#1A1A1A]' : 'bg-[#F4F0EA]/95 border-[#111]/10';
+
+  const cartTotalQuantity = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
   return (
     <div className={`min-h-screen flex flex-col font-sans ${bgClass} transition-colors duration-500`} dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Navigation */}
       <nav className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 ${headerBgClass}`}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <div className="h-16 md:h-20 flex items-center">
-             <Link href="/" className="cursor-pointer">
-               <MidaanLogo size="sm" />
-             </Link>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 md:h-24 flex items-center justify-between">
+          <div className="flex items-center">
+            <Link href="/" className="cursor-pointer py-1 flex items-center" aria-label="Midaan Home">
+              <MidaanLogo size="nav" />
+            </Link>
           </div>
           
-          <div className={`hidden md:flex items-center gap-8 font-mono text-[10px] font-bold ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
-            <Link href="#advocacy" className="hover:text-[#D80032] transition-colors">{}{strings.nav.advocacy}</Link>
-            <Link href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/30 px-3 py-1 rounded bg-[#D80032]/10">Collab // تعاون</Link>
+          <div className={`hidden md:flex items-center gap-8 font-mono text-xs font-bold ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
+            <Link href="/#drops" className="hover:text-[#D80032] transition-colors">
+              {isRtl ? "القطع الحصرية" : "Exclusive Drops"}
+            </Link>
+            <Link href="/#collab" className="hover:text-[#D80032] transition-colors">
+              {isRtl ? "فيديو الحملة" : "Campaign Video"}
+            </Link>
+            <Link href="/#advocacy" className="hover:text-[#D80032] transition-colors">
+              {isRtl ? "صوت ميدان" : "The Voice"}
+            </Link>
+            <Link 
+              href="/collab" 
+              className="text-[#D80032] hover:text-white transition-all border border-[#D80032]/40 hover:border-[#D80032] px-3.5 py-1.5 rounded-lg bg-[#D80032]/10 font-bold flex items-center gap-2"
+            >
+              <span>Midaan × Sotusura</span>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <button 
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className={`p-2 rounded-full border transition-colors ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
+              className={`p-2.5 rounded-full border transition-colors ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
+              aria-label="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
             </button>
             <button 
               onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}
-              className={`flex items-center gap-2 font-mono text-[10px] transition-colors border px-3 py-1.5 rounded-lg ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
+              className={`flex items-center gap-2 font-mono text-xs transition-colors border px-3 py-2 rounded-lg font-bold ${theme === 'dark' ? 'border-[#262626] bg-[#111] hover:text-white' : 'border-[#111]/20 bg-white hover:text-black'}`}
+              aria-label="Change Language"
             >
-              <Globe size={14} />
+              <Globe size={15} />
               <span>{strings.langBtn}</span>
             </button>
             <button 
               onClick={() => setIsCartOpen(true)}
-              className={`bg-[#D80032] text-white hover:bg-[#111] px-4 py-1.5 font-mono text-[10px] font-bold flex items-center gap-2 transition-colors rounded-lg shadow-md ${isRtl ? "tracking-normal" : "tracking-normal"}`}
+              className="bg-[#D80032] hover:bg-[#B00028] text-white px-4 md:px-5 py-2 font-mono text-xs font-bold flex items-center gap-2 transition-all rounded-lg shadow-lg hover:shadow-[#D80032]/30 active:scale-95"
+              aria-label="Open Cart"
             >
-              <ShoppingBag size={14} />
-              <span className="hidden md:inline">{}{strings.nav.cart}</span>
-              {cart.length > 0 && <span className="bg-white text-black px-1.5 rounded text-[9px]">{cart.length}</span>}
+              <ShoppingBag size={16} />
+              <span className="hidden md:inline">{strings.nav.cart}</span>
+              {cartTotalQuantity > 0 && (
+                <span className="bg-white text-black font-black px-1.5 py-0.5 rounded text-[10px]">
+                  {cartTotalQuantity}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -64,17 +86,19 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#111] text-[#F4F4F0] py-16 border-t border-[#1A1A1A] text-center">
-        <Link href="/" className="inline-block cursor-pointer">
-          <MidaanLogo size="sm" />
+      <footer className="bg-[#0A0A0A] text-[#F4F4F0] py-16 border-t border-[#1A1A1A] text-center">
+        <Link href="/" className="inline-block cursor-pointer mb-6" aria-label="Midaan Home">
+          <MidaanLogo size="lg" />
         </Link>
-        <div className="mt-8 flex justify-center gap-6 text-neutral-500">
-          <Compass size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
-          <Globe size={24} className="hover:text-[#D80032] transition-colors cursor-pointer" />
+        <div className="flex justify-center gap-6 text-neutral-500 mb-6">
+          <a href="https://wa.me/962770125316" target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors" title="WhatsApp">
+            <span className="font-mono text-xs font-bold">+962 7 7012 5316</span>
+          </a>
         </div>
-        <p className={`mt-8 font-mono text-xs text-neutral-600 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
-          {}
-          {strings.footerText || "Midaan Collective • Amman, Jordan • All Rights Reserved 2026"}
+        <p className={`font-mono text-xs text-neutral-500 ${isRtl ? "tracking-normal" : "uppercase tracking-normal"}`}>
+          {isRtl 
+            ? "تجمع ميدان • ستوديو الرابية، عمّان، الأردن • جميع الحقوق محفوظة 2026" 
+            : "Midaan Collective • Al-Rabieh Studio, Amman, Jordan • All Rights Reserved 2026"}
         </p>
       </footer>
     </div>

@@ -47,7 +47,7 @@ export default function Voice() {
                 <div className="z-10 mt-8">
                   <div className="font-mono text-[10px] text-[#D80032] font-bold tracking-normal uppercase mb-2">Issue Zero (انتحاب)</div>
                   <h3 className="text-3xl font-black text-white uppercase font-sans leading-none">
-                    Midan Mag
+                    Midaan Mag
                   </h3>
                 </div>
               </div>

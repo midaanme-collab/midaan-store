@@ -10,20 +10,9 @@ export default function ArticlesSection() {
   const isRtl = lang === 'ar';
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   
-  // Hardcoded map to simulate "Click merch link to go to studio preset"
-  const handleMerchLinkClick = (linkId: string) => {
+  const handleMerchLinkClick = () => {
     setSelectedArticle(null); // close article modal
-    if (linkId === 'drop-elfar3i-01') {
-      setGarment('tshirt');
-      setArtMode('presets');
-      setSelectedPreset('far3i');
-      document.getElementById('studio')?.scrollIntoView({ behavior: 'smooth' });
-    } else if (linkId === 'drop-core-02') {
-      setGarment('hoodie');
-      setArtMode('presets');
-      setSelectedPreset('calligraphy');
-      document.getElementById('studio')?.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById('drops')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const featured = ARTICLES[0];
@@ -138,7 +127,7 @@ export default function ArticlesSection() {
                 <div className="mt-16 pt-8 border-t-2 border-[#111]">
                   <h4 className="text-sm font-mono font-bold uppercase tracking-normal mb-4">Related Merchandise</h4>
                   <button 
-                    onClick={() => handleMerchLinkClick(selectedArticle.merchLink!)}
+                    onClick={() => handleMerchLinkClick()}
                     className="bg-[#D80032] hover:bg-[#111] text-white px-8 py-4 text-sm font-black uppercase tracking-normal transition-colors rounded-xl flex items-center gap-2"
                   >
                     View Official Drop <ArrowUpRight size={18} />
