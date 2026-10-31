@@ -41,6 +41,30 @@ function getMagazineHtml(lang, tocPages, totalPages) {
     return txt.replace(/\n/g, '<br/>');
   }
 
+  function cleanReadingBody(rawText) {
+    if (!rawText) return '';
+    let txt = rawText.trim();
+    // Strip redundant leading headings that repeat section titles
+    txt = txt.replace(/^(?:The Torah as a Roadmap: Faith in the Service of Colonialism|التوراة كخريطة طريق\.\. العقيدة في خدمة الاستعمار)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:'A Verse in the Book': Roots in the Islamic Collective Conscience|«آية في كتاب»\.\. الجذور في العقل الجمعي الإسلامي)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The Collapse of Political 'Pragmatism'|سقوط وهم «البراغماتية» ومعركة الروايات)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The System: The Master Matrix|The System|السستم: المصفوفة الكبرى|السستم)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The Patriarchal Order: Deeds of Ownership|The Patriarchal Order|النظام الأبوي: صكوك الملكية|النظام الأبوي)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The Educational System: The Guillotine of the Mind|The Educational System|النظام التعليمي: مقصلة العقول|النظام التعليمي)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The Social Order: A Theater of the Absurd|The Social Order|النظام المجتمعي: مسرح العبث والنفاق|النظام المجتمعي)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The Religious Order: Forbidden Questions|The Religious Order|النظام الربوبي: الأسئلة المحرمة|النظام الربوبي)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:Nine Years Remain: Standing Against the System|Nine Years Remain|تسع سنوات متبقية: الوقوف في وجه السستم|تسع سنوات متبقية)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The Agony of the Opening: Facing Ink and the Void|The Agony of the Opening|مشقة البداية: مواجهة الحبر والعدم|مشقة البداية)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:Psychological Sublimation: How Serenity is Born from Peril|Psychological Sublimation|التسامي النفسي: كيف وُلدت السكينة من رحم الخطر؟|التسامي النفسي)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:3\.\s*Inverting Fear Through Direct Engagement|3\.\s*قلب معادلة الخوف والمواجهة المباشرة)\.?\s*[:.]?\s*/i, '');
+    txt = txt.replace(/^(?:The Legacy of the Testament: Passing the Question to the Living|The Legacy of the Testament|الأثر النفسي للوصية: نقل العبء إلى الأحياء|الأثر النفسي للوصية)\.?\s*[:.]?\s*/i, '');
+    
+    if (!isAr) {
+      txt = txt.replace(/\\'/g, "'");
+    }
+    return txt;
+  }
+
   return `<!DOCTYPE html>
   <html lang="${lang}" dir="${isAr ? 'rtl' : 'ltr'}">
   <head>
@@ -643,7 +667,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
             <div class="toc-item-info">
               <div class="toc-item-cat">${isAr ? 'أرشيف وتوثيق' : 'Historical Registry'}</div>
               <div class="toc-item-title">${isAr ? art4.titleAr : art4.titleEn}</div>
-              <div class="toc-item-desc">${isAr ? 'سجل وصايا الشهداء الفلسطينيين: نصوص ووصايا باسل الأعرج، بهاء عليان، دلال المغربي، غسان كنفاني، ورفاقهم.' : "Ledger of Palestinian Martyrs' Wills: documented testaments of Basil al-Araj, Baha Alyan, Dalal al-Mughrabi, and comrades."}</div>
+              <div class="toc-item-desc">${isAr ? 'سجل وصايا الشهداء الفلسطينيين: نصوص ووصايا باسل الأعرج، بهاء عليان (مختارات)، دلال المغربي، غسان كنفاني، ورفاقهم.' : "Ledger of Palestinian Martyrs' Wills: documented testaments of Basil al-Araj, Baha Alyan (excerpts), Dalal al-Mughrabi, and comrades."}</div>
             </div>
             <div class="toc-item-page">${tocPages.art4 < 10 ? '0' + tocPages.art4 : tocPages.art4}</div>
           </div>
@@ -742,7 +766,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       <!-- Enlarged body text beneath artwork in single reading column -->
       <div class="opener-body-single">
         <p style="margin: 0;">
-          ${isAr ? art1.contentAr[1] : art1.contentEn[1]}
+          ${cleanReadingBody(isAr ? art1.contentAr[1] : art1.contentEn[1])}
         </p>
       </div>
 
@@ -767,8 +791,8 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art1.contentAr[2] : art1.contentEn[2]}</p>
-        <p>${isAr ? art1.contentAr[3] : art1.contentEn[3]}</p>
+        <p>${cleanReadingBody(isAr ? art1.contentAr[2] : art1.contentEn[2])}</p>
+        <p>${cleanReadingBody(isAr ? art1.contentAr[3] : art1.contentEn[3])}</p>
       </div>
 
       <div class="reading-section-title" style="margin-top: 2mm;">
@@ -776,8 +800,8 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art1.contentAr[4] : art1.contentEn[4]}</p>
-        <p>${isAr ? art1.contentAr[5].replace(/\n/g, '<br/>') : art1.contentEn[5].replace(/\n/g, '<br/>')}</p>
+        <p>${cleanReadingBody(isAr ? art1.contentAr[4] : art1.contentEn[4])}</p>
+        <p>${cleanReadingBody(isAr ? art1.contentAr[5] : art1.contentEn[5]).replace(/\n/g, '<br/>')}</p>
       </div>
 
       <!-- Verbatim Pull Quote -->
@@ -833,9 +857,9 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art1.contentAr[7] : art1.contentEn[7]}</p>
-        <p>${isAr ? art1.contentAr[8] : art1.contentEn[8]}</p>
-        <p style="font-weight: 700; color: #111;">${isAr ? art1.contentAr[9] : art1.contentEn[9]}</p>
+        <p>${cleanReadingBody(isAr ? art1.contentAr[7] : art1.contentEn[7])}</p>
+        <p>${cleanReadingBody(isAr ? art1.contentAr[8] : art1.contentEn[8])}</p>
+        <p style="font-weight: 700; color: #111;">${cleanReadingBody(isAr ? art1.contentAr[9] : art1.contentEn[9])}</p>
       </div>
 
       <div class="page-footer">
@@ -869,7 +893,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="opener-lead-box">
-        ${isAr ? art2.contentAr[0] : art2.contentEn[0]}
+        ${cleanReadingBody(isAr ? art2.contentAr[0] : art2.contentEn[0])}
       </div>
 
       <div class="reading-section-title">
@@ -877,7 +901,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art2.contentAr[1] : art2.contentEn[1]}</p>
+        <p>${cleanReadingBody(isAr ? art2.contentAr[1] : art2.contentEn[1])}</p>
       </div>
 
       <div class="reading-section-title" style="margin-top: 1mm;">
@@ -885,7 +909,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art2.contentAr[2] : art2.contentEn[2]}</p>
+        <p>${cleanReadingBody(isAr ? art2.contentAr[2] : art2.contentEn[2])}</p>
       </div>
 
       <div class="page-footer">
@@ -909,7 +933,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art2.contentAr[3] : art2.contentEn[3]}</p>
+        <p>${cleanReadingBody(isAr ? art2.contentAr[3] : art2.contentEn[3])}</p>
       </div>
 
       <!-- Verbatim Pull Quote -->
@@ -922,7 +946,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art2.contentAr[4] : art2.contentEn[4]}</p>
+        <p>${cleanReadingBody(isAr ? art2.contentAr[4] : art2.contentEn[4])}</p>
       </div>
 
       <div class="page-footer">
@@ -946,7 +970,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art2.contentAr[5] : art2.contentEn[5]}</p>
+        <p>${cleanReadingBody(isAr ? art2.contentAr[5] : art2.contentEn[5])}</p>
       </div>
 
       <div class="reading-section-title" style="margin-top: 2mm;">
@@ -954,7 +978,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art2.contentAr[6] : art2.contentEn[6]}</p>
+        <p>${cleanReadingBody(isAr ? art2.contentAr[6] : art2.contentEn[6])}</p>
       </div>
 
       <div style="background: #F2EFE9; border-${isAr ? 'right' : 'left'}: 3.5px solid #111; padding: 3.5mm 4.5mm; border-radius: 2px; margin-top: auto;">
@@ -999,7 +1023,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="opener-lead-box">
-        ${isAr ? art3.contentAr[0] : art3.contentEn[0]}
+        ${cleanReadingBody(isAr ? art3.contentAr[0] : art3.contentEn[0])}
       </div>
 
       <div class="reading-section-title">
@@ -1007,8 +1031,8 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art3.contentAr[1] : art3.contentEn[1]}</p>
-        <p>${isAr ? art3.contentAr[2] : art3.contentEn[2]}</p>
+        <p>${cleanReadingBody(isAr ? art3.contentAr[1] : art3.contentEn[1])}</p>
+        <p>${cleanReadingBody(isAr ? art3.contentAr[2] : art3.contentEn[2])}</p>
       </div>
 
       <div class="page-footer">
@@ -1032,9 +1056,9 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art3.contentAr[3] : art3.contentEn[3]}</p>
-        <p>${isAr ? art3.contentAr[4] : art3.contentEn[4]}</p>
-        <p>${isAr ? art3.contentAr[5] : art3.contentEn[5]}</p>
+        <p>${cleanReadingBody(isAr ? art3.contentAr[3] : art3.contentEn[3])}</p>
+        <p>${cleanReadingBody(isAr ? art3.contentAr[4] : art3.contentEn[4])}</p>
+        <p>${cleanReadingBody(isAr ? art3.contentAr[5] : art3.contentEn[5])}</p>
       </div>
 
       <!-- Verbatim Pull Quote -->
@@ -1063,7 +1087,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art3.contentAr[6] : art3.contentEn[6]}</p>
+        <p>${cleanReadingBody(isAr ? art3.contentAr[6] : art3.contentEn[6])}</p>
       </div>
 
       <div class="reading-section-title" style="margin-top: 2mm;">
@@ -1071,8 +1095,8 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="reading-single-column">
-        <p>${isAr ? art3.contentAr[7] : art3.contentEn[7]}</p>
-        <p style="font-weight: 700; color: #111;">${isAr ? art3.contentAr[8] : art3.contentEn[8]}</p>
+        <p>${cleanReadingBody(isAr ? art3.contentAr[7] : art3.contentEn[7])}</p>
+        <p style="font-weight: 700; color: #111;">${cleanReadingBody(isAr ? art3.contentAr[8] : art3.contentEn[8])}</p>
       </div>
 
       <div style="background: #F2EFE9; border-${isAr ? 'right' : 'left'}: 3.5px solid #D80032; padding: 3.5mm 4.5mm; border-radius: 2px; margin-top: auto;">
@@ -1117,7 +1141,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
       </div>
 
       <div class="opener-lead-box">
-        ${isAr ? art4.contentAr[0] : art4.contentEn[0]}
+        ${cleanReadingBody(isAr ? art4.contentAr[0] : art4.contentEn[0])}
       </div>
 
       <div class="reading-section-title">
@@ -1131,7 +1155,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
           <th>${isAr ? 'طبيعة الوصية ودلالتها' : 'Classification & Significance'}</th>
         </tr>
         <tr><td>${isAr ? 'باسل الأعرج' : 'Basil al-Araj'}</td><td>2017</td><td>${isAr ? 'فكرية وثقافية ثورية (حيرة الوصية وأجوبة الاشتباك)' : 'Revolutionary thought and cultural theory'}</td></tr>
-        <tr><td>${isAr ? 'بهاء عليان' : 'Baha Alyan'}</td><td>2015</td><td>${isAr ? 'الوصايا العشر (أخلاقيات اجتماعية ومجتمعية)' : 'The Ten Commandments (Social and civic ethical principles)'}</td></tr>
+        <tr><td>${isAr ? 'بهاء عليان' : 'Baha Alyan'}</td><td>2015</td><td>${isAr ? 'الوصايا العشر (مختارات اجتماعية وفكرية)' : 'The Ten Wills (Selected Civic & Social Excerpts)'}</td></tr>
         <tr><td>${isAr ? 'دلال المغربي' : 'Dalal al-Mughrabi'}</td><td>1978</td><td>${isAr ? 'سياسية وعسكرية استراتيجية (استقلال البندقية)' : 'Strategic political and military imperative'}</td></tr>
         <tr><td>${isAr ? 'تامر الكيلاني' : 'Tamer al-Kilani'}</td><td>2022</td><td>${isAr ? 'تنظيمية وروحية (نقاء المقصد ورفض الاستعراض)' : 'Organizational discipline and spiritual resolve'}</td></tr>
         <tr><td>${isAr ? 'إبراهيم النابلسي' : 'Ibrahim al-Nabulsi'}</td><td>2022</td><td>${isAr ? 'ميدانية (تسجيل صوتي مباشر تحت الحصار)' : 'Battlefield audio dispatch under siege'}</td></tr>
@@ -1173,7 +1197,7 @@ function getMagazineHtml(lang, tocPages, totalPages) {
 
       <div class="martyr-card">
         <div class="martyr-card-header">
-          <span>${isAr ? '2. الوصايا العشر للشهيد بهاء عليان' : '2. The Ten Wills of Martyr Baha Alyan'}</span>
+          <span>${isAr ? '2. مختارات من الوصايا العشر للشهيد بهاء عليان' : '2. Excerpts from the Ten Wills of Martyr Baha Alyan'}</span>
           <span class="martyr-card-year">2015</span>
         </div>
         <div class="martyr-card-body">
