@@ -8,6 +8,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://midaan-store.midaanme.workers.dev"),
   title: "Midaan Collective | ميدان",
   description: "An independent cultural and intellectual publication and streetwear initiative exploring identity, social transformations, and civic expression. إصدار فكري ثقافي ومبادرة أزياء مستقلة تبحث في قضايا الهوية والتعبير المدني.",
   manifest: "/manifest.json",

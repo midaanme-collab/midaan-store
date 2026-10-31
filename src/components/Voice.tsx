@@ -16,7 +16,7 @@ export default function Voice() {
     : '/magazine/issue-zero-cover-thumb-en.png';
 
   return (
-    <section id="voice" className="w-full bg-[#050505] py-24 px-4 md:px-8 border-t border-[#1F1F1F] relative overflow-hidden scroll-mt-24" dir={isRtl ? 'rtl' : 'ltr'}>
+    <section id="voice" className="w-full bg-[#050505] py-16 md:py-20 px-4 md:px-8 border-t border-[#1F1F1F] relative overflow-hidden scroll-mt-24" dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Subtle Grid Background */}
       <div 
         className="absolute inset-0 opacity-5 pointer-events-none" 

@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Language, Product, GarmentSize } from "@/types";
-import { ShoppingBag, Check, MessageSquare } from "lucide-react";
+import { ShoppingBag, Check, MessageSquare, ArrowUpRight } from "lucide-react";
 import { useStore } from "@/store";
 import Interactive3DTilt from "./Interactive3DTilt";
 import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from "@/constants/products";
@@ -121,11 +122,21 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
               <div className="p-7 md:p-8 flex flex-col flex-1">
                 <div className="mb-6">
                   <h3 className="font-black text-2xl md:text-3xl text-white leading-tight font-sans mb-3">
-                    {isRtl ? prod.titleAr : prod.titleEn}
+                    <Link href={`/products/${prod.id}`} className="hover:text-[#D80032] transition-colors inline-flex items-center gap-2 group/link">
+                      <span>{isRtl ? prod.titleAr : prod.titleEn}</span>
+                      <ArrowUpRight size={18} className="text-neutral-500 group-hover/link:text-[#D80032] transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+                    </Link>
                   </h3>
-                  <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3.5">
+                  <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3.5 mb-2">
                     {isRtl ? prod.descriptionAr : prod.descriptionEn}
                   </p>
+                  <Link 
+                    href={`/products/${prod.id}`}
+                    className="text-xs text-[#D80032] hover:underline font-semibold inline-flex items-center gap-1"
+                  >
+                    <span>{isRtl ? 'عرض صفحة وتفاصيل القطعة الموثقة' : 'View full piece details & story'}</span>
+                    <ArrowUpRight size={12} />
+                  </Link>
                 </div>
 
                 {/* Size Selection */}

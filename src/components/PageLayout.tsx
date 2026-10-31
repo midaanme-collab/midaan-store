@@ -23,15 +23,18 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           </div>
           
           {/* Main Navigation Links */}
-          <div className={`hidden md:flex items-center gap-8 ${isRtl ? 'font-sans text-sm font-medium' : 'font-sans text-sm font-semibold tracking-wide'}`}>
-            <Link href="#drops" className="text-neutral-200 hover:text-[#D80032] transition-colors">
+          <div className={`hidden md:flex items-center gap-7 ${isRtl ? 'font-sans text-sm font-medium' : 'font-sans text-sm font-semibold tracking-wide'}`}>
+            <Link href="/#drops" className="text-neutral-200 hover:text-[#D80032] transition-colors">
               {strings.nav.store}
             </Link>
-            <Link href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/40 px-3.5 py-1.5 rounded-full bg-[#D80032]/10">
+            <Link href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/40 px-3 py-1 rounded-full bg-[#D80032]/10">
               {strings.nav.collab}
             </Link>
             <Link href="/magazine" className="text-neutral-200 hover:text-[#D80032] transition-colors">
               {strings.nav.magazine}
+            </Link>
+            <Link href="/about" className="text-neutral-300 hover:text-[#D80032] transition-colors">
+              {isRtl ? 'عن ميدان' : 'About'}
             </Link>
           </div>
 
@@ -88,7 +91,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
         
         {/* Navigation & WhatsApp Contacts */}
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-neutral-200 font-medium mb-6">
-          <Link href="#drops" className="hover:text-white transition-colors">
+          <Link href="/#drops" className="hover:text-white transition-colors">
             {strings.nav.store}
           </Link>
           <span className="text-neutral-600">•</span>
@@ -98,6 +101,10 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           <span className="text-neutral-600">•</span>
           <Link href="/magazine" className="hover:text-white transition-colors">
             {strings.nav.magazine}
+          </Link>
+          <span className="text-neutral-600">•</span>
+          <Link href="/about" className="hover:text-white transition-colors">
+            {isRtl ? 'عن ميدان' : 'About'}
           </Link>
           <span className="text-neutral-600">•</span>
           <a 

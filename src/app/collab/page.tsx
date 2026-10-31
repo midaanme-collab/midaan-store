@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, ShoppingBag, Check, MessageSquare } from 'lucide-react';
+import Link from 'next/link';
+import { Play, Pause, ShoppingBag, Check, MessageSquare, ArrowUpRight } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Interactive3DTilt from '@/components/Interactive3DTilt';
 import { useStore } from '@/store';
@@ -182,6 +183,51 @@ export default function CollabPage() {
           </div>
         </section>
 
+        {/* 2.5 Narrative & Craft Context */}
+        <section className="py-16 px-4 md:px-8 border-b border-[#262626] bg-[#070707]">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-[#101010] border border-[#222] rounded-3xl p-8 sm:p-12 shadow-xl">
+              <div className="inline-flex items-center gap-2 bg-[#D80032]/10 border border-[#D80032]/30 text-[#D80032] px-3.5 py-1 rounded-full text-xs font-bold uppercase mb-4">
+                <span>{isRtl ? 'سردية التعاون والتصنيع' : 'Collaboration Narrative & Craft'}</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight mb-5">
+                {isRtl 
+                  ? 'بين هوية الميدان وحرفية سوتسورا' 
+                  : 'Between Street Identity & Artisan Execution'}
+              </h2>
+
+              <div className="space-y-4 text-sm sm:text-base text-neutral-300 font-sans leading-relaxed">
+                <p>
+                  {isRtl 
+                    ? 'يجمع هذا المشروع المشترك بين ميدان (المبادرة الفكرية والثقافية النابعة من عمّان وفلسطين) وسوتسورا (العلامة الإندونيسية المتخصصة في إنتاج المنسوجات البديلة). يرتكز التعاون على تحويل الرواية البصرية الملتزمة إلى منتج ملموس عالي الجودة يُرتدى في الحياة اليومية.'
+                    : 'This collaborative release unites Midaan (the intellectual and cultural initiative from Amman and Palestine) and Sotusura (the Indonesian label specializing in alternative apparel craft). The project transforms committed visual narrative into high-grade physical garments for everyday life.'}
+                </p>
+                <p>
+                  {isRtl
+                    ? 'تم اختيار نسيج قطن الخيزران 100% المنسوج في إندونيسيا لمرونته وملمسه الناعم وتوافقه العالي مع تقنية الطباعة الرقمية المباشرة (DTG)، التي تدمج التصميم داخل أنسجة القطن ليبقى ثابتاً ومسامياً مع كثرة الاستخدام والغسيل.'
+                    : '100% Indonesian-milled bamboo cotton was selected for its durability, natural softness, and exceptional receptivity to Direct-to-Garment (DTG) printing, infusing archival graphics deep into the fabric fibers without stiffness or cracking.'}
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-[#222] grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-neutral-400 font-sans">
+                <div>
+                  <span className="block text-white font-bold mb-1">{isRtl ? 'المفهوم الفني' : 'Concept'}</span>
+                  <span>{isRtl ? 'سردية الشارع والذاكرة المقاومة' : 'Street narrative & cultural resistance'}</span>
+                </div>
+                <div>
+                  <span className="block text-white font-bold mb-1">{isRtl ? 'النسيج والمنشأ' : 'Fabric & Origin'}</span>
+                  <span>{isRtl ? 'قطن خيزران 100% • إندونيسيا' : '100% Bamboo Cotton • Indonesia'}</span>
+                </div>
+                <div>
+                  <span className="block text-white font-bold mb-1">{isRtl ? 'تقنية التنفيذ' : 'Execution'}</span>
+                  <span>{isRtl ? 'طباعة مباشرة على القماش (DTG)' : 'Direct-to-Garment (DTG) Print'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 3. Approved Products Showcase */}
         <section id="collab-drops" className="py-20 px-4 md:px-8 max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#262626] pb-8 mb-16 gap-6">
@@ -241,11 +287,21 @@ export default function CollabPage() {
                   <div className="p-7 md:p-8 flex flex-col flex-1">
                     <div className="mb-6">
                       <h3 className="text-2xl md:text-3xl font-black text-white leading-tight font-sans mb-3">
-                        {isRtl ? prod.titleAr : prod.titleEn}
+                        <Link href={`/products/${prod.id}`} className="hover:text-[#D80032] transition-colors inline-flex items-center gap-2 group/link">
+                          <span>{isRtl ? prod.titleAr : prod.titleEn}</span>
+                          <ArrowUpRight size={18} className="text-neutral-500 group-hover/link:text-[#D80032] transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+                        </Link>
                       </h3>
-                      <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3.5">
+                      <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3.5 mb-2">
                         {isRtl ? prod.descriptionAr : prod.descriptionEn}
                       </p>
+                      <Link 
+                        href={`/products/${prod.id}`}
+                        className="text-xs text-[#D80032] hover:underline font-semibold inline-flex items-center gap-1"
+                      >
+                        <span>{isRtl ? 'عرض صفحة وتفاصيل القطعة الموثقة' : 'View full piece details & story'}</span>
+                        <ArrowUpRight size={12} />
+                      </Link>
                     </div>
 
                     <div className="mb-6">

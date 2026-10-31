@@ -36,6 +36,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       siteName: 'Midaan Magazine',
       locale: 'en_US',
       type: 'article',
+      images: [
+        {
+          url: '/magazine/issue-zero-cover-thumb-en.png',
+          width: 849,
+          height: 1200,
+          alt: `${article.titleEn} - Midaan Magazine`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${article.titleEn} | Midaan Magazine`,
+      description: article.excerptEn,
+      images: ['/magazine/issue-zero-cover-thumb-en.png'],
     },
   };
 }

@@ -36,6 +36,20 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       siteName: 'مجلة ميدان',
       locale: 'ar_JO',
       type: 'article',
+      images: [
+        {
+          url: '/magazine/issue-zero-cover-thumb.png',
+          width: 849,
+          height: 1200,
+          alt: `${article.titleAr} - مجلة ميدان`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${article.titleAr} | مجلة ميدان`,
+      description: article.excerptAr,
+      images: ['/magazine/issue-zero-cover-thumb.png'],
     },
   };
 }

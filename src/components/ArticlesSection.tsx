@@ -33,8 +33,8 @@ export default function ArticlesSection() {
 
   return (
     <>
-      <section id="advocacy" className="w-full bg-[#070707] text-[#EDEDED] py-24 px-4 md:px-8 border-t border-[#1F1F1F] font-sans scroll-mt-24" dir={isRtl ? 'rtl' : 'ltr'}>
-        <div className="max-w-7xl mx-auto flex flex-col items-center justify-between mb-16 pb-8 border-b border-[#262626]">
+      <section id="advocacy" className="w-full bg-[#070707] text-[#EDEDED] py-16 md:py-20 px-4 md:px-8 border-t border-[#1F1F1F] font-sans scroll-mt-24" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-between mb-12 pb-6 border-b border-[#262626]">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white font-sans text-center leading-tight">
             {strings.articlesSection.heading}
           </h2>
