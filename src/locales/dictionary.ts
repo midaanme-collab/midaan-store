@@ -72,8 +72,8 @@ export const content = {
     paymentMethod: "طريقة الدفع:",
     subtotal: "المجموع الفرعي:",
     total: "المجموع الكلي:",
-    sendOrderWhatsApp: "إرسال طلب الشراء عبر واتساب",
-    orderRequestNotice: "إرسال الطلب عبر واتساب هو طلب مبدئي يتطلب مراجعة وتأكيداً يدوياً من فريقنا للتحقق من توفر المخزون وتأكيد السعر النهائي.",
+    sendOrderWhatsApp: "إرسال طلب عبر واتساب",
+    orderRequestNotice: "يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع.",
   },
   en: {
     langBtn: "عربي",
@@ -146,7 +146,7 @@ export const content = {
     paymentMethod: "Payment Method:",
     subtotal: "Subtotal:",
     total: "Total:",
-    sendOrderWhatsApp: "Send Order Request via WhatsApp",
-    orderRequestNotice: "Sending the order via WhatsApp is an order request requiring manual confirmation. Our team will verify inventory availability and confirm the final total with you.",
+    sendOrderWhatsApp: "Send Request via WhatsApp",
+    orderRequestNotice: "The Midaan team confirms size availability and delivery fees before payment.",
   }
 };

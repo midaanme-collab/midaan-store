@@ -55,8 +55,8 @@ export default function Modals() {
       : (isRtl ? 'المجموع (باستثناء الشحن):' : 'Total (Excluding shipping):');
 
     const msg = isRtl
-      ? `مرحباً فريق ميدان،\n\nأود إرسال طلب الشراء المبدئي التالي (يرجى مراجعة وتأكيد توفر المخزون والسعر النهائي):\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingInfo})\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'تحويل عبر كليك (بانتظار تفاصيل التحويل بعد تأكيد التوفر)' : 'الدفع عند الاستلام (نقداً)'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*ملاحظة: هذا طلب مبدئي يتطلب تأكيداً يدوياً من فريق ميدان بعد التحقق من المقاسات وتوفر القطع في المستودع وحساب تكلفة التوصيل الفعلية.*`
-      : `Hello Midaan team,\n\nI would like to submit the following order request (subject to manual confirmation of stock and final total):\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingInfo})\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ Transfer (Awaiting transfer details upon confirmation)' : 'Cash on Delivery (COD)'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*Note: This is an initial order request requiring manual confirmation from the Midaan team after verifying inventory availability and actual delivery fees.*`;
+      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingInfo})\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'كليك (CliQ)' : 'عند الاستلام (نقداً)'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*ملاحظة: يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع.*`
+      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingInfo})\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*Note: The Midaan team confirms size availability and delivery fees before payment.*`;
 
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
@@ -214,11 +214,11 @@ export default function Modals() {
                     <p>
                       {paymentMethod === 'cliq'
                         ? (isRtl 
-                            ? 'لا يُطلب الدفع الآن. بعد مراجعة توفر المقاسات والمخزون وحساب رسوم التوصيل، سيزودكم فريق ميدان بالاسم المستعار الرسمي لكليك عبر واتساب لإتمام التحويل بأمان.'
-                            : 'No payment is requested now. The Midaan team will verify stock and calculate shipping, then provide official CliQ transfer details via WhatsApp.')
+                            ? 'لا يُطلب الدفع الآن. يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع، ثم يزودكم بالاسم المستعار الرسمي لكليك عبر واتساب لإتمام التحويل بأمان.'
+                            : 'No payment is requested now. The Midaan team confirms size availability and delivery fees before payment, then provides official CliQ transfer details via WhatsApp.')
                         : (isRtl
-                            ? 'يتم الدفع نقداً عند استلام الشحنة بعد مراجعة وتأكيد توفر المقاسات وموعد التسليم من قِبل الفريق.'
-                            : 'Payment is collected in cash upon delivery after stock verification and delivery scheduling by the team.')}
+                            ? 'يتم الدفع نقداً عند استلام الشحنة. يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل وموعد التسليم قبل إرسال الطلب.'
+                            : 'Payment is collected in cash upon delivery. The Midaan team confirms size availability, delivery fees, and delivery schedule before dispatch.')}
                     </p>
                   </div>
 

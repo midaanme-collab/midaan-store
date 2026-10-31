@@ -288,8 +288,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
                 <p className="text-[11px] text-neutral-400 font-sans text-center leading-relaxed">
                   {isAr 
-                    ? '* ملاحظة: هذا طلب حجز أولي. يتولى فريق ميدان مراجعة وتأكيد توفر المقاس فعلياً في المستودع وحساب رسوم التوصيل قبل تأكيد الطلب النهائي عبر واتساب.'
-                    : '* Note: This is an order reservation request. The Midaan team verifies actual stock availability and confirms delivery fees prior to final WhatsApp confirmation.'}
+                    ? '* ملاحظة: يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع عبر واتساب.'
+                    : '* Note: The Midaan team confirms size availability and delivery fees via WhatsApp before payment.'}
                 </p>
               </div>
 
