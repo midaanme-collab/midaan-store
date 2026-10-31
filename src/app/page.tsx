@@ -7,7 +7,6 @@ import CampaignVideoSection from '@/components/CampaignVideoSection';
 import DropShowcase from '@/components/DropShowcase';
 import ArticlesSection from '@/components/ArticlesSection';
 import Voice from '@/components/Voice';
-import Modals from '@/components/Modals';
 
 export default function Home() {
   return (
@@ -17,7 +16,6 @@ export default function Home() {
       <DropShowcase />
       <ArticlesSection />
       <Voice />
-      <Modals />
     </PageLayout>
   );
 }

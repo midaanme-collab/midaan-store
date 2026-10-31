@@ -116,7 +116,7 @@ export default function Modals() {
                             {strings.size}: <span className="font-bold text-neutral-200" dir="ltr">{item.size}</span>
                           </p>
                           <p>
-                            {isRtl ? 'السعر الفردي:' : 'Unit price:'} <span className="font-semibold text-neutral-300" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>{formatProductPrice(currency, isRtl)}</span>
+                            {isRtl ? 'السعر الفردي:' : 'Unit price:'} <span className="font-semibold text-neutral-300" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>{formatProductPrice(currency, isRtl ? 'ar' : 'en')}</span>
                           </p>
                         </div>
 

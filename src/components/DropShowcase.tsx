@@ -113,7 +113,7 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
 
                 {/* Localized Bottom Bar Specs */}
                 <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-xs text-neutral-300 bg-black/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
-                  <span>{strings.products.bambooFabric}</span>
+                  <span>{strings.products.garmentFit}</span>
                   <span className="text-white font-bold">{strings.products.dtgPrint}</span>
                 </div>
               </div>

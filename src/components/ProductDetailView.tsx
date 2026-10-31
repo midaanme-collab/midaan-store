@@ -41,7 +41,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
   // Documented design story
   const designStory = isHelmet
     ? {
-        ar: 'صُمم هذا التيشيرت بالتعاون بين ميدان وسوتسورا ليعبر عن روح الشارع الفلسطيني المقاوم؛ حيث تلتقي خوذة الدراجة النارية مع نقشة الكوفية التقليدية كرمز للحماية واليقظة والصمود اليومي لجيل يتمسك بحقه في البقاء والتعبير.',
+        ar: 'صُمم هذا التيشيرت بالتعاون بين ميدان وصوت وصورة ليعبر عن روح الشارع الفلسطيني المقاوم؛ حيث تلتقي خوذة الدراجة النارية مع نقشة الكوفية التقليدية كرمز للحماية واليقظة والصمود اليومي لجيل يتمسك بحقه في البقاء والتعبير.',
         en: 'Created in collaboration between Midaan and Sotusura, reflecting the raw pulse of the Palestinian street. The motorcycle helmet converges with the traditional keffiyeh weave as an emblem of urban protection, youth vigilance, and unyielding identity.'
       }
     : {
@@ -52,15 +52,9 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
   // Documented garment specifications
   const specs = [
     {
-      labelAr: 'الخامة والنسيج',
-      labelEn: 'Material & Fabric',
-      valAr: 'قطن خيزران 100% طبيعي (100% Bamboo Cotton) فائق النعومة ومسامي.',
-      valEn: '100% Bamboo Cotton, ultra-soft, breathable, and sustainably woven.'
-    },
-    {
       labelAr: 'بلد الصنع',
       labelEn: 'Origin & Manufacturing',
-      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع سوتسورا.',
+      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع صوت وصورة.',
       valEn: 'Crafted in Indonesia through dedicated artisan partnership with Sotusura.'
     },
     {
@@ -139,10 +133,10 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                 {/* Collaboration & Garment Badges */}
                 <div className="absolute top-5 left-5 right-5 z-10 flex items-center justify-between pointer-events-none">
                   <span className="bg-[#D80032] text-white text-[10px] md:text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    {isAr ? 'إصدار محدود // Midaan × Sotusura' : 'Limited Drop // Midaan × Sotusura'}
+                    {isAr ? 'إصدار محدود // مجموعة ميدان × صوت وصورة' : 'Limited Drop // Midaan × Sotusura'}
                   </span>
                   <span className="bg-black/70 backdrop-blur-md border border-[#333] text-neutral-300 text-[10px] md:text-xs px-2.5 py-1 rounded-full">
-                    {isAr ? 'قطن خيزران 100%' : '100% Bamboo Cotton'}
+                    {isAr ? 'قصة مريحة للجنسين' : 'Relaxed Unisex Fit'}
                   </span>
                 </div>
 
@@ -191,9 +185,6 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                 <div className="flex items-baseline gap-3 mb-6">
                   <span className="text-3xl font-black text-white font-sans" dir={isAr && currency === 'JOD' ? 'rtl' : 'ltr'}>
                     {priceDisplay}
-                  </span>
-                  <span className="text-xs text-neutral-400">
-                    {isAr ? '(شامل الضريبة)' : '(Tax included)'}
                   </span>
                 </div>
 
@@ -279,7 +270,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       <ShoppingBag size={18} />
                       <span>
                         {isVariantInStock 
-                          ? strings.products.addToCart 
+                          ? strings.products.addToBag 
                           : strings.products.outOfStock}
                       </span>
                     </>

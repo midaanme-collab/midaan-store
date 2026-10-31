@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 import MidaanLogo from './MidaanLogo';
+import Modals from './Modals';
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
   const { lang, setLang, setIsCartOpen, cart, currency, setCurrency } = useStore();
@@ -128,6 +129,9 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           {strings.footer.rights}
         </p>
       </footer>
+
+      {/* Global Cart Drawer and Modals */}
+      <Modals />
     </div>
   );
 }

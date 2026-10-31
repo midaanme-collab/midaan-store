@@ -193,20 +193,20 @@ export default function CollabPage() {
 
               <h2 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight mb-5">
                 {isRtl 
-                  ? 'بين هوية الميدان وحرفية سوتسورا' 
+                  ? 'بين هوية الميدان وحرفية صوت وصورة' 
                   : 'Between Street Identity & Artisan Execution'}
               </h2>
 
               <div className="space-y-4 text-sm sm:text-base text-neutral-300 font-sans leading-relaxed">
                 <p>
                   {isRtl 
-                    ? 'يجمع هذا المشروع المشترك بين ميدان (المبادرة الفكرية والثقافية النابعة من عمّان وفلسطين) وسوتسورا (العلامة الإندونيسية المتخصصة في إنتاج المنسوجات البديلة). يرتكز التعاون على تحويل الرواية البصرية الملتزمة إلى منتج ملموس عالي الجودة يُرتدى في الحياة اليومية.'
+                    ? 'يجمع هذا المشروع المشترك بين ميدان (المبادرة الفكرية والثقافية النابعة من عمّان وفلسطين) وصوت وصورة (العلامة المتخصصة في إنتاج المنسوجات البديلة). يرتكز التعاون على تحويل الرواية البصرية الملتزمة إلى منتج ملموس عالي الجودة يُرتدى في الحياة اليومية.'
                     : 'This collaborative release unites Midaan (the intellectual and cultural initiative from Amman and Palestine) and Sotusura (the Indonesian label specializing in alternative apparel craft). The project transforms committed visual narrative into high-grade physical garments for everyday life.'}
                 </p>
                 <p>
                   {isRtl
-                    ? 'تم اختيار نسيج قطن الخيزران 100% المنسوج في إندونيسيا لمرونته وملمسه الناعم وتوافقه العالي مع تقنية الطباعة الرقمية المباشرة (DTG)، التي تدمج التصميم داخل أنسجة القطن ليبقى ثابتاً ومسامياً مع كثرة الاستخدام والغسيل.'
-                    : '100% Indonesian-milled bamboo cotton was selected for its durability, natural softness, and exceptional receptivity to Direct-to-Garment (DTG) printing, infusing archival graphics deep into the fabric fibers without stiffness or cracking.'}
+                    ? 'تم اختيار النسيج القطني المنسوج في إندونيسيا لمرونته وملمسه الناعم وتوافقه العالي مع تقنية الطباعة الرقمية المباشرة (DTG)، التي تدمج التصميم داخل أنسجة القطن ليبقى ثابتاً ومسامياً مع كثرة الاستخدام والغسيل.'
+                    : 'Indonesian-milled cotton weave was selected for its durability, natural softness, and exceptional receptivity to Direct-to-Garment (DTG) printing, infusing archival graphics deep into the fabric fibers without stiffness or cracking.'}
                 </p>
               </div>
 
@@ -216,8 +216,8 @@ export default function CollabPage() {
                   <span>{isRtl ? 'سردية الشارع والذاكرة المقاومة' : 'Street narrative & cultural resistance'}</span>
                 </div>
                 <div>
-                  <span className="block text-white font-bold mb-1">{isRtl ? 'النسيج والمنشأ' : 'Fabric & Origin'}</span>
-                  <span>{isRtl ? 'قطن خيزران 100% • إندونيسيا' : '100% Bamboo Cotton • Indonesia'}</span>
+                  <span className="block text-white font-bold mb-1">{isRtl ? 'المنشأ والتصنيع' : 'Origin & Craft'}</span>
+                  <span>{isRtl ? 'صنع في إندونيسيا' : 'Made in Indonesia'}</span>
                 </div>
                 <div>
                   <span className="block text-white font-bold mb-1">{isRtl ? 'تقنية التنفيذ' : 'Execution'}</span>
@@ -279,7 +279,7 @@ export default function CollabPage() {
                     />
 
                     <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-xs text-neutral-300 bg-black/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
-                      <span>{strings.products.bambooFabric}</span>
+                      <span>{strings.products.garmentFit}</span>
                       <span className="text-white font-bold">{strings.products.dtgPrint}</span>
                     </div>
                   </div>

@@ -9,23 +9,23 @@ async function capture() {
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
-  // 1. Mobile Product Detail Page (/products/drop-helmet-white)
+  // 1. Mobile Product Detail Page (/products/drop-helmet-white/)
   {
     const page = await browser.newPage();
     await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
-    await page.goto('http://localhost:3000/products/drop-helmet-white', { waitUntil: 'networkidle0' });
+    await page.goto('http://localhost:3000/products/drop-helmet-white/', { waitUntil: 'networkidle0' });
     await new Promise(r => setTimeout(r, 600));
 
     await page.screenshot({ path: 'screenshot-mobile-product-pdp.png', fullPage: false });
     console.log('Captured: screenshot-mobile-product-pdp.png');
 
-    // Select size 'M' and Add to Bag
+    // Select size 'M'
     await page.evaluate(() => {
       const sizeBtns = Array.from(document.querySelectorAll('button'));
       const mBtn = sizeBtns.find(b => b.textContent && b.textContent.trim() === 'M');
       if (mBtn) mBtn.click();
     });
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 400));
 
     // Click Add to Bag
     await page.evaluate(() => {
@@ -33,7 +33,7 @@ async function capture() {
       const addBtn = btns.find(b => b.textContent && (b.textContent.includes('أضف إلى الحقيبة') || b.textContent.includes('Add to Bag')));
       if (addBtn) addBtn.click();
     });
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 1200));
 
     // Capture Mobile Cart Drawer opened from PDP
     await page.screenshot({ path: 'screenshot-mobile-cart-from-pdp.png', fullPage: false });
@@ -46,18 +46,18 @@ async function capture() {
   {
     const page = await browser.newPage();
     await page.setViewport({ width: 1440, height: 950, deviceScaleFactor: 2 });
-    await page.goto('http://localhost:3000/products/drop-helmet-white', { waitUntil: 'networkidle0' });
+    await page.goto('http://localhost:3000/products/drop-helmet-white/', { waitUntil: 'networkidle0' });
     await new Promise(r => setTimeout(r, 600));
     await page.screenshot({ path: 'screenshot-desktop-product-pdp.png', fullPage: false });
     console.log('Captured: screenshot-desktop-product-pdp.png');
     await page.close();
   }
 
-  // 3. Mobile Article Page (/magazine/ar/articles/art-1)
+  // 3. Mobile Article Page (/magazine/ar/articles/art-1/)
   {
     const page = await browser.newPage();
     await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
-    await page.goto('http://localhost:3000/magazine/ar/articles/art-1', { waitUntil: 'networkidle0' });
+    await page.goto('http://localhost:3000/magazine/ar/articles/art-1/', { waitUntil: 'networkidle0' });
     await new Promise(r => setTimeout(r, 600));
 
     await page.screenshot({ path: 'screenshot-mobile-article-refined.png', fullPage: false });
@@ -74,11 +74,11 @@ async function capture() {
     await page.close();
   }
 
-  // 4. About Page (/about)
+  // 4. About Page (/about/)
   {
     const page = await browser.newPage();
     await page.setViewport({ width: 1440, height: 950, deviceScaleFactor: 2 });
-    await page.goto('http://localhost:3000/about', { waitUntil: 'networkidle0' });
+    await page.goto('http://localhost:3000/about/', { waitUntil: 'networkidle0' });
     await new Promise(r => setTimeout(r, 600));
     await page.screenshot({ path: 'screenshot-about-page.png', fullPage: false });
     console.log('Captured: screenshot-about-page.png');

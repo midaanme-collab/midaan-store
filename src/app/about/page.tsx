@@ -97,8 +97,8 @@ export default function AboutPage() {
                   </h3>
                   <p className="text-sm text-neutral-300 leading-relaxed mb-6">
                     {isAr
-                      ? 'أزياء وقطع فنية وثائقية صُنعت لترتدي الرواية في الشارع. بالتعاون مع سوتسورا، نقدم قطعاً من قطن الخيزران 100% وبطباعة مباشرة على النسيج (DTG)، تمثل امتداداً مادياً للرسالة الفكرية للميدان.'
-                      : 'Physical garments designed to carry the narrative into public spaces. Crafted in partnership with Sotusura using 100% natural bamboo cotton and precision DTG printing, serving as a tangible embodiment of Midaan’s editorial stance.'}
+                      ? 'أزياء وقطع فنية وثائقية صُنعت لترتدي الرواية في الشارع. بالتعاون مع صوت وصورة، نقدم قطعاً منسوجة بحرفية وبطباعة مباشرة على النسيج (DTG)، تمثل امتداداً مادياً للرسالة الفكرية للميدان.'
+                      : 'Physical garments designed to carry the narrative into public spaces. Crafted in partnership with Sotusura using artisan Indonesian textile craft and precision DTG printing, serving as a tangible embodiment of Midaan’s editorial stance.'}
                   </p>
                 </div>
                 <Link 
@@ -127,7 +127,7 @@ export default function AboutPage() {
               </p>
               <div className="pt-4 border-t border-[#222] flex flex-wrap gap-4 text-xs text-neutral-400">
                 <span>• {isAr ? 'صُنعت في عمّان - فلسطين' : 'Conceived in Amman & Palestine'}</span>
-                <span>• {isAr ? 'تصنيع إندونيسي حرفي (سوتسورا)' : 'Artisan Indonesian Craft (Sotusura)'}</span>
+                <span>• {isAr ? 'تصنيع إندونيسي حرفي (صوت وصورة)' : 'Artisan Indonesian Craft (Sotusura)'}</span>
                 <span>• {isAr ? 'أرشيف مفتوح وحبر حر' : 'Open Archive & Free Press'}</span>
               </div>
             </section>
