@@ -1,6 +1,6 @@
 import { CartItem } from '../src/types';
 import { useStore } from '../src/store';
-import { migrateCart } from '../src/constants/products';
+import { migrateCart, formatArabicJod } from '../src/constants/products';
 
 describe('Cart Store Hydration and Normalization', () => {
   beforeEach(() => {
@@ -180,5 +180,12 @@ describe('Cart Store Hydration and Normalization', () => {
     expect(posterItem?.price).toBe(35);
     expect(posterItem?.priceUSD).toBe(50);
     expect(posterItem?.quantity).toBe(2);
+  });
+
+  it('formats Arabic JOD amounts consistently with Eastern Arabic numerals and Arabic comma', () => {
+    // Exact user requirement: For one shirt delivered to Amman: 35, 2.50, and 37.50
+    expect(formatArabicJod(35)).toBe('٣٥ د.أ');
+    expect(formatArabicJod(2.5)).toBe('٢٫٥٠ د.أ');
+    expect(formatArabicJod(37.5)).toBe('٣٧٫٥٠ د.أ');
   });
 });

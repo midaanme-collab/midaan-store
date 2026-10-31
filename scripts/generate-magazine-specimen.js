@@ -284,35 +284,36 @@ function getSpecimenHtml(lang) {
       /* PAGE 3: SINGLE-COLUMN READING PAGE */
       .reading-section-title {
         font-family: 'El Messiri', serif;
-        font-size: 13.5pt;
+        font-size: ${isAr ? '17pt' : '16pt'};
         font-weight: 700;
         color: #D80032;
-        margin: 2mm 0 3.5mm 0;
+        margin: 2mm 0 ${isAr ? '6mm' : '5mm'} 0;
         border-bottom: 1.5px solid #E5E0D0;
-        padding-bottom: 2mm;
+        padding-bottom: 2.5mm;
+        line-height: 1.4;
       }
       .reading-single-column {
         width: 100%;
-        font-size: ${isAr ? '10.2pt' : '9.8pt'};
-        line-height: ${isAr ? '1.85' : '1.75'};
+        font-size: ${isAr ? '13.6pt' : '12.2pt'};
+        line-height: ${isAr ? '2.15' : '1.92'};
         color: #1a1a1a;
         text-align: ${isAr ? 'right' : 'left'};
         word-break: normal;
         overflow-wrap: break-word;
       }
       .reading-single-column p {
-        margin: 0 0 4.5mm 0;
+        margin: 0 0 ${isAr ? '6.5mm' : '5.5mm'} 0;
       }
       .reading-pullquote {
-        margin: 5mm 0;
-        padding: 4.5mm 6mm;
+        margin: ${isAr ? '7.5mm 0' : '6mm 0'};
+        padding: ${isAr ? '6.5mm 8.5mm' : '5.5mm 7.5mm'};
         background: #F2EFE9;
         border-${isAr ? 'right' : 'left'}: 4.5px solid #D80032;
         font-family: ${isAr ? "'El Messiri', serif" : "'Alexandria', sans-serif"};
-        font-size: 11.2pt;
+        font-size: ${isAr ? '14.2pt' : '12.8pt'};
         font-weight: 700;
         color: #111;
-        line-height: 1.6;
+        line-height: ${isAr ? '1.75' : '1.65'};
         font-style: ${isAr ? 'normal' : 'italic'};
         text-align: ${isAr ? 'right' : 'left'};
         border-radius: 2px;

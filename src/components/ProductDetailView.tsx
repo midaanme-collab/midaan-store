@@ -62,12 +62,6 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
       labelEn: 'Print Execution',
       valAr: 'طباعة مباشرة على النسيج (DTG) عالية الدقة تندمج في ألياف القطن.',
       valEn: 'High-definition Direct-to-Garment (DTG) print embedded in fiber.'
-    },
-    {
-      labelAr: 'القَصّة والمقاس',
-      labelEn: 'Fit & Silhouette',
-      valAr: 'قَصّة مريحة مناسبة للجنسين (Relaxed Unisex Fit).',
-      valEn: 'Relaxed unisex silhouette tailored for everyday comfort.'
     }
   ];
 
@@ -130,13 +124,10 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
             <div className="lg:col-span-7">
               <div className="relative group bg-gradient-to-b from-[#111111] to-[#0A0A0A] border border-[#262626] rounded-3xl overflow-hidden p-6 md:p-10 shadow-2xl">
                 
-                {/* Collaboration & Garment Badges */}
-                <div className="absolute top-5 left-5 right-5 z-10 flex items-center justify-between pointer-events-none">
+                {/* Collaboration Badge */}
+                <div className="absolute top-5 start-5 z-10 pointer-events-none">
                   <span className="bg-[#D80032] text-white text-[10px] md:text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                     {isAr ? 'إصدار محدود // مجموعة ميدان × صوت وصورة' : 'Limited Drop // Midaan × Sotusura'}
-                  </span>
-                  <span className="bg-black/70 backdrop-blur-md border border-[#333] text-neutral-300 text-[10px] md:text-xs px-2.5 py-1 rounded-full">
-                    {isAr ? 'قصة مريحة للجنسين' : 'Relaxed Unisex Fit'}
                   </span>
                 </div>
 

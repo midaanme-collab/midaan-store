@@ -16,7 +16,25 @@ export function normalizeSize(size: string): GarmentSize {
 }
 
 /**
- * Helper to display prices consistently:
+ * Single Arabic currency formatter for JOD amounts:
+ * Formats numbers using Eastern Arabic numerals (٠-٩) and Arabic decimal separator (٫).
+ * Integer amounts format without decimals: 35 -> "٣٥ د.أ"
+ * Fractional amounts format with two decimals: 2.5 -> "٢٫٥٠ د.أ", 37.5 -> "٣٧٫٥٠ د.أ"
+ */
+export function formatArabicJod(amount: number): string {
+  const isWhole = (amount % 1 === 0);
+  const numStr = isWhole ? amount.toFixed(0) : amount.toFixed(2);
+  const easternDigits: Record<string, string> = {
+    '0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤',
+    '5': '٥', '6': '٦', '7': '٧', '8': '٨', '9': '٩',
+    '.': '٫',
+  };
+  const arabicNum = numStr.split('').map(ch => easternDigits[ch] || ch).join('');
+  return `${arabicNum} د.أ`;
+}
+
+/**
+ * Helper to display product prices consistently:
  * Fixed 35 JOD (Arabic: ٣٥ د.أ) / 50 USD independently of language.
  */
 export function formatProductPrice(currency: 'JOD' | 'USD', lang: 'ar' | 'en'): string {
@@ -24,7 +42,7 @@ export function formatProductPrice(currency: 'JOD' | 'USD', lang: 'ar' | 'en'): 
     return '50 USD';
   }
   if (lang === 'ar') {
-    return '٣٥ د.أ';
+    return formatArabicJod(35);
   }
   return '35 JOD';
 }

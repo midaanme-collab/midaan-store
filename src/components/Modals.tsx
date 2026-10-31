@@ -5,7 +5,7 @@ import { X, Trash2 } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 import { GOVERNORATES } from '@/constants';
-import { formatProductPrice } from '@/constants/products';
+import { formatArabicJod } from '@/constants/products';
 
 export default function Modals() {
   const { 
@@ -22,32 +22,37 @@ export default function Modals() {
   const cartSubtotal = cart.reduce((sum, item) => sum + ((currency === 'USD' ? (item.priceUSD || 50) : item.price) * (item.quantity || 1)), 0);
   const finalTotal = cartSubtotal > 0 ? cartSubtotal + shippingAmount : 0;
 
-  const getFormattedItemPrice = (itemPrice: number, qty: number) => {
+  /**
+   * Single unified currency formatter:
+   * When Arabic and JOD, uses formatArabicJod (e.g. "٣٥ د.أ", "٢٫٥٠ د.أ", "٣٧٫٥٠ د.أ").
+   * When USD, formats with two decimals and "USD".
+   * When English and JOD, preserves standard JOD format.
+   */
+  const formatPrice = (amount: number): string => {
     if (currency === 'USD') {
-      return `${(50 * qty).toFixed(2)} USD`;
+      return `${amount.toFixed(2)} USD`;
     }
     if (isRtl) {
-      if (qty === 1) return '٣٥ د.أ';
-      return `${(35 * qty).toFixed(2)} د.أ`;
+      return formatArabicJod(amount);
     }
-    return `${(35 * qty).toFixed(2)} JOD`;
+    return (amount % 1 === 0) ? `${amount.toFixed(0)} JOD` : `${amount.toFixed(2)} JOD`;
   };
 
   const getWhatsAppOrderUrl = () => {
     const isUsd = currency === 'USD';
-    const currencySuffix = isUsd ? 'USD' : (isRtl ? 'د.أ' : 'JOD');
 
     const orderDetails = cart.map((item, index) => {
       const sizeStr = item.garment === 'tote' ? 'One Size' : item.size;
       const unitP = isUsd ? (item.priceUSD || 50) : item.price;
+      const formattedTotal = formatPrice(unitP * (item.quantity || 1));
       if (item.isPrePrinted) {
-        return `${index + 1}. ${item.productTitle || item.garment} - مقاس: ${sizeStr} - كمية: ${item.quantity || 1} (${unitP.toFixed(2)} ${currencySuffix})`;
+        return `${index + 1}. ${item.productTitle || item.garment} - مقاس: ${sizeStr} - كمية: ${item.quantity || 1} (${formattedTotal})`;
       }
-      return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Qty: ${item.quantity || 1} (${unitP.toFixed(2)} ${currencySuffix})`;
+      return `${index + 1}. ${item.garment} (${item.color}) - Size: ${sizeStr} - Qty: ${item.quantity || 1} (${formattedTotal})`;
     }).join('\n');
 
     const shippingInfo = hasConfiguredFee
-      ? `${(isUsd ? (selectedGov.fee * 1.41) : selectedGov.fee).toFixed(2)} ${currencySuffix}`
+      ? formatPrice(shippingAmount)
       : (isRtl ? 'تُحدد وتؤكد يدوياً مع الفريق' : 'Unconfigured — confirmed manually with team');
 
     const totalLabel = hasConfiguredFee
@@ -55,8 +60,8 @@ export default function Modals() {
       : (isRtl ? 'المجموع (باستثناء الشحن):' : 'Total (Excluding shipping):');
 
     const msg = isRtl
-      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingInfo})\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'كليك (CliQ)' : 'عند الاستلام (نقداً)'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*ملاحظة: يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع.*`
-      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingInfo})\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n${totalLabel} ${finalTotal.toFixed(2)} ${currencySuffix}\n\n*Note: The Midaan team confirms size availability and delivery fees before payment.*`;
+      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nالمحافظة: ${selectedGov.nameAr} (رسوم التوصيل: ${shippingInfo})\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'كليك (CliQ)' : 'عند الاستلام (نقداً)'}\n${totalLabel} ${formatPrice(finalTotal)}\n\n*ملاحظة: يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع.*`
+      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nGovernorate: ${selectedGov.nameEn} (Shipping: ${shippingInfo})\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n${totalLabel} ${formatPrice(finalTotal)}\n\n*Note: The Midaan team confirms size availability and delivery fees before payment.*`;
 
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
@@ -107,16 +112,23 @@ export default function Modals() {
                             {item.productTitle || item.garment}
                           </h4>
                           <span className="text-xs font-black text-white font-sans" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                            {getFormattedItemPrice(item.price, item.quantity || 1)}
+                            {formatPrice((currency === 'USD' ? (item.priceUSD || 50) : item.price) * (item.quantity || 1))}
                           </span>
                         </div>
                         
                         <div className="text-xs text-neutral-400 space-y-0.5 font-sans mb-3">
                           <p>
-                            {strings.size}: <span className="font-bold text-neutral-200" dir="ltr">{item.size}</span>
+                            {isRtl ? (
+                              <span>المقاس <bdi className="font-bold text-neutral-200" dir="ltr">{item.size}</bdi></span>
+                            ) : (
+                              <span>Size: <bdi className="font-bold text-neutral-200" dir="ltr">{item.size}</bdi></span>
+                            )}
                           </p>
                           <p>
-                            {isRtl ? 'السعر الفردي:' : 'Unit price:'} <span className="font-semibold text-neutral-300" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>{formatProductPrice(currency, isRtl ? 'ar' : 'en')}</span>
+                            {isRtl ? 'سعر القطعة:' : 'Unit price:'}{' '}
+                            <span className="font-semibold text-neutral-300" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
+                              {formatPrice(currency === 'USD' ? (item.priceUSD || 50) : item.price)}
+                            </span>
                           </p>
                         </div>
 
@@ -174,11 +186,20 @@ export default function Modals() {
                       }}
                       className="w-full bg-[#111] border border-[#262626] rounded-xl p-3 text-white text-xs font-sans outline-none focus:border-[#D80032] transition-colors"
                     >
-                      {GOVERNORATES.map(g => (
-                        <option key={g.id} value={g.id}>
-                          {isRtl ? g.nameAr : g.nameEn} {g.fee !== null ? `(+${g.fee} ${isRtl ? 'د.أ' : 'JOD'})` : (isRtl ? '(تأكيد يدوي مع الفريق)' : '(Manual confirmation)')}
-                        </option>
-                      ))}
+                      {GOVERNORATES.map(g => {
+                        let feeStr = '';
+                        if (g.fee !== null) {
+                          const feeVal = currency === 'USD' ? (g.fee * 1.41) : g.fee;
+                          feeStr = ` (+${formatPrice(feeVal)})`;
+                        } else {
+                          feeStr = isRtl ? ' (تأكيد يدوي مع الفريق)' : ' (Manual confirmation)';
+                        }
+                        return (
+                          <option key={g.id} value={g.id}>
+                            {isRtl ? g.nameAr : g.nameEn}{feeStr}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -226,14 +247,14 @@ export default function Modals() {
                     <div className="flex justify-between text-neutral-400">
                       <span>{strings.subtotal}</span>
                       <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                        {cartSubtotal.toFixed(2)} {currency === 'USD' ? 'USD' : (isRtl ? 'د.أ' : 'JOD')}
+                        {formatPrice(cartSubtotal)}
                       </span>
                     </div>
                     <div className="flex justify-between text-neutral-400">
                       <span>{strings.shipping}</span>
                       <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                         {hasConfiguredFee
-                          ? `${(currency === 'USD' ? (selectedGov.fee! * 1.41) : selectedGov.fee!).toFixed(2)} ${currency === 'USD' ? 'USD' : (isRtl ? 'د.أ' : 'JOD')}`
+                          ? formatPrice(shippingAmount)
                           : (isRtl ? 'تأكيد يدوي مع الفريق' : 'Manual team confirmation')}
                       </span>
                     </div>
@@ -242,7 +263,7 @@ export default function Modals() {
                         {hasConfiguredFee ? strings.total : (isRtl ? 'المجموع (بدون الشحن):' : 'Total (Excl. shipping):')}
                       </span>
                       <span className="text-2xl font-black text-white font-sans" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                        {finalTotal.toFixed(2)} <span className="text-xs text-[#D80032]">{currency === 'USD' ? 'USD' : (isRtl ? 'د.أ' : 'JOD')}</span>
+                        {formatPrice(finalTotal)}
                       </span>
                     </div>
                   </div>

@@ -85,6 +85,22 @@ async function capture() {
     await page.close();
   }
 
+  // 5. Mobile Collection Heading Screenshot («مجموعة ميدان × صوت وصورة»)
+  {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+    await page.goto('http://localhost:3000/', { waitUntil: 'networkidle0' });
+    await new Promise(r => setTimeout(r, 600));
+    await page.evaluate(() => {
+      const el = document.getElementById('drops');
+      if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    });
+    await new Promise(r => setTimeout(r, 600));
+    await page.screenshot({ path: 'screenshot-mobile-collection-heading.png', fullPage: false });
+    console.log('Captured: screenshot-mobile-collection-heading.png');
+    await page.close();
+  }
+
   await browser.close();
   console.log('All screenshots captured successfully!');
 }
