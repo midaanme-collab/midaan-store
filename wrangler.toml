@@ -6,3 +6,6 @@ compatibility_date = "2026-10-28"
 directory = "./out"
 not_found_handling = "404-page"
 binding = "ASSETS"
+
+[previews]
+
