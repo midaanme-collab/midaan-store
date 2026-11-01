@@ -17,6 +17,54 @@ export interface Env extends AramexEnv {
   ASSETS: { fetch: (req: Request) => Promise<Response> };
 }
 
+/**
+ * Strict Origin Allowlist for Midaan Collective
+ * Covers:
+ * - Production custom domains: https://midaan.store, https://www.midaan.store
+ * - Cloudflare Pages production & preview deployments: *.midaan-store.pages.dev
+ * - Cloudflare Workers dev routes: *.workers.dev
+ * - Local development environments: localhost:3000, 127.0.0.1:3000, localhost:8787, 127.0.0.1:8787
+ */
+export const ALLOWED_ORIGIN_PATTERNS: (string | RegExp)[] = [
+  'https://midaan.store',
+  'https://www.midaan.store',
+  /^https:\/\/([a-z0-9\-]+\.)*midaan-store\.pages\.dev$/,
+  /^https:\/\/([a-z0-9\-]+\.)*workers\.dev$/,
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:8787',
+  'http://127.0.0.1:8787',
+];
+
+/**
+ * Validate incoming origin against strict allowlist
+ */
+export function isAllowedOrigin(origin: string | null | undefined): boolean {
+  if (!origin || typeof origin !== 'string') {
+    return false;
+  }
+  const normalized = origin.trim().toLowerCase();
+  return ALLOWED_ORIGIN_PATTERNS.some((pattern) => {
+    if (typeof pattern === 'string') {
+      return normalized === pattern.toLowerCase();
+    }
+    return pattern.test(normalized);
+  });
+}
+
+/**
+ * Build standard CORS headers for an allowed origin
+ */
+export function getCorsHeaders(origin: string): Record<string, string> {
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
+  };
+}
+
 // In-memory sliding window rate limiter (max 30 requests per minute per IP)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
@@ -37,17 +85,30 @@ const worker = {
 
     // 1. API Route: Shipping Quote
     if (url.pathname === '/api/shipping/quote') {
+      const origin = request.headers.get('Origin');
+
+      // Preflight OPTIONS Handler
       if (request.method === 'OPTIONS') {
+        if (!origin || !isAllowedOrigin(origin)) {
+          return new Response(
+            JSON.stringify({ success: false, error: 'CORS origin not allowed' }),
+            {
+              status: 403,
+              headers: {
+                'Content-Type': 'application/json',
+                'Vary': 'Origin',
+              },
+            }
+          );
+        }
+
         return new Response(null, {
           status: 204,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-          },
+          headers: getCorsHeaders(origin),
         });
       }
 
+      // Method Enforcement
       if (request.method !== 'POST') {
         return new Response(
           JSON.stringify({ success: false, error: 'Method Not Allowed' }),
@@ -58,6 +119,35 @@ const worker = {
         );
       }
 
+      // Strict Origin Enforcement for POST requests with Origin header
+      if (origin && !isAllowedOrigin(origin)) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'CORS origin not allowed',
+          }),
+          {
+            status: 403,
+            headers: {
+              'Content-Type': 'application/json',
+              'Vary': 'Origin',
+            },
+          }
+        );
+      }
+
+      // Base Response Headers
+      const responseHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Vary': 'Origin',
+      };
+
+      if (origin && isAllowedOrigin(origin)) {
+        Object.assign(responseHeaders, getCorsHeaders(origin));
+      }
+
+      // Rate Limiting Check
       const clientIp = request.headers.get('cf-connecting-ip') || 'unknown-ip';
       if (isRateLimited(clientIp)) {
         return new Response(
@@ -67,7 +157,7 @@ const worker = {
           }),
           {
             status: 429,
-            headers: { 'Content-Type': 'application/json' },
+            headers: responseHeaders,
           }
         );
       }
@@ -84,7 +174,7 @@ const worker = {
             }),
             {
               status: 400,
-              headers: { 'Content-Type': 'application/json' },
+              headers: responseHeaders,
             }
           );
         }
@@ -105,10 +195,7 @@ const worker = {
 
         return new Response(JSON.stringify(quoteResponse), {
           status: quoteResponse.success ? 200 : 422,
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-store, no-cache, must-revalidate',
-          },
+          headers: responseHeaders,
         });
       } catch (err: any) {
         return new Response(
@@ -118,7 +205,7 @@ const worker = {
           }),
           {
             status: 400,
-            headers: { 'Content-Type': 'application/json' },
+            headers: responseHeaders,
           }
         );
       }
