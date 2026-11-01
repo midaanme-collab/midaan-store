@@ -44,6 +44,7 @@ export const ALLOWED_ORIGIN_PATTERNS: (string | RegExp)[] = [
   'https://www.midaan.store',
   'https://midaan-store.pages.dev',
   /^https:\/\/[a-z0-9\-]+\.midaan-store\.pages\.dev$/,
+  'https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://localhost:8787',

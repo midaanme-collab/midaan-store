@@ -24,6 +24,7 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
     'https://midaan-store.pages.dev',
     'https://preview-123.midaan-store.pages.dev',
     'https://cultural-store-expansion.midaan-store.pages.dev',
+    'https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:8787',
@@ -35,6 +36,8 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
   });
 
   const disallowedTestCases = [
+    'https://another-branch-midaan-store.midaanme.workers.dev', // Another branch hostname rejected
+    'https://security-hardening-midaan-store-midaan-store.attacker-account.workers.dev', // Attacker account rejected
     'https://midaan-store.attacker-account.workers.dev', // Attacker-owned workers.dev rejected
     'https://midaan-store.subdomain.workers.dev',        // All workers.dev subdomains rejected
     'https://other-worker.subdomain.workers.dev',
@@ -59,6 +62,17 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
 
   test('regression: explicitly rejects midaan-store under another account workers.dev subdomain', () => {
     expect(isAllowedOrigin('https://midaan-store.attacker-account.workers.dev')).toBe(false);
+  });
+
+  test('verified preview origin is accepted while other branch hostnames and other accounts are rejected', () => {
+    // Current approved preview origin
+    expect(isAllowedOrigin('https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev')).toBe(true);
+
+    // Another branch hostname on the same midaanme account is rejected
+    expect(isAllowedOrigin('https://another-branch-midaan-store.midaanme.workers.dev')).toBe(false);
+
+    // An unrelated account trying to impersonate this preview is rejected
+    expect(isAllowedOrigin('https://security-hardening-midaan-store-midaan-store.attacker-account.workers.dev')).toBe(false);
   });
 });
 
