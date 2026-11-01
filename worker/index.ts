@@ -3,6 +3,16 @@
  * Routes:
  * - POST /api/shipping/quote (Secure Aramex Rate Calculator)
  * - Static Assets fallback via env.ASSETS.fetch(request)
+ *
+ * Security Architecture & Threat Model:
+ * 1. CORS is a browser-enforced origin isolation policy, NOT API authentication.
+ *    Non-browser clients (curl, bots) can spoof or omit Origin headers.
+ * 2. Unauthenticated public quote endpoint is protected by Defense-in-Depth:
+ *    - Strict CORS Origin Allowlist (blocks cross-site script access from untrusted web domains).
+ *    - Schema & Payload Sanitization (rejects malformed, oversized, or unauthorized destinations).
+ *    - In-Memory Sliding-Window Rate Limiter (dampens per-isolate bursts at zero cost).
+ *    - Zero-PII Response & Logging Policy (never returns or logs credentials, tokens, or customer PII).
+ *    - Cloudflare WAF Edge Rate Limiting (recommended at edge proxy layer).
  */
 
 import {
@@ -19,17 +29,21 @@ export interface Env extends AramexEnv {
 
 /**
  * Strict Origin Allowlist for Midaan Collective
- * Covers:
- * - Production custom domains: https://midaan.store, https://www.midaan.store
- * - Cloudflare Pages production & preview deployments: *.midaan-store.pages.dev
- * - Cloudflare Workers dev routes: *.workers.dev
- * - Local development environments: localhost:3000, 127.0.0.1:3000, localhost:8787, 127.0.0.1:8787
+ * Scoped strictly to:
+ * - Verified Production Domains: https://midaan.store, https://www.midaan.store
+ * - Midaan Cloudflare Pages Production & Branch Previews: *.midaan-store.pages.dev
+ * - Midaan Cloudflare Workers Dev Domain: midaan-store.*.workers.dev
+ * - Local Development Environments: localhost:3000, 127.0.0.1:3000, localhost:8787, 127.0.0.1:8787
+ *
+ * Note: Broad wildcards (*.workers.dev or *.pages.dev) are explicitly disallowed
+ * to prevent unauthorized third-party projects from accessing the API.
  */
 export const ALLOWED_ORIGIN_PATTERNS: (string | RegExp)[] = [
   'https://midaan.store',
   'https://www.midaan.store',
-  /^https:\/\/([a-z0-9\-]+\.)*midaan-store\.pages\.dev$/,
-  /^https:\/\/([a-z0-9\-]+\.)*workers\.dev$/,
+  'https://midaan-store.pages.dev',
+  /^https:\/\/[a-z0-9\-]+\.midaan-store\.pages\.dev$/,
+  /^https:\/\/midaan-store\.[a-z0-9\-]+\.workers\.dev$/,
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://localhost:8787',
@@ -37,13 +51,17 @@ export const ALLOWED_ORIGIN_PATTERNS: (string | RegExp)[] = [
 ];
 
 /**
- * Validate incoming origin against strict allowlist
+ * Validate incoming origin against strict allowlist.
+ * Explicitly rejects null, undefined, empty strings, and string "null".
  */
 export function isAllowedOrigin(origin: string | null | undefined): boolean {
   if (!origin || typeof origin !== 'string') {
     return false;
   }
   const normalized = origin.trim().toLowerCase();
+  if (normalized === 'null' || normalized === '') {
+    return false;
+  }
   return ALLOWED_ORIGIN_PATTERNS.some((pattern) => {
     if (typeof pattern === 'string') {
       return normalized === pattern.toLowerCase();
@@ -65,11 +83,19 @@ export function getCorsHeaders(origin: string): Record<string, string> {
   };
 }
 
-// In-memory sliding window rate limiter (max 30 requests per minute per IP)
+// In-memory sliding window rate limiter (max 30 requests per minute per IP per isolate)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
+export function isRateLimited(ip: string, now: number = Date.now()): boolean {
+  // Evict expired entries if map grows large to maintain bounded memory footprint
+  if (rateLimitMap.size > 500) {
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now > record.resetAt) {
+        rateLimitMap.delete(key);
+      }
+    }
+  }
+
   const entry = rateLimitMap.get(ip);
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + 60000 });
@@ -77,6 +103,10 @@ function isRateLimited(ip: string): boolean {
   }
   entry.count += 1;
   return entry.count > 30;
+}
+
+export function resetRateLimitMap(): void {
+  rateLimitMap.clear();
 }
 
 const worker = {
@@ -119,7 +149,7 @@ const worker = {
         );
       }
 
-      // Strict Origin Enforcement for POST requests with Origin header
+      // Strict Origin Enforcement for cross-origin requests
       if (origin && !isAllowedOrigin(origin)) {
         return new Response(
           JSON.stringify({
@@ -147,7 +177,7 @@ const worker = {
         Object.assign(responseHeaders, getCorsHeaders(origin));
       }
 
-      // Rate Limiting Check
+      // Rate Limiting Check (Client IP)
       const clientIp = request.headers.get('cf-connecting-ip') || 'unknown-ip';
       if (isRateLimited(clientIp)) {
         return new Response(
