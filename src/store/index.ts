@@ -2,10 +2,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { 
   Language, GarmentType, GarmentColor, GarmentView, GarmentSize, 
-  PrintPlacement, ArtMode, PresetArt, TextColor, TextFont, CartItem, PaymentMethod
+  PrintPlacement, ArtMode, PresetArt, TextColor, TextFont, CartItem, PaymentMethod,
+  ShippingDestination, ShippingQuoteResponse, ShippingQuoteRequest, ShippingQuoteRequestItem
 } from '@/types';
 import { GOVERNORATES } from '@/constants';
 import { getMaxStock, isValidCatalogProduct, normalizeSize, isHelmetProduct, isPosterProduct, migrateCart } from '@/constants/products';
+import { calculateMockAramexRate } from '@/constants/shipping';
 
 interface StoreState {
   hasEntered: boolean;
@@ -77,14 +79,41 @@ interface StoreState {
   setIsWorkshopModalOpen: (isOpen: boolean) => void;
   selectedWorkshop: string;
   setSelectedWorkshop: (workshop: string) => void;
+
+  // Shipping State & Actions
+  shippingDestination: ShippingDestination;
+  setShippingDestination: (destination: Partial<ShippingDestination>) => void;
+  shippingQuote: ShippingQuoteResponse | null;
+  setShippingQuote: (quote: ShippingQuoteResponse | null) => void;
+  isShippingLoading: boolean;
+  setIsShippingLoading: (loading: boolean) => void;
+  shippingError: string | null;
+  setShippingError: (error: string | null) => void;
+  fetchShippingQuote: () => Promise<void>;
 }
 
-export const useStore = create<StoreState>()(persist((set) => ({
+const initialShippingDestination: ShippingDestination = {
+  countryCode: 'JO',
+  countryNameAr: 'الأردن',
+  countryNameEn: 'Jordan',
+  governorateId: 'amman',
+  city: 'عمّان',
+  postalCode: '11118',
+  addressLine1: '',
+  phone: '',
+};
+
+export const useStore = create<StoreState>()(persist((set, get) => ({
   hasEntered: false,
   setHasEntered: (hasEntered) => set({ hasEntered }),
   lang: 'ar',
   currency: 'JOD',
-  setCurrency: (currency) => set({ currency }),
+  setCurrency: (currency) => {
+    set({ currency });
+    setTimeout(() => {
+      get().fetchShippingQuote();
+    }, 0);
+  },
   theme: 'dark',
   setTheme: () => set({ theme: 'dark' }),
   setLang: (lang) => set((state) => {
@@ -124,73 +153,88 @@ export const useStore = create<StoreState>()(persist((set) => ({
   setCustomTextFont: (customTextFont) => set({ customTextFont }),
 
   cart: [],
-  addToCart: (item) => set((state) => {
-    const normSize = normalizeSize(item.size);
-    const title = item.productTitle || '';
-    const maxStock = getMaxStock(title, normSize);
+  addToCart: (item) => {
+    set((state) => {
+      const normSize = normalizeSize(item.size);
+      const title = item.productTitle || '';
+      const maxStock = getMaxStock(title, normSize);
 
-    // Find existing item by matching product type (helmet or poster) and normalized size
-    const existingIndex = state.cart.findIndex(i => {
-      const matchProduct = 
-        (isHelmetProduct(i.productTitle) && isHelmetProduct(title)) ||
-        (isPosterProduct(i.productTitle) && isPosterProduct(title)) ||
-        (i.productTitle === title && i.garment === item.garment);
-      return matchProduct && normalizeSize(i.size) === normSize;
-    });
-    
-    if (existingIndex > -1) {
-      const newCart = [...state.cart];
-      const currentQty = newCart[existingIndex].quantity || 1;
-      const newQty = Math.min(currentQty + (item.quantity || 1), maxStock);
-      newCart[existingIndex] = {
-        ...newCart[existingIndex],
-        quantity: newQty,
-        size: normSize,
-        price: 35.0,
-        priceUSD: 50.0,
-      };
-      return { cart: newCart };
-    }
-    
-    // Add new item with normalized size and stock bounds
-    const initialQty = Math.min(item.quantity || 1, maxStock);
-    if (initialQty > 0) {
-      return {
-        cart: [
-          ...state.cart,
-          {
-            ...item,
-            size: normSize,
-            quantity: initialQty,
-            price: 35.0,
-            priceUSD: 50.0,
-          },
-        ],
-      };
-    }
-    return { cart: state.cart };
-  }),
-
-  updateCartQuantity: (id, delta) => set((state) => {
-    const newCart = [...state.cart];
-    const itemIndex = newCart.findIndex(i => i.id === id);
-    if (itemIndex > -1) {
-      const item = newCart[itemIndex];
-      const maxStock = getMaxStock(item.productTitle || '', item.size);
-      const currentQty = item.quantity || 1;
-      const newQty = currentQty + delta;
+      // Find existing item by matching product type (helmet or poster) and normalized size
+      const existingIndex = state.cart.findIndex(i => {
+        const matchProduct = 
+          (isHelmetProduct(i.productTitle) && isHelmetProduct(title)) ||
+          (isPosterProduct(i.productTitle) && isPosterProduct(title)) ||
+          (i.productTitle === title && i.garment === item.garment);
+        return matchProduct && normalizeSize(i.size) === normSize;
+      });
       
-      // Enforce lower bound of 1 (prevent below 1), and upper bound of maxStock
-      if (newQty >= 1 && newQty <= maxStock) {
-        newCart[itemIndex].quantity = newQty;
-      } else if (newQty > maxStock) {
-        newCart[itemIndex].quantity = maxStock;
+      if (existingIndex > -1) {
+        const newCart = [...state.cart];
+        const currentQty = newCart[existingIndex].quantity || 1;
+        const newQty = Math.min(currentQty + (item.quantity || 1), maxStock);
+        newCart[existingIndex] = {
+          ...newCart[existingIndex],
+          quantity: newQty,
+          size: normSize,
+          price: 35.0,
+          priceUSD: 50.0,
+        };
+        return { cart: newCart };
       }
-    }
-    return { cart: newCart };
-  }),
+      
+      // Add new item with normalized size and stock bounds
+      const initialQty = Math.min(item.quantity || 1, maxStock);
+      if (initialQty > 0) {
+        return {
+          cart: [
+            ...state.cart,
+            {
+              ...item,
+              size: normSize,
+              quantity: initialQty,
+              price: 35.0,
+              priceUSD: 50.0,
+            },
+          ],
+        };
+      }
+      return { cart: state.cart };
+    });
+    setTimeout(() => {
+      get().fetchShippingQuote();
+    }, 0);
+  },
 
-  removeFromCart: (id) => set((state) => ({ cart: state.cart.filter(i => i.id !== id) })),
+  updateCartQuantity: (id, delta) => {
+    set((state) => {
+      const newCart = [...state.cart];
+      const itemIndex = newCart.findIndex(i => i.id === id);
+      if (itemIndex > -1) {
+        const item = newCart[itemIndex];
+        const maxStock = getMaxStock(item.productTitle || '', item.size);
+        const currentQty = item.quantity || 1;
+        const newQty = currentQty + delta;
+        
+        // Enforce lower bound of 1 (prevent below 1), and upper bound of maxStock
+        if (newQty >= 1 && newQty <= maxStock) {
+          newCart[itemIndex].quantity = newQty;
+        } else if (newQty > maxStock) {
+          newCart[itemIndex].quantity = maxStock;
+        }
+      }
+      return { cart: newCart };
+    });
+    setTimeout(() => {
+      get().fetchShippingQuote();
+    }, 0);
+  },
+
+  removeFromCart: (id) => {
+    set((state) => ({ cart: state.cart.filter(i => i.id !== id) }));
+    setTimeout(() => {
+      get().fetchShippingQuote();
+    }, 0);
+  },
   isCartOpen: false,
   setIsCartOpen: (isCartOpen) => set({ isCartOpen }),
   paymentMethod: 'cliq',
@@ -214,9 +258,81 @@ export const useStore = create<StoreState>()(persist((set) => ({
   setIsWorkshopModalOpen: (isWorkshopModalOpen) => set({ isWorkshopModalOpen }),
   selectedWorkshop: '',
   setSelectedWorkshop: (selectedWorkshop) => set({ selectedWorkshop }),
+
+  // Shipping State Implementation
+  shippingDestination: initialShippingDestination,
+  setShippingDestination: (destination) => {
+    set((state) => ({
+      shippingDestination: { ...state.shippingDestination, ...destination },
+    }));
+    setTimeout(() => {
+      get().fetchShippingQuote();
+    }, 0);
+  },
+  shippingQuote: null,
+  setShippingQuote: (shippingQuote) => set({ shippingQuote }),
+  isShippingLoading: false,
+  setIsShippingLoading: (isShippingLoading) => set({ isShippingLoading }),
+  shippingError: null,
+  setShippingError: (shippingError) => set({ shippingError }),
+  fetchShippingQuote: async () => {
+    const { cart, shippingDestination, currency } = get();
+    if (!cart || cart.length === 0) {
+      set({ shippingQuote: null, isShippingLoading: false, shippingError: null });
+      return;
+    }
+
+    set({ isShippingLoading: true, shippingError: null });
+
+    const quoteItems: ShippingQuoteRequestItem[] = cart.map((item) => ({
+      productId: isHelmetProduct(item.productTitle) ? 'drop-helmet-white' : 'drop-poster-white',
+      productTitle: item.productTitle || '',
+      size: item.size || 'L',
+      quantity: item.quantity || 1,
+    }));
+
+    const quoteRequest: ShippingQuoteRequest = {
+      destination: shippingDestination,
+      items: quoteItems,
+      currency,
+    };
+
+    try {
+      const response = await fetch('/api/shipping/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(quoteRequest),
+      });
+
+      if (response.ok) {
+        const data: ShippingQuoteResponse = await response.json();
+        set({ shippingQuote: data, isShippingLoading: false, shippingError: null });
+        return;
+      }
+
+      const errData = await response.json().catch(() => null);
+      if (errData && errData.error) {
+        set({ shippingError: errData.error, isShippingLoading: false });
+        return;
+      }
+
+      // If endpoint returned non-200 without error JSON, use fallback calculation
+      const fallbackQuote = calculateMockAramexRate(quoteRequest);
+      set({ shippingQuote: fallbackQuote, isShippingLoading: false, shippingError: null });
+    } catch {
+      // Offline or static dev preview fallback
+      const fallbackQuote = calculateMockAramexRate(quoteRequest);
+      set({ shippingQuote: fallbackQuote, isShippingLoading: false, shippingError: null });
+    }
+  },
 }), {
   name: 'midaan-storage',
-  partialize: (state) => ({ cart: state.cart, currency: state.currency, theme: 'dark' }),
+  partialize: (state) => ({ 
+    cart: state.cart, 
+    currency: state.currency, 
+    theme: 'dark',
+    shippingDestination: state.shippingDestination
+  }),
   onRehydrateStorage: () => (state) => {
     if (state) {
       if (state.theme && state.theme !== 'dark') {
@@ -224,6 +340,9 @@ export const useStore = create<StoreState>()(persist((set) => ({
       }
       if (state.cart) {
         state.cart = migrateCart(state.cart);
+      }
+      if (!state.shippingDestination || !state.shippingDestination.countryCode) {
+        state.shippingDestination = initialShippingDestination;
       }
     }
   },

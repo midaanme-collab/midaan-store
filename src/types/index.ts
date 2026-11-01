@@ -58,3 +58,56 @@ export interface Product {
   isPrePrinted?: boolean;
   backPrintOnly?: boolean;
 }
+
+export interface ShippingDestination {
+  countryCode: string;
+  countryNameAr: string;
+  countryNameEn: string;
+  governorateId?: string;
+  city: string;
+  postalCode?: string;
+  addressLine1?: string;
+  phone?: string;
+}
+
+export interface ShippingQuoteRequestItem {
+  productId: string;
+  productTitle: string;
+  size: string;
+  quantity: number;
+}
+
+export interface ShippingQuoteRequest {
+  destination: ShippingDestination;
+  items: ShippingQuoteRequestItem[];
+  currency: 'JOD' | 'USD';
+}
+
+export interface ShippingServiceOption {
+  serviceCode: string;
+  serviceNameAr: string;
+  serviceNameEn: string;
+  productGroup: 'DOM' | 'EXP';
+  shippingFee: number;
+  currency: 'JOD' | 'USD';
+  estimatedDays?: string;
+  estimatedDeliveryDate?: string;
+  chargeableWeightKg: number;
+  isConfirmed: boolean;
+  additionalCharges?: number;
+  customsIncluded: boolean;
+}
+
+export interface ShippingQuoteResponse {
+  success: boolean;
+  mode: 'live' | 'mock';
+  quoteReference: string;
+  timestamp: string;
+  options: ShippingServiceOption[];
+  selectedOption?: ShippingServiceOption;
+  warnings?: string[];
+  error?: string;
+  customsDisclaimerAr: string;
+  customsDisclaimerEn: string;
+  requiresPhysicalMeasurements?: boolean;
+}
