@@ -41,6 +41,7 @@ export default function Modals() {
   const shippingFee = selectedShippingOption?.shippingFee ?? 0;
   const additionalCharges = selectedShippingOption?.additionalCharges ?? 0;
   const finalCalculatedTotal = cartSubtotal > 0 ? (cartSubtotal + shippingFee + additionalCharges) : 0;
+  const isEstimate = !shippingQuote || shippingQuote.mode === 'mock' || !selectedShippingOption?.isConfirmed;
 
   /**
    * Single unified currency formatter:
@@ -89,9 +90,33 @@ export default function Modals() {
       : (isDomestic ? (isRtl ? 'أرامكس المحلي السريع (الأردن)' : 'Aramex Domestic Express') : (isRtl ? 'أرامكس إكسبريس الدولي' : 'Aramex Priority Express'));
     const quoteRef = shippingQuote?.quoteReference || 'Awaiting Confirmation';
 
+    const shippingLineAr = isEstimate
+      ? `- تكلفة الشحن (تقديرية): ${formatPrice(shippingFee)}`
+      : `- تكلفة الشحن: ${formatPrice(shippingFee)}`;
+    const shippingLineEn = isEstimate
+      ? `- Shipping Fee (Estimated): ${formatPrice(shippingFee)}`
+      : `- Shipping Fee: ${formatPrice(shippingFee)}`;
+
+    const dutiesLineAr = !isDomestic
+      ? `- الرسوم الجمركية والضرائب: غير مشمولة (تُحدد وتُدفع عند الوصول)`
+      : `- الرسوم الإضافية المؤكدة: ${formatPrice(0)}`;
+    const dutiesLineEn = !isDomestic
+      ? `- Customs & Import Duties: Excluded (payable upon arrival)`
+      : `- Confirmed Additional Charges: ${formatPrice(0)}`;
+
+    const totalLineAr = isEstimate
+      ? `- المجموع التقديري: ${formatPrice(finalCalculatedTotal)}`
+      : `- المجموع النهائي: ${formatPrice(finalCalculatedTotal)}`;
+    const totalLineEn = isEstimate
+      ? `- Estimated total: ${formatPrice(finalCalculatedTotal)}`
+      : `- Final Total: ${formatPrice(finalCalculatedTotal)}`;
+
+    const confirmationNoteAr = `*ملاحظة: يؤكد فريق ميدان تكلفة التوصيل وتوفر المقاس قبل الدفع.*`;
+    const confirmationNoteEn = `*Note: The Midaan team confirms delivery fees and size availability before payment.*`;
+
     const msg = isRtl
-      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nوجهة الشحن: ${destSummary}\nشركة الشحن: ${carrierName}\nالخدمة: ${serviceName}\nالمرجع التقديري: ${quoteRef}\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'كليك (CliQ)' : 'عند الاستلام (نقداً)'}\n\nتفاصيل الحساب:\n- المجموع الفرعي: ${formatPrice(cartSubtotal)}\n- تكلفة الشحن: ${formatPrice(shippingFee)}\n- رسوم إضافية: ${formatPrice(additionalCharges)}\n- المجموع النهائي: ${formatPrice(finalCalculatedTotal)}\n\n*ملاحظة: يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع.*`
-      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nShipping Destination: ${destSummary}\nCarrier: ${carrierName}\nService: ${serviceName}\nQuote Reference: ${quoteRef}\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n\nCost Breakdown:\n- Subtotal: ${formatPrice(cartSubtotal)}\n- Shipping Fee: ${formatPrice(shippingFee)}\n- Additional Charges: ${formatPrice(additionalCharges)}\n- Final Total: ${formatPrice(finalCalculatedTotal)}\n\n*Note: The Midaan team confirms size availability and delivery fees before payment.*`;
+      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nوجهة الشحن: ${destSummary}\nشركة الشحن: ${carrierName}\nالخدمة: ${serviceName}\nالمرجع التقديري: ${quoteRef}\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'كليك (CliQ)' : 'عند الاستلام (نقداً)'}\n\nتفاصيل الحساب:\n- المجموع الفرعي: ${formatPrice(cartSubtotal)}\n${shippingLineAr}\n${dutiesLineAr}\n${totalLineAr}\n\n${confirmationNoteAr}`
+      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nShipping Destination: ${destSummary}\nCarrier: ${carrierName}\nService: ${serviceName}\nQuote Reference: ${quoteRef}\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n\nCost Breakdown:\n- Subtotal: ${formatPrice(cartSubtotal)}\n${shippingLineEn}\n${dutiesLineEn}\n${totalLineEn}\n\n${confirmationNoteEn}`;
 
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
@@ -507,11 +532,11 @@ export default function Modals() {
                   <p>
                     {paymentMethod === 'cliq'
                       ? (isRtl 
-                          ? 'لا يُطلب الدفع الآن. يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل قبل الدفع، ثم يزودكم بالاسم المستعار الرسمي لكليك عبر واتساب لإتمام التحويل بأمان.'
-                          : 'No payment is requested now. The Midaan team confirms size availability and delivery fees before payment, then provides official CliQ transfer details via WhatsApp.')
+                          ? 'لا يُطلب الدفع الآن. يؤكد فريق ميدان تكلفة التوصيل وتوفر المقاس قبل الدفع، ثم يزودكم بالاسم المستعار الرسمي لكليك عبر واتساب لإتمام التحويل بأمان.'
+                          : 'No payment is requested now. The Midaan team confirms delivery fees and size availability before payment, then provides official CliQ transfer details via WhatsApp.')
                       : (isRtl
-                          ? 'يتم الدفع نقداً عند استلام الشحنة. يؤكد فريق ميدان توفر المقاس وتكلفة التوصيل وموعد التسليم قبل إرسال الطلب.'
-                          : 'Payment is collected in cash upon delivery. The Midaan team confirms size availability, delivery fees, and delivery schedule before dispatch.')}
+                          ? 'يتم الدفع نقداً عند استلام الشحنة. يؤكد فريق ميدان تكلفة التوصيل وتوفر المقاس وموعد التسليم قبل إرسال الطلب.'
+                          : 'Payment is collected in cash upon delivery. The Midaan team confirms delivery fees, size availability, and delivery schedule before dispatch.')}
                   </p>
                 </div>
 
@@ -527,24 +552,30 @@ export default function Modals() {
 
                   {/* Shipping Fee */}
                   <div className="flex justify-between text-neutral-400">
-                    <span>{strings.calculator.shippingCost}</span>
+                    <span>{isEstimate ? strings.calculator.shippingCostEstimated : strings.calculator.shippingCost}</span>
                     <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                       {selectedShippingOption ? formatPrice(shippingFee) : '—'}
                     </span>
                   </div>
 
-                  {/* Additional Charges */}
+                  {/* Additional Charges / Customs Duties */}
                   <div className="flex justify-between text-neutral-400">
-                    <span>{strings.calculator.additionalCharges}</span>
-                    <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                      {formatPrice(additionalCharges)}
-                    </span>
+                    <span>{isDomestic ? strings.calculator.additionalCharges : strings.calculator.dutiesAndTaxes}</span>
+                    {isDomestic ? (
+                      <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
+                        {formatPrice(additionalCharges)}
+                      </span>
+                    ) : (
+                      <span className="font-medium text-amber-400 text-xs">
+                        {strings.calculator.dutiesExcluded}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Final Total */}
+                  {/* Final Total / Estimated Total */}
                   <div className="flex justify-between items-end pt-2 border-t border-[#1A1A1A]">
                     <span className="text-sm font-bold text-white font-sans">
-                      {strings.calculator.finalTotal}
+                      {isEstimate ? strings.calculator.estimatedTotal : strings.calculator.finalTotal}
                     </span>
                     <span className="text-2xl font-black text-white font-sans" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                       {formatPrice(finalCalculatedTotal)}

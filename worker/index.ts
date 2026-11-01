@@ -32,18 +32,18 @@ export interface Env extends AramexEnv {
  * Scoped strictly to:
  * - Verified Production Domains: https://midaan.store, https://www.midaan.store
  * - Midaan Cloudflare Pages Production & Branch Previews: *.midaan-store.pages.dev
- * - Midaan Cloudflare Workers Dev Domain: midaan-store.*.workers.dev
  * - Local Development Environments: localhost:3000, 127.0.0.1:3000, localhost:8787, 127.0.0.1:8787
  *
- * Note: Broad wildcards (*.workers.dev or *.pages.dev) are explicitly disallowed
- * to prevent unauthorized third-party projects from accessing the API.
+ * Security Note:
+ * Generic *.workers.dev patterns (including midaan-store.*.workers.dev) are intentionally
+ * removed to prevent unauthorized Cloudflare accounts from matching via attacker-owned
+ * worker subdomains. Previews are hosted exclusively on verified Pages domains.
  */
 export const ALLOWED_ORIGIN_PATTERNS: (string | RegExp)[] = [
   'https://midaan.store',
   'https://www.midaan.store',
   'https://midaan-store.pages.dev',
   /^https:\/\/[a-z0-9\-]+\.midaan-store\.pages\.dev$/,
-  /^https:\/\/midaan-store\.[a-z0-9\-]+\.workers\.dev$/,
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://localhost:8787',

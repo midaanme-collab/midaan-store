@@ -24,7 +24,6 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
     'https://midaan-store.pages.dev',
     'https://preview-123.midaan-store.pages.dev',
     'https://cultural-store-expansion.midaan-store.pages.dev',
-    'https://midaan-store.subdomain.workers.dev', // Scoped strictly to midaan-store
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:8787',
@@ -36,17 +35,19 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
   });
 
   const disallowedTestCases = [
-    'https://other-worker.subdomain.workers.dev', // Broad workers.dev rejected
+    'https://midaan-store.attacker-account.workers.dev', // Attacker-owned workers.dev rejected
+    'https://midaan-store.subdomain.workers.dev',        // All workers.dev subdomains rejected
+    'https://other-worker.subdomain.workers.dev',
     'https://unrelated-worker.workers.dev',
-    'https://other-project.pages.dev',           // Broad pages.dev rejected
+    'https://other-project.pages.dev',                  // Broad pages.dev rejected
     'https://malicious.com',
     'https://evil-hacker.com',
     'https://midaan.store.attacker.com',
     'https://midaan-store.pages.dev.malicious.net',
-    'http://midaan.store',                       // Insecure HTTP for production domain
+    'http://midaan.store',                              // Insecure HTTP for production domain
     'http://www.midaan.store',
     'https://phishing-midaan.com',
-    'null',                                      // String 'null' (sandboxed iframe)
+    'null',                                             // String 'null' (sandboxed iframe)
     '',
     null as unknown as string,
     undefined as unknown as string,
@@ -54,6 +55,10 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
 
   test.each(disallowedTestCases)('rejects unauthorized, forged, or broad origin: %s', (origin) => {
     expect(isAllowedOrigin(origin)).toBe(false);
+  });
+
+  test('regression: explicitly rejects midaan-store under another account workers.dev subdomain', () => {
+    expect(isAllowedOrigin('https://midaan-store.attacker-account.workers.dev')).toBe(false);
   });
 });
 
@@ -119,6 +124,20 @@ describe('3. Worker CORS Preflight (OPTIONS /api/shipping/quote)', () => {
     const data = await res.json();
     expect(data.success).toBe(false);
     expect(data.error).toBe('CORS origin not allowed');
+  });
+
+  test('regression: returns 403 Forbidden for midaan-store under attacker workers.dev subdomain preflight', async () => {
+    const req = new Request('https://worker.local/api/shipping/quote', {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'https://midaan-store.attacker-account.workers.dev',
+      },
+    });
+
+    const res = await worker.fetch(req, mockEnv);
+
+    expect(res.status).toBe(403);
+    expect(res.headers.get('Access-Control-Allow-Origin')).toBeNull();
   });
 
   test('returns 403 Forbidden for OPTIONS preflight with no Origin header', async () => {
