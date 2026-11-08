@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Play, Pause, ShoppingBag, Check, MessageSquare, ArrowUpRight } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import Interactive3DTilt from '@/components/Interactive3DTilt';
@@ -81,15 +82,19 @@ export default function CollabPage() {
           <div className="max-w-5xl mx-auto text-center flex flex-col items-center">
             
             <div className="flex items-center justify-center gap-6 md:gap-12 mb-8">
-              <img 
+              <Image 
                 src="/logo.png" 
                 alt="Midaan" 
+                width={160}
+                height={80}
                 className="h-14 md:h-20 w-auto object-contain brightness-0 invert drop-shadow-[0_4px_16px_rgba(255,255,255,0.15)]" 
               />
               <div className="text-2xl md:text-4xl font-light text-neutral-600">×</div>
-              <img 
+              <Image 
                 src="/sotusura.png" 
                 alt="Sotusura" 
+                width={160}
+                height={80}
                 className="h-14 md:h-20 w-auto object-contain rounded-xl shadow-xl" 
               />
             </div>
@@ -272,9 +277,11 @@ export default function CollabPage() {
                       {displayPrice}
                     </div>
 
-                    <img 
+                    <Image 
                       src={prod.images[0]} 
                       alt={isRtl ? prod.titleAr : prod.titleEn} 
+                      width={600}
+                      height={600}
                       className="w-4/5 h-auto max-h-[380px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105 select-none" 
                     />
 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { Upload, Ruler, SlidersHorizontal, Image as ImageIcon } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
@@ -65,7 +66,7 @@ export default function Studio() {
 
     if (artMode === 'presets') {
       if (selectedPreset === 'calligraphy' || selectedPreset === 'archive_2') {
-        return <img src="/logo.png" alt={selectedPreset} style={{ transform: placement === 'small_corpo' ? undefined : dynamicTransform }} className={`w-48 invert opacity-80 ${placementBase} transition-all duration-300`} />;
+        return <Image src="/logo.png" alt={selectedPreset} width={192} height={80} style={{ transform: placement === 'small_corpo' ? undefined : dynamicTransform }} className={`w-48 invert opacity-80 ${placementBase} transition-all duration-300`} />;
       }
       return <div style={styleObj} className={`text-5xl font-black uppercase tracking-normal ${placementBase} transition-all duration-300`}>
         {selectedPreset === 'far3i' ? 'FAR3I' : selectedPreset === 'archive_1' ? 'ENTEHAB' : selectedPreset === 'archive_3' ? 'DIRAA' : 'MIDAAN'}
@@ -157,9 +158,11 @@ export default function Studio() {
 
           <div className="relative w-full h-full flex items-center justify-center pt-8">
             {getMockup() && (
-              <img 
+              <Image 
                 src={getMockup()} 
                 alt="Garment Mockup" 
+                width={512}
+                height={512}
                 className="w-full max-w-lg object-contain transition-all duration-700 ease-out" 
               />
             )}

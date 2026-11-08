@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Product, GarmentSize } from '@/types';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
@@ -156,9 +157,12 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   onClick={() => setIsZoomOpen(true)}
                   title={isAr ? 'انقر لتكبير وفحص تفاصيل القطعة' : 'Click to inspect fabric & print details'}
                 >
-                  <img 
+                  <Image 
                     src={imageUrl} 
                     alt={title}
+                    width={800}
+                    height={1000}
+                    priority
                     className="max-h-full max-w-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                   
@@ -363,9 +367,11 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
             className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <img 
+            <Image 
               src={imageUrl} 
               alt={title}
+              width={1200}
+              height={1500}
               className="max-h-[80vh] w-auto object-contain filter drop-shadow-2xl rounded-2xl"
             />
             <p className="text-xs text-neutral-400 font-sans mt-4 text-center">

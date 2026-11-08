@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { Play, Pause, ShoppingBag } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
@@ -52,9 +53,11 @@ export default function CampaignVideoSection() {
         {/* Dual Collaboration Logos: Midaan x Sotusura */}
         <div className="flex items-center justify-center gap-6 md:gap-12 mb-8">
           <div className="flex flex-col items-center">
-            <img 
+            <Image 
               src="/logo.png" 
               alt="Midaan" 
+              width={160}
+              height={80}
               className="h-14 md:h-20 w-auto object-contain brightness-0 invert drop-shadow-[0_4px_16px_rgba(255,255,255,0.15)]" 
             />
           </div>
@@ -64,9 +67,11 @@ export default function CampaignVideoSection() {
           </div>
 
           <div className="flex flex-col items-center">
-            <img 
+            <Image 
               src="/sotusura.png" 
               alt="Sotusura" 
+              width={160}
+              height={80}
               className="h-14 md:h-20 w-auto object-contain rounded-xl shadow-xl" 
             />
           </div>

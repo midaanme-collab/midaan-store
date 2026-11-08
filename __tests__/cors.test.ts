@@ -317,3 +317,24 @@ describe('5. In-Memory Rate Limiting Behavior', () => {
     expect(isRateLimited(ipB, now)).toBe(false);
   });
 });
+
+describe('7. Build Info Metadata Endpoint', () => {
+  test('serves /build-info.json with non-cached headers', async () => {
+    const mockAssetFetch = jest.fn().mockResolvedValue(
+      new Response(JSON.stringify({ commit: 'abc1234', builtAt: '2026-11-08T12:00:00.000Z' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+    const env: Env = { ASSETS: { fetch: mockAssetFetch } };
+
+    const req = new Request('https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev/build-info.json');
+    const res = await worker.fetch(req, env);
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('Cache-Control')).toBe('no-cache, no-store, must-revalidate');
+    expect(res.headers.get('Content-Type')).toBe('application/json');
+    const data = await res.json() as any;
+    expect(data.commit).toBe('abc1234');
+  });
+});

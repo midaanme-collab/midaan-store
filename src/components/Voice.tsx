@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { BookOpen, Download, ArrowUpRight, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useStore } from '@/store';
 import Link from 'next/link';
@@ -81,11 +82,12 @@ export default function Voice() {
             {/* Compact Actual Issue Zero Cover Thumbnail */}
             <div className="w-full sm:w-1/2 max-w-[240px] flex-shrink-0">
               <div className="relative aspect-[1/1.414] rounded-xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.8)] border border-neutral-700/60 group">
-                <img 
+                <Image 
                   src={coverThumb} 
                   alt={strings.magazine.issueZeroTitle} 
+                  width={400}
+                  height={565}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-3 inset-x-3 text-center">

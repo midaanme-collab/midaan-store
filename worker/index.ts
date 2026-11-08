@@ -242,7 +242,19 @@ const worker = {
       }
     }
 
-    // 2. Static Assets Forwarding
+    // 2. Build metadata endpoint (non-cached proof of release identity)
+    if (url.pathname === '/build-info.json') {
+      const assetRes = await env.ASSETS.fetch(request);
+      return new Response(assetRes.body, {
+        status: assetRes.status,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
+    // 3. Static Assets Forwarding
     return env.ASSETS.fetch(request);
   },
 };

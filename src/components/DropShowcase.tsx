@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Language, Product, GarmentSize } from "@/types";
 import { ShoppingBag, Check, MessageSquare, ArrowUpRight } from "lucide-react";
 import { useStore } from "@/store";
@@ -106,11 +107,13 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                 </div>
 
                 {/* Product Image with Hover Zoom */}
-                <img
+                <Image
                   src={prod.images[0]}
                   alt={isRtl ? prod.titleAr : prod.titleEn}
+                  width={600}
+                  height={600}
+                  priority
                   className="w-4/5 h-auto max-h-[380px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105 select-none"
-                  loading="eager"
                 />
 
                 {/* Localized Bottom Bar Specs */}

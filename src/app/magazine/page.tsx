@@ -3,6 +3,7 @@
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
+import Image from 'next/image';
 import { BookOpen, Download, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
@@ -44,11 +45,13 @@ export default function MagazineLanding() {
               {/* Cover Thumbnail */}
               <div className="w-full sm:w-1/2 max-w-[220px] flex-shrink-0">
                 <div className="relative aspect-[1/1.414] rounded-xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.8)] border border-neutral-700/60 group">
-                  <img 
+                  <Image 
                     src={coverThumb} 
                     alt={strings.magazine.issueZeroTitle} 
+                    width={400}
+                    height={565}
+                    priority
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="eager"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                 </div>
