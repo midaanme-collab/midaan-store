@@ -116,12 +116,18 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
   },
   theme: 'dark',
   setTheme: () => set({ theme: 'dark' }),
-  setLang: (lang) => set((state) => {
-    let customText = state.customText;
-    if (customText === 'مَـيـدَان' && lang === 'en') customText = 'MIDAAN';
-    if (customText === 'MIDAAN' && lang === 'ar') customText = 'مَـيـدَان';
-    return { lang, customText };
-  }),
+  setLang: (lang) => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    }
+    set((state) => {
+      let customText = state.customText;
+      if (customText === 'مَـيـدَان' && lang === 'en') customText = 'MIDAAN';
+      if (customText === 'MIDAAN' && lang === 'ar') customText = 'مَـيـدَان';
+      return { lang, customText };
+    });
+  },
   
   garment: 'tshirt',
   setGarment: (garment) => set({ garment }),
@@ -331,7 +337,8 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
     cart: state.cart, 
     currency: state.currency, 
     theme: 'dark',
-    shippingDestination: state.shippingDestination
+    shippingDestination: state.shippingDestination,
+    lang: state.lang,
   }),
   onRehydrateStorage: () => (state) => {
     if (state) {
@@ -343,6 +350,10 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
       }
       if (!state.shippingDestination || !state.shippingDestination.countryCode) {
         state.shippingDestination = initialShippingDestination;
+      }
+      if (typeof document !== 'undefined' && state.lang) {
+        document.documentElement.lang = state.lang;
+        document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
       }
     }
   },

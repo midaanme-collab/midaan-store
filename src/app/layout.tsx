@@ -43,9 +43,15 @@ export default function RootLayout({
                 var storage = localStorage.getItem('midaan-storage');
                 if (storage) {
                   var parsed = JSON.parse(storage);
-                  if (parsed && parsed.state && parsed.state.theme !== 'dark') {
-                    parsed.state.theme = 'dark';
-                    localStorage.setItem('midaan-storage', JSON.stringify(parsed));
+                  if (parsed && parsed.state) {
+                    if (parsed.state.theme !== 'dark') {
+                      parsed.state.theme = 'dark';
+                      localStorage.setItem('midaan-storage', JSON.stringify(parsed));
+                    }
+                    if (parsed.state.lang) {
+                      document.documentElement.lang = parsed.state.lang;
+                      document.documentElement.dir = parsed.state.lang === 'ar' ? 'rtl' : 'ltr';
+                    }
                   }
                 }
               } catch (e) {}

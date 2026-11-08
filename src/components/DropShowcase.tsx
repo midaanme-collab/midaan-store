@@ -19,16 +19,14 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
   const strings = content[effectiveLang];
   const isRtl = effectiveLang === "ar";
 
-  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({
-    "drop-helmet-white": "L",
-    "drop-poster-white": "XL",
-  });
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
+  const [sizeErrors, setSizeErrors] = useState<Record<string, boolean>>({});
   const [addedItem, setAddedItem] = useState<string | null>(null);
 
   const handleAddToCart = (prod: Product) => {
     const rawSize = selectedSizes[prod.id];
     if (!rawSize) {
-      alert(isRtl ? "الرجاء اختيار المقاس أولاً" : "Please select a size first");
+      setSizeErrors((prev) => ({ ...prev, [prod.id]: true }));
       return;
     }
 
@@ -78,9 +76,10 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
       {/* Two Approved Products Grid with Subtle 3D Tilt */}
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
         {SHARED_PRODUCTS.map((prod) => {
-          const currentSelectedSize = selectedSizes[prod.id] || "L";
-          const activeVariant = prod.variants.find((v) => v.size === currentSelectedSize);
-          const isVariantInStock = activeVariant ? activeVariant.stockCount > 0 : true;
+          const currentSelectedSize = selectedSizes[prod.id];
+          const activeVariant = currentSelectedSize ? prod.variants.find((v) => v.size === currentSelectedSize) : null;
+          const isVariantInStock = activeVariant ? activeVariant.stockCount > 0 : null;
+          const hasSizeError = Boolean(sizeErrors[prod.id]);
 
           return (
             <Interactive3DTilt
@@ -141,9 +140,24 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
 
                 {/* Size Selection */}
                 <div className="mb-6">
+                  {hasSizeError && (
+                    <div 
+                      role="alert" 
+                      className="mb-3 p-2.5 rounded-xl bg-[#D80032]/10 border border-[#D80032]/40 text-neutral-200 text-xs font-semibold flex items-center gap-2"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-[#D80032] shrink-0" />
+                      <span>{isRtl ? "الرجاء اختيار المقاس أولاً لإضافته إلى الحقيبة" : "Please select a size first before adding to bag"}</span>
+                    </div>
+                  )}
+
                   <div className="flex justify-between items-center text-xs text-neutral-300 mb-3">
-                    <span className="font-bold">
-                      {strings.products.selectSize}:
+                    <span className="font-bold flex items-center gap-1.5">
+                      <span>{strings.products.selectSize}:</span>
+                      {currentSelectedSize && (
+                        <span className="text-white font-mono bg-[#222] px-2 py-0.5 rounded text-[11px]" dir="ltr">
+                          {currentSelectedSize}
+                        </span>
+                      )}
                     </span>
                     
                     <div className="flex items-center gap-3">
@@ -161,8 +175,12 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                         <span>{isRtl ? "استفسر عن المقاس عبر واتساب" : "Ask about sizing on WhatsApp"}</span>
                       </a>
 
-                      <span className={`text-xs font-semibold ${isVariantInStock ? "text-emerald-400" : "text-neutral-500"}`}>
-                        {isVariantInStock ? strings.products.inStock : strings.products.outOfStock}
+                      <span className={`text-xs font-semibold ${
+                        isVariantInStock === true ? "text-emerald-400" : isVariantInStock === false ? "text-neutral-500" : "text-neutral-400"
+                      }`}>
+                        {currentSelectedSize 
+                          ? (isVariantInStock ? strings.products.inStock : strings.products.outOfStock)
+                          : (isRtl ? "اختر المقاس" : "Select size")}
                       </span>
                     </div>
                   </div>
@@ -178,12 +196,17 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                           key={v.id}
                           type="button"
                           disabled={isOutOfStock}
-                          onClick={() => setSelectedSizes({ ...selectedSizes, [prod.id]: v.size })}
+                          onClick={() => {
+                            setSelectedSizes((prev) => ({ ...prev, [prod.id]: v.size }));
+                            setSizeErrors((prev) => ({ ...prev, [prod.id]: false }));
+                          }}
                           className={`relative py-3.5 rounded-xl text-sm font-bold border transition-all flex items-center justify-center ${
                             isOutOfStock
                               ? "bg-[#111] border-[#222] text-neutral-600 cursor-not-allowed opacity-40 line-through"
                               : isSelected
                               ? "bg-white border-white text-black shadow-lg shadow-white/20"
+                              : hasSizeError
+                              ? "bg-[#161616] border-[#D80032]/60 text-neutral-200 hover:border-neutral-400 hover:text-white"
                               : "bg-[#161616] border-[#2A2A2A] text-neutral-200 hover:border-neutral-400 hover:text-white"
                           }`}
                           aria-label={`Size ${v.size}`}

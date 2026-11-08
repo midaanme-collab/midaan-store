@@ -84,39 +84,35 @@ export default function Modals() {
           ? `Jordan - ${currentGov.nameEn} - ${shippingDestination.city}${shippingDestination.addressLine1 ? ` - ${shippingDestination.addressLine1}` : ''}`
           : `${shippingDestination.countryNameEn || shippingDestination.countryCode} - ${shippingDestination.city}${shippingDestination.postalCode ? ` (${shippingDestination.postalCode})` : ''}${shippingDestination.addressLine1 ? ` - ${shippingDestination.addressLine1}` : ''}`);
 
-    const carrierName = 'أرامكس (Aramex)';
-    const serviceName = selectedShippingOption 
-      ? (isRtl ? selectedShippingOption.serviceNameAr : selectedShippingOption.serviceNameEn)
-      : (isDomestic ? (isRtl ? 'أرامكس المحلي السريع (الأردن)' : 'Aramex Domestic Express') : (isRtl ? 'أرامكس إكسبريس الدولي' : 'Aramex Priority Express'));
-    const quoteRef = shippingQuote?.quoteReference || 'Awaiting Confirmation';
+    const subtotalLineAr = `- قيمة المنتجات (لا تشمل التوصيل): ${formatPrice(cartSubtotal)}`;
+    const subtotalLineEn = `- Items subtotal (delivery not included): ${formatPrice(cartSubtotal)}`;
 
     const shippingLineAr = isEstimate
-      ? `- تكلفة الشحن (تقديرية): ${formatPrice(shippingFee)}`
-      : `- تكلفة الشحن: ${formatPrice(shippingFee)}`;
+      ? `- تكلفة التوصيل (تقديرية): ${formatPrice(shippingFee)} (تُؤكد قبل الدفع)`
+      : `- تكلفة التوصيل: ${formatPrice(shippingFee)}`;
     const shippingLineEn = isEstimate
-      ? `- Shipping Fee (Estimated): ${formatPrice(shippingFee)}`
-      : `- Shipping Fee: ${formatPrice(shippingFee)}`;
+      ? `- Delivery fee (estimated): ${formatPrice(shippingFee)} (confirmed before payment)`
+      : `- Delivery fee: ${formatPrice(shippingFee)}`;
 
     const dutiesLineAr = !isDomestic
-      ? `- الرسوم الجمركية والضرائب: غير مشمولة (تُحدد وتُدفع عند الوصول)`
-      : `- الرسوم الإضافية المؤكدة: ${formatPrice(0)}`;
+      ? `\n- الرسوم الجمركية والضرائب في بلد الوصول: غير مشمولة (تُحدد وتُدفع عند الوصول)`
+      : '';
     const dutiesLineEn = !isDomestic
-      ? `- Customs & Import Duties: Excluded (payable upon arrival)`
-      : `- Confirmed Additional Charges: ${formatPrice(0)}`;
+      ? `\n- Customs & destination taxes: Excluded (payable upon arrival)`
+      : '';
 
-    const totalLineAr = isEstimate
-      ? `- المجموع التقديري: ${formatPrice(finalCalculatedTotal)}`
-      : `- المجموع النهائي: ${formatPrice(finalCalculatedTotal)}`;
-    const totalLineEn = isEstimate
-      ? `- Estimated total: ${formatPrice(finalCalculatedTotal)}`
-      : `- Final Total: ${formatPrice(finalCalculatedTotal)}`;
+    const totalLineAr = `- المجموع التقديري: ${formatPrice(finalCalculatedTotal)}`;
+    const totalLineEn = `- Estimated total: ${formatPrice(finalCalculatedTotal)}`;
 
     const confirmationNoteAr = `*ملاحظة: يؤكد فريق ميدان تكلفة التوصيل وتوفر المقاس قبل الدفع.*`;
     const confirmationNoteEn = `*Note: The Midaan team confirms delivery fees and size availability before payment.*`;
 
+    const paymentLineAr = paymentMethod === 'cliq' ? 'كليك (CliQ)' : 'عند الاستلام (نقداً)';
+    const paymentLineEn = paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery';
+
     const msg = isRtl
-      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nوجهة الشحن: ${destSummary}\nشركة الشحن: ${carrierName}\nالخدمة: ${serviceName}\nالمرجع التقديري: ${quoteRef}\nطريقة الدفع المفضلة: ${paymentMethod === 'cliq' ? 'كليك (CliQ)' : 'عند الاستلام (نقداً)'}\n\nتفاصيل الحساب:\n- المجموع الفرعي: ${formatPrice(cartSubtotal)}\n${shippingLineAr}\n${dutiesLineAr}\n${totalLineAr}\n\n${confirmationNoteAr}`
-      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nShipping Destination: ${destSummary}\nCarrier: ${carrierName}\nService: ${serviceName}\nQuote Reference: ${quoteRef}\nPreferred Payment: ${paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery'}\n\nCost Breakdown:\n- Subtotal: ${formatPrice(cartSubtotal)}\n${shippingLineEn}\n${dutiesLineEn}\n${totalLineEn}\n\n${confirmationNoteEn}`;
+      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nوجهة التوصيل: ${destSummary}\nطريقة الدفع المفضلة: ${paymentLineAr}\n\nتفاصيل الحساب:\n${subtotalLineAr}\n${shippingLineAr}${dutiesLineAr}\n${totalLineAr}\n\n${confirmationNoteAr}`
+      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nDelivery Destination: ${destSummary}\nPreferred Payment: ${paymentLineEn}\n\nCost Breakdown:\n${subtotalLineEn}\n${shippingLineEn}${dutiesLineEn}\n${totalLineEn}\n\n${confirmationNoteEn}`;
 
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
@@ -445,20 +441,18 @@ export default function Modals() {
                       <Truck size={15} className="text-[#D80032]" />
                       <span className="text-xs font-bold text-white font-sans">{strings.calculator.shippingService}</span>
                     </div>
-                    {shippingQuote && (
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-sans border ${
-                        shippingQuote.mode === 'live' 
-                          ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300' 
-                          : 'bg-amber-950/60 border-amber-500/40 text-amber-300'
-                      }`}>
-                        {shippingQuote.mode === 'live' ? strings.calculator.liveBadge : strings.calculator.mockBadge}
-                      </span>
-                    )}
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold font-sans border bg-amber-950/60 border-amber-500/40 text-amber-300">
+                      {strings.calculator.mockBadge}
+                    </span>
                   </div>
 
+                  <p className="text-[11px] text-neutral-300 font-sans">
+                    {strings.calculator.shippingNotice}
+                  </p>
+
                   {isShippingLoading ? (
-                    <div className="py-3 flex items-center justify-center gap-2 text-xs text-neutral-400 font-sans">
-                      <Loader2 size={16} className="animate-spin text-[#D80032]" />
+                    <div className="py-2.5 flex items-center justify-center gap-2 text-xs text-neutral-400 font-sans">
+                      <Loader2 size={15} className="animate-spin text-[#D80032]" />
                       <span>{strings.calculator.calculatingShipping}</span>
                     </div>
                   ) : shippingError ? (
@@ -477,9 +471,9 @@ export default function Modals() {
                       </button>
                     </div>
                   ) : selectedShippingOption ? (
-                    <div className="space-y-1.5 pt-1">
+                    <div className="space-y-1 pt-1.5 border-t border-[#222]">
                       <div className="flex justify-between items-center text-xs font-sans">
-                        <span className="text-neutral-200 font-medium">
+                        <span className="text-neutral-300 font-medium">
                           {isRtl ? selectedShippingOption.serviceNameAr : selectedShippingOption.serviceNameEn}
                         </span>
                         <span className="font-bold text-white" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
@@ -492,8 +486,8 @@ export default function Modals() {
                           <span className="text-neutral-200">{selectedShippingOption.estimatedDays}</span>
                         </p>
                       )}
-                      <div className="flex items-center justify-between text-[10px] text-neutral-500 font-sans pt-1">
-                        <span>{isRtl ? 'الوزن المعتمد للاحتساب:' : 'Chargeable weight:'} {selectedShippingOption.chargeableWeightKg} kg</span>
+                      <div className="flex items-center justify-between text-[10px] text-neutral-500 font-sans pt-0.5">
+                        <span>{isRtl ? 'الوزن للاحتساب:' : 'Chargeable weight:'} {selectedShippingOption.chargeableWeightKg} kg</span>
                         <span dir="ltr">Ref: {shippingQuote?.quoteReference}</span>
                       </div>
                     </div>
@@ -552,30 +546,26 @@ export default function Modals() {
 
                   {/* Shipping Fee */}
                   <div className="flex justify-between text-neutral-400">
-                    <span>{isEstimate ? strings.calculator.shippingCostEstimated : strings.calculator.shippingCost}</span>
+                    <span>{strings.calculator.shippingCostEstimated}</span>
                     <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                       {selectedShippingOption ? formatPrice(shippingFee) : '—'}
                     </span>
                   </div>
 
-                  {/* Additional Charges / Customs Duties */}
-                  <div className="flex justify-between text-neutral-400">
-                    <span>{isDomestic ? strings.calculator.additionalCharges : strings.calculator.dutiesAndTaxes}</span>
-                    {isDomestic ? (
-                      <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                        {formatPrice(additionalCharges)}
-                      </span>
-                    ) : (
+                  {/* Customs Duties - Exclusively shown for international destinations */}
+                  {!isDomestic && (
+                    <div className="flex justify-between text-neutral-400">
+                      <span>{strings.calculator.dutiesAndTaxes}</span>
                       <span className="font-medium text-amber-400 text-xs">
                         {strings.calculator.dutiesExcluded}
                       </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   {/* Final Total / Estimated Total */}
                   <div className="flex justify-between items-end pt-2 border-t border-[#1A1A1A]">
                     <span className="text-sm font-bold text-white font-sans">
-                      {isEstimate ? strings.calculator.estimatedTotal : strings.calculator.finalTotal}
+                      {strings.calculator.estimatedTotal}
                     </span>
                     <span className="text-2xl font-black text-white font-sans" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                       {formatPrice(finalCalculatedTotal)}
@@ -583,18 +573,20 @@ export default function Modals() {
                   </div>
                 </div>
 
-                {/* 7. Customs Disclaimer */}
-                <div className="bg-[#111] border border-[#262626] rounded-xl p-3 text-[11px] text-neutral-400 font-sans leading-relaxed">
-                  <div className="text-neutral-300 font-medium mb-1 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D80032] inline-block" />
-                    <span>{strings.calculator.excludedCustoms}</span>
+                {/* 7. Customs Disclaimer - ONLY if International */}
+                {!isDomestic && (
+                  <div className="bg-[#111] border border-[#262626] rounded-xl p-3 text-[11px] text-neutral-400 font-sans leading-relaxed">
+                    <div className="text-neutral-300 font-medium mb-1 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D80032] inline-block" />
+                      <span>{strings.calculator.excludedCustoms}</span>
+                    </div>
+                    <p>
+                      {isRtl ? CUSTOMS_DISCLAIMERS.ar : CUSTOMS_DISCLAIMERS.en}
+                    </p>
                   </div>
-                  <p>
-                    {isRtl ? CUSTOMS_DISCLAIMERS.ar : CUSTOMS_DISCLAIMERS.en}
-                  </p>
-                </div>
+                )}
 
-                {/* 8. Carrier Transparency & Official Peg Notice */}
+                {/* 8. Fixed Pricing & Transparency Notice */}
                 <div className="space-y-1 text-[10px] text-neutral-500 font-sans leading-relaxed">
                   <p>{strings.calculator.carrierNotice}</p>
                   <p>{strings.calculator.exchangeRateNotice}</p>

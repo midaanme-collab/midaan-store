@@ -1,16 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 import MidaanLogo from './MidaanLogo';
 import Modals from './Modals';
+import FooterPoliciesModal, { PolicyTab } from './FooterPoliciesModal';
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
   const { lang, setLang, setIsCartOpen, cart, currency, setCurrency } = useStore();
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
+
+  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
+  const [activePolicyTab, setActivePolicyTab] = useState<PolicyTab>('shipping');
+
+  const openPolicy = (tab: PolicyTab) => {
+    setActivePolicyTab(tab);
+    setIsPolicyModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#050505] text-[#EDEDED] transition-colors" dir={isRtl ? 'rtl' : 'ltr'}>
@@ -119,6 +128,41 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           </a>
         </div>
 
+        {/* Transparent Policy Links */}
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-neutral-400 font-normal mb-6">
+          <button
+            type="button"
+            onClick={() => openPolicy('shipping')}
+            className="hover:text-white transition-colors underline underline-offset-4"
+          >
+            {isRtl ? 'الشحن والتأكيد اليدوي' : 'Shipping & Confirmation'}
+          </button>
+          <span className="text-neutral-700">•</span>
+          <button
+            type="button"
+            onClick={() => openPolicy('returns')}
+            className="hover:text-white transition-colors underline underline-offset-4"
+          >
+            {isRtl ? 'الاستبدال والضمان' : 'Returns & Guarantee'}
+          </button>
+          <span className="text-neutral-700">•</span>
+          <button
+            type="button"
+            onClick={() => openPolicy('privacy')}
+            className="hover:text-white transition-colors underline underline-offset-4"
+          >
+            {isRtl ? 'سياسة الخصوصية' : 'Privacy Policy'}
+          </button>
+          <span className="text-neutral-700">•</span>
+          <button
+            type="button"
+            onClick={() => openPolicy('contact')}
+            className="hover:text-white transition-colors underline underline-offset-4"
+          >
+            {isRtl ? 'تواصل معنا' : 'Contact Us'}
+          </button>
+        </div>
+
         {/* Shipping & Order Confirmation Notice */}
         <p className="max-w-xl mx-auto px-4 text-xs text-neutral-400 leading-relaxed mb-6">
           {strings.footer.orderNotice}
@@ -129,6 +173,15 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           {strings.footer.rights}
         </p>
       </footer>
+
+      {/* Global Policy Modal */}
+      <FooterPoliciesModal
+        isOpen={isPolicyModalOpen}
+        onClose={() => setIsPolicyModalOpen(false)}
+        activeTab={activePolicyTab}
+        onTabChange={setActivePolicyTab}
+        lang={lang as 'ar' | 'en'}
+      />
 
       {/* Global Cart Drawer and Modals */}
       <Modals />

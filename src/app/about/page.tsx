@@ -122,13 +122,13 @@ export default function AboutPage() {
               </div>
               <p className="text-sm leading-relaxed mb-4">
                 {isAr 
-                  ? 'يلتزم ميدان بالنزاهة التحريرية والتصنيعية الكاملة: لا نطلق ادعاءات غير موثقة، ولا نسوق لأرقام وهمية. نوثق الرواية كما عاشها أصحابها، ونطرح قطيعاً حرفية محدودة معلنة الأصول والمواصفات دون زيادة أو تزييف.'
+                  ? 'يلتزم ميدان بالنزاهة التحريرية والتصنيعية الكاملة: لا نطلق ادعاءات غير موثقة، ولا نسوق لأرقام وهمية. نوثق الرواية كما عاشها أصحابها، ونطرح قطعاً حرفية محدودة معلنة الأصول والمواصفات دون زيادة أو تزييف.'
                   : 'Midaan is committed to full editorial and production integrity: we make no unverified claims or commercial hype. We preserve texts exactly as penned by their authors, and produce limited artisan apparel with transparent material origins and honest specifications.'}
               </p>
               <div className="pt-4 border-t border-[#222] flex flex-wrap gap-4 text-xs text-neutral-400">
-                <span>• {isAr ? 'صُنعت في عمّان - فلسطين' : 'Conceived in Amman & Palestine'}</span>
-                <span>• {isAr ? 'تصنيع إندونيسي حرفي (صوت وصورة)' : 'Artisan Indonesian Craft (Sotusura)'}</span>
-                <span>• {isAr ? 'أرشيف مفتوح وحبر حر' : 'Open Archive & Free Press'}</span>
+                <span>• {isAr ? 'مبادرة تأسست وصُممت فكرياً في عمّان ببوصلة تركز على فلسطين' : 'Founded & Conceptually Designed in Amman, Palestine-Focused'}</span>
+                <span>• {isAr ? 'تصنيع إندونيسي حرفي (260 جم مع طباعة DTG مباشرة)' : 'Artisan Indonesian Craft (260 GSM Heavy Cotton, DTG Print)'}</span>
+                <span>• {isAr ? 'أرشيف مفتوح وحرية نشر مسؤولة' : 'Open Archive & Editorial Independence'}</span>
               </div>
             </section>
 

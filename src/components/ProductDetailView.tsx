@@ -28,9 +28,21 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
   const isAr = lang === 'ar';
   const strings = content[isAr ? 'ar' : 'en'];
 
-  const [selectedSize, setSelectedSize] = useState<GarmentSize>('L');
+  const [selectedSize, setSelectedSize] = useState<GarmentSize | null>(null);
+  const [sizeError, setSizeError] = useState(false);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
+
+  // Keyboard accessibility for zoom lightbox
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsZoomOpen(false);
+    };
+    if (isZoomOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isZoomOpen]);
 
   const title = isAr ? product.titleAr : product.titleEn;
   const priceDisplay = formatProductPrice(currency, isAr ? 'ar' : 'en');
@@ -52,23 +64,27 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
   // Documented garment specifications
   const specs = [
     {
-      labelAr: 'بلد الصنع',
+      labelAr: 'بلد الصنع والتنفيذ',
       labelEn: 'Origin & Manufacturing',
-      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع صوت وصورة.',
-      valEn: 'Crafted in Indonesia through dedicated artisan partnership with Sotusura.'
+      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع صوت وصورة (قطن نقي 260 جم/م²).',
+      valEn: 'Crafted in Indonesia through dedicated artisan partnership with Sotusura (260 GSM heavy cotton).'
     },
     {
       labelAr: 'تقنية الطباعة',
       labelEn: 'Print Execution',
-      valAr: 'طباعة مباشرة على النسيج (DTG) عالية الدقة تندمج في ألياف القطن.',
-      valEn: 'High-definition Direct-to-Garment (DTG) print embedded in fiber.'
+      valAr: 'طباعة مباشرة على النسيج (DTG) عالية الدقة تندمج في ألياف القطن دون ملمس بلاستيكي.',
+      valEn: 'High-definition Direct-to-Garment (DTG) print embedded in cotton fibers.'
     }
   ];
 
-  const selectedVariant = product.variants.find((v) => normalizeSize(v.size) === normalizeSize(selectedSize));
+  const selectedVariant = selectedSize ? product.variants.find((v) => normalizeSize(v.size) === normalizeSize(selectedSize)) : null;
   const isVariantInStock = selectedVariant ? selectedVariant.inStock && selectedVariant.stockCount > 0 : false;
 
   const handleAddToCart = () => {
+    if (!selectedSize) {
+      setSizeError(true);
+      return;
+    }
     if (!isVariantInStock) return;
 
     addToCart({
@@ -93,8 +109,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
   const whatsappInquiryUrl = `https://wa.me/962770125316?text=${encodeURIComponent(
     isAr
-      ? `مرحباً فريق ميدان، أود الاستفسار عن قياسات وتفاصيل ${product.titleAr} (المقاس: ${selectedSize}).`
-      : `Hello Midaan team, I would like to inquire about sizing and measurements for ${product.titleEn} (Size: ${selectedSize}).`
+      ? `مرحباً فريق ميدان، أود الاستفسار عن قياسات وتفاصيل ${product.titleAr}${selectedSize ? ` (المقاس: ${selectedSize})` : ' (جدول المقاسات والقصة)'}.`
+      : `Hello Midaan team, I would like to inquire about sizing and measurements for ${product.titleEn}${selectedSize ? ` (Size: ${selectedSize})` : ' (Size guide & fit)'}.`
   )}`;
 
   return (
@@ -187,13 +203,34 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
               {/* Size Selector */}
               <div className="mb-6">
+                {sizeError && (
+                  <div 
+                    role="alert" 
+                    className="mb-3 p-3 rounded-xl bg-[#D80032]/10 border border-[#D80032]/40 text-neutral-200 text-xs font-semibold flex items-center gap-2"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-[#D80032] shrink-0" />
+                    <span>{isAr ? 'الرجاء اختيار المقاس أولاً لإضافته إلى الحقيبة' : 'Please select a size first before adding to bag'}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center text-xs text-neutral-300 mb-3">
-                  <span className="font-bold">
-                    {strings.products.selectSize}: <span className="text-white font-mono">{selectedSize}</span>
+                  <span className="font-bold flex items-center gap-1.5">
+                    <span>{strings.products.selectSize}:</span>
+                    {selectedSize && (
+                      <span className="text-white font-mono bg-[#222] px-2 py-0.5 rounded text-[11px]" dir="ltr">
+                        {selectedSize}
+                      </span>
+                    )}
                   </span>
                   
-                  <span className={`text-xs font-semibold ${isVariantInStock ? 'text-emerald-400' : 'text-neutral-500'}`}>
-                    {isVariantInStock ? strings.products.inStock : strings.products.outOfStock}
+                  <span className={`text-xs font-semibold ${
+                    selectedSize 
+                      ? (isVariantInStock ? 'text-emerald-400' : 'text-neutral-500')
+                      : 'text-neutral-400'
+                  }`}>
+                    {selectedSize 
+                      ? (isVariantInStock ? strings.products.inStock : strings.products.outOfStock)
+                      : (isAr ? 'اختر المقاس' : 'Select size')}
                   </span>
                 </div>
 
@@ -208,13 +245,18 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                         key={sz}
                         type="button"
                         disabled={!inStock}
-                        onClick={() => setSelectedSize(sz)}
+                        onClick={() => {
+                          setSelectedSize(sz);
+                          setSizeError(false);
+                        }}
                         className={`py-3 rounded-xl font-mono text-xs font-black transition-all border ${
                           isSelected 
                             ? 'border-[#D80032] bg-[#D80032] text-white shadow-lg shadow-[#D80032]/30 scale-[1.02]' 
-                            : inStock 
-                              ? 'border-[#262626] bg-[#111] text-neutral-300 hover:border-neutral-500 hover:text-white' 
-                              : 'border-[#1A1A1A] bg-[#0A0A0A] text-neutral-600 cursor-not-allowed line-through'
+                            : sizeError
+                              ? 'border-[#D80032]/60 bg-[#161616] text-neutral-200 hover:border-neutral-400 hover:text-white'
+                              : inStock 
+                                ? 'border-[#262626] bg-[#111] text-neutral-300 hover:border-neutral-500 hover:text-white' 
+                                : 'border-[#1A1A1A] bg-[#0A0A0A] text-neutral-600 cursor-not-allowed line-through'
                         }`}
                       >
                         {sz}
@@ -241,10 +283,9 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               <div className="space-y-3 mb-8">
                 <button
                   type="button"
-                  disabled={!isVariantInStock}
                   onClick={handleAddToCart}
                   className={`w-full py-4 rounded-xl font-sans text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-xl active:scale-98 ${
-                    !isVariantInStock
+                    selectedSize && !isVariantInStock
                       ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed border border-[#262626]'
                       : isAdded
                         ? 'bg-emerald-600 text-white'
@@ -259,11 +300,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   ) : (
                     <>
                       <ShoppingBag size={18} />
-                      <span>
-                        {isVariantInStock 
-                          ? strings.products.addToBag 
-                          : strings.products.outOfStock}
-                      </span>
+                      <span>{selectedSize ? strings.products.addToBag : (isAr ? 'اختر المقاس أولاً' : 'Select a size first')}</span>
                     </>
                   )}
                 </button>
@@ -304,7 +341,10 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
       {/* Lightbox / High-Resolution Zoom Modal */}
       {isZoomOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={isAr ? "تكبير صورة المنتج" : "Product image zoom"}
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 animate-fadeIn"
           onClick={() => setIsZoomOpen(false)}
         >
           <button
