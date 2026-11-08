@@ -205,8 +205,8 @@ export default function CollabPage() {
                 </p>
                 <p>
                   {isRtl
-                    ? 'تم اختيار النسيج القطني المنسوج في إندونيسيا لمرونته وملمسه الناعم وتوافقه العالي مع تقنية الطباعة الرقمية المباشرة (DTG)، التي تدمج التصميم داخل أنسجة القطن ليبقى ثابتاً ومسامياً مع كثرة الاستخدام والغسيل.'
-                    : 'Indonesian-milled cotton weave was selected for its durability, natural softness, and exceptional receptivity to Direct-to-Garment (DTG) printing, infusing archival graphics deep into the fabric fibers without stiffness or cracking.'}
+                    ? 'تم تصنيع القطع في إندونيسيا لمرونتها وملمسها وتوافقها العالي مع تقنية الطباعة الرقمية المباشرة (DTG)، التي تدمج التصميم داخل أنسجة القماش ليبقى ثابتاً ومسامياً مع كثرة الاستخدام والغسيل.'
+                    : 'Crafted in Indonesia for durability, soft texture, and exceptional receptivity to Direct-to-Garment (DTG) printing, infusing archival graphics deep into the fabric fibers without stiffness or cracking.'}
                 </p>
               </div>
 
@@ -221,7 +221,7 @@ export default function CollabPage() {
                 </div>
                 <div>
                   <span className="block text-white font-bold mb-1">{isRtl ? 'تقنية التنفيذ' : 'Execution'}</span>
-                  <span>{isRtl ? 'طباعة مباشرة على القماش (DTG)' : 'Direct-to-Garment (DTG) Print'}</span>
+                  <span>{isRtl ? 'طباعة مباشرة على النسيج بتقنية DTG' : 'Direct-to-garment printing using DTG technology'}</span>
                 </div>
               </div>
             </div>

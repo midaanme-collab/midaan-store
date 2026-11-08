@@ -97,10 +97,19 @@ const initialShippingDestination: ShippingDestination = {
   countryNameAr: 'الأردن',
   countryNameEn: 'Jordan',
   governorateId: 'amman',
-  city: 'عمّان',
+  city: 'عمّان (وسط البلد / جبل عمّان / اللويبده)',
+  customArea: '',
   postalCode: '11118',
   addressLine1: '',
   phone: '',
+  domesticGovernorateId: 'amman',
+  domesticCity: 'عمّان (وسط البلد / جبل عمّان / اللويبده)',
+  domesticCustomArea: '',
+  domesticAddressLine1: '',
+  internationalCountryCode: 'AE',
+  internationalCity: '',
+  internationalPostalCode: '',
+  internationalAddressLine1: '',
 };
 
 export const useStore = create<StoreState>()(persist((set, get) => ({

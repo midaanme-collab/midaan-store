@@ -34,6 +34,7 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
 
     addToCart({
       id: `${prod.id}-${normSize}`,
+      productId: prod.id,
       garment: "tshirt",
       color: "offwhite",
       size: normSize as GarmentSize,
@@ -43,6 +44,8 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
       priceUSD: prod.basePriceUSD || 50.0, // 50.0 USD
       isPrePrinted: true,
       productTitle: isRtl ? prod.titleAr : prod.titleEn,
+      productTitleAr: prod.titleAr,
+      productTitleEn: prod.titleEn,
     });
 
     setAddedItem(prod.id);

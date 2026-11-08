@@ -61,7 +61,7 @@ export const SHARED_PRODUCTS: Product[] = [
     titleAr: 'تيشيرت خوذة الكوفية — أبيض',
     category: 'drops',
     descriptionEn: 'Made in Indonesia • Direct-to-Garment (DTG) Print',
-    descriptionAr: 'صنع في إندونيسيا • طباعة مباشرة على القماش (DTG)',
+    descriptionAr: 'صنع في إندونيسيا • طباعة مباشرة على النسيج بتقنية DTG',
     basePriceJOD: 35.0,
     basePriceUSD: 50.0,
     printSpec: 'DTG_DIRECT_TO_GARMENT',
@@ -83,7 +83,7 @@ export const SHARED_PRODUCTS: Product[] = [
     titleAr: 'تيشيرت بوستر فلسطين — أبيض',
     category: 'drops',
     descriptionEn: 'Made in Indonesia • Direct-to-Garment (DTG) Print',
-    descriptionAr: 'صنع في إندونيسيا • طباعة مباشرة على القماش (DTG)',
+    descriptionAr: 'صنع في إندونيسيا • طباعة مباشرة على النسيج بتقنية DTG',
     basePriceJOD: 35.0,
     basePriceUSD: 50.0,
     printSpec: 'DTG_DIRECT_TO_GARMENT',
@@ -163,6 +163,30 @@ export function getMaxStock(titleOrId: string = '', size: string = 'L'): number 
     return 1;
   }
   return 10;
+}
+
+/**
+ * Resolves localized product title by canonical ID, legacy ID, or alias.
+ * Guarantees dynamic translation upon language switch, independent of add-to-bag time.
+ */
+export function getLocalizedProductTitle(
+  item: { id?: string; productId?: string; productTitle?: string; productTitleAr?: string; productTitleEn?: string; garment?: string },
+  lang: 'ar' | 'en'
+): string {
+  const query = [item.productId, item.id, item.productTitle].filter(Boolean).join(' ');
+  if (isHelmetProduct(query)) {
+    return lang === 'ar' ? 'تيشيرت خوذة الكوفية — أبيض' : 'Keffiyeh Helmet Tee — White';
+  }
+  if (isPosterProduct(query)) {
+    return lang === 'ar' ? 'تيشيرت بوستر فلسطين — أبيض' : 'Palestine Poster Tee — White';
+  }
+  if (lang === 'en' && item.productTitleEn) {
+    return item.productTitleEn;
+  }
+  if (lang === 'ar' && item.productTitleAr) {
+    return item.productTitleAr;
+  }
+  return item.productTitle || (lang === 'ar' ? 'تيشيرت ميدان' : 'Midaan T-Shirt');
 }
 
 /**

@@ -66,14 +66,14 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
     {
       labelAr: 'بلد الصنع والتنفيذ',
       labelEn: 'Origin & Manufacturing',
-      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع صوت وصورة (نسيج قطني بطباعة DTG مباشرة).',
-      valEn: 'Crafted in Indonesia through dedicated artisan partnership with Sotusura (cotton textile with direct DTG print).'
+      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع صوت وصورة (طباعة مباشرة على النسيج بتقنية DTG).',
+      valEn: 'Crafted in Indonesia through dedicated artisan partnership with Sotusura (direct-to-garment printing using DTG technology).'
     },
     {
       labelAr: 'تقنية الطباعة',
       labelEn: 'Print Execution',
-      valAr: 'طباعة مباشرة على النسيج (DTG) عالية الدقة تندمج في ألياف القطن دون ملمس بلاستيكي.',
-      valEn: 'High-definition Direct-to-Garment (DTG) print embedded in cotton fibers.'
+      valAr: 'طباعة مباشرة على النسيج بتقنية DTG تندمج في ألياف النسيج دون ملمس بلاستيكي.',
+      valEn: 'High-definition direct-to-garment printing (DTG) embedded in fabric fibers.'
     }
   ];
 
@@ -89,6 +89,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
     addToCart({
       id: `${product.id}-${selectedSize}`,
+      productId: product.id,
       garment: 'tshirt',
       color: 'offwhite',
       size: selectedSize,
@@ -99,6 +100,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
       previewImage: imageUrl,
       isPrePrinted: true,
       productTitle: isAr ? product.titleAr : product.titleEn,
+      productTitleAr: product.titleAr,
+      productTitleEn: product.titleEn,
       quantity: 1,
     });
 
@@ -366,7 +369,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               className="max-h-[80vh] w-auto object-contain filter drop-shadow-2xl rounded-2xl"
             />
             <p className="text-xs text-neutral-400 font-sans mt-4 text-center">
-              {title} • {isAr ? 'طباعة مباشرة على القماش (DTG) عالية الجودة' : 'High-Definition DTG Direct-to-Garment Print'}
+              {title} • {isAr ? 'طباعة مباشرة على النسيج بتقنية DTG عالية الجودة' : 'High-Definition DTG Direct-to-Garment Print'}
             </p>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { useStore } from '../src/store';
 import { JORDAN_GOVERNORATE_AREAS } from '../src/constants/shipping';
 import DropShowcase from '../src/components/DropShowcase';
@@ -291,6 +291,247 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(content).not.toContain('٤٨ ساعة');
       expect(content).not.toContain('48 hours');
       expect(content).not.toContain('نضمن استبدال');
+    });
+
+    it('verifies fabric descriptions remove unapproved cotton claims in favor of DTG printing', () => {
+      const productDetailPath = path.join(process.cwd(), 'src/components/ProductDetailView.tsx');
+      const detailContent = fs.readFileSync(productDetailPath, 'utf8');
+      expect(detailContent).not.toContain('قطن');
+      expect(detailContent.toLowerCase()).not.toContain('cotton');
+
+      const collabPath = path.join(process.cwd(), 'src/app/collab/page.tsx');
+      const collabContent = fs.readFileSync(collabPath, 'utf8');
+      expect(collabContent).not.toContain('قطن');
+      expect(collabContent.toLowerCase()).not.toContain('cotton');
+    });
+  });
+
+  describe('6. Isolated Destination State (Local vs International)', () => {
+    it('does not leak Dubai into Jordan local destination when switching back and forth', () => {
+      useStore.setState({
+        lang: 'ar',
+        currency: 'JOD',
+        isCartOpen: true,
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productId: 'drop-helmet-white',
+            productTitle: 'تيشيرت خوذة الكوفية — أبيض',
+            size: 'L',
+            garment: 'tshirt',
+            price: 35,
+            priceUSD: 50,
+            quantity: 1,
+            color: 'offwhite',
+            placement: 'back',
+            artMode: 'presets',
+            isPrePrinted: true,
+          },
+        ],
+      });
+
+      const { unmount } = render(<Modals />);
+
+      // Switch to International
+      const intlTab = screen.getByRole('button', { name: /شحن دولي/i });
+      fireEvent.click(intlTab);
+
+      // Type Dubai as city in international
+      const cityInput = screen.getByPlaceholderText(/المدينة \(مثال: دبي، الرياض، لندن\)/i);
+      fireEvent.change(cityInput, { target: { value: 'Dubai' } });
+
+      // Verify state now has Dubai
+      expect(useStore.getState().shippingDestination.city).toBe('Dubai');
+
+      // Switch back to Domestic
+      const domesticTab = screen.getByRole('button', { name: /توصيل محلي \(الأردن\)/i });
+      fireEvent.click(domesticTab);
+
+      // Verify that active city is NOT Dubai!
+      const activeState = useStore.getState().shippingDestination;
+      expect(activeState.countryCode).toBe('JO');
+      expect(activeState.city).not.toBe('Dubai');
+      expect(activeState.city).toContain('عمّان');
+
+      // Check WhatsApp link href does NOT contain Dubai
+      const waLink = screen.getByRole('link', { name: /إرسال الطلب للتأكيد عبر واتساب/i });
+      const href = waLink.getAttribute('href') || '';
+      const urlObj = new URL(href);
+      const decodedMsg = urlObj.searchParams.get('text') || '';
+
+      expect(decodedMsg).not.toContain('Dubai');
+      expect(decodedMsg).toContain('الأردن');
+      expect(decodedMsg).toContain('عمّان');
+
+      unmount();
+    });
+
+    it('requires custom area input when "منطقة أخرى" is selected and blocks checkout until filled', () => {
+      useStore.setState({
+        lang: 'ar',
+        currency: 'JOD',
+        isCartOpen: true,
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productId: 'drop-helmet-white',
+            productTitle: 'تيشيرت خوذة الكوفية — أبيض',
+            size: 'L',
+            garment: 'tshirt',
+            price: 35,
+            priceUSD: 50,
+            quantity: 1,
+            color: 'offwhite',
+            placement: 'back',
+            artMode: 'presets',
+            isPrePrinted: true,
+          },
+        ],
+        shippingDestination: {
+          countryCode: 'JO',
+          countryNameAr: 'الأردن',
+          countryNameEn: 'Jordan',
+          governorateId: 'amman',
+          city: 'منطقة أخرى',
+          customArea: '',
+          postalCode: '11118',
+        },
+      });
+
+      render(<Modals />);
+
+      // Must display custom area input
+      const customAreaInput = screen.getByPlaceholderText(/أدخل اسم منطقتك/i);
+      expect(customAreaInput).toBeInTheDocument();
+
+      // Action button must be disabled and validation message shown
+      expect(screen.getAllByText(/يرجى إدخال اسم المنطقة للمتابعة/i).length).toBeGreaterThanOrEqual(1);
+      const sendButton = screen.getByRole('button', { name: /إرسال الطلب للتأكيد عبر واتساب/i });
+      expect(sendButton).toBeDisabled();
+
+      // Fill custom area name
+      fireEvent.change(customAreaInput, { target: { value: 'طبربور - حي الشهيد' } });
+
+      // Action button should now be an enabled link
+      const waLink = screen.getByRole('link', { name: /إرسال الطلب للتأكيد عبر واتساب/i });
+      expect(waLink).toBeInTheDocument();
+
+      const href = waLink.getAttribute('href') || '';
+      const decodedMsg = decodeURIComponent(href);
+      expect(decodedMsg).toContain('طبربور - حي الشهيد');
+    });
+
+    it('does not display CliQ or COD buttons for international shipping and notes confirmation via WhatsApp', () => {
+      useStore.setState({
+        lang: 'en',
+        currency: 'USD',
+        isCartOpen: true,
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productId: 'drop-helmet-white',
+            productTitle: 'Keffiyeh Helmet Tee — White',
+            size: 'L',
+            garment: 'tshirt',
+            price: 35,
+            priceUSD: 50,
+            quantity: 1,
+            color: 'offwhite',
+            placement: 'back',
+            artMode: 'presets',
+            isPrePrinted: true,
+          },
+        ],
+        shippingDestination: {
+          countryCode: 'AE',
+          countryNameAr: 'الإمارات العربية المتحدة',
+          countryNameEn: 'United Arab Emirates',
+          city: 'Abu Dhabi',
+          postalCode: '',
+        },
+      });
+
+      render(<Modals />);
+
+      // CliQ and COD buttons must NOT be present
+      expect(screen.queryByRole('button', { name: /CliQ Transfer/i })).toBeNull();
+      expect(screen.queryByRole('button', { name: /Cash on Delivery/i })).toBeNull();
+
+      // Must state WhatsApp confirmation for payment
+      expect(screen.getByText('Available payment methods are confirmed via WhatsApp before completing the order.')).toBeInTheDocument();
+
+      const waLink = screen.getByRole('link', { name: /Request confirmation via WhatsApp/i });
+      const href = waLink.getAttribute('href') || '';
+      const decodedMsg = decodeURIComponent(href);
+
+      expect(decodedMsg).toContain('Payment: Available payment methods are confirmed via WhatsApp before completing the order');
+      expect(decodedMsg).not.toContain('Preferred Payment: CliQ');
+      expect(decodedMsg).not.toContain('Preferred Payment: Cash on Delivery');
+    });
+  });
+
+  describe('7. Dynamic Cart Translation & Pricing Consistency', () => {
+    it('dynamically translates product titles in cart and WhatsApp message upon language switch', () => {
+      useStore.setState({
+        lang: 'ar',
+        currency: 'JOD',
+        isCartOpen: true,
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productId: 'drop-helmet-white',
+            productTitle: 'تيشيرت خوذة الكوفية — أبيض',
+            productTitleAr: 'تيشيرت خوذة الكوفية — أبيض',
+            productTitleEn: 'Keffiyeh Helmet Tee — White',
+            size: 'L',
+            garment: 'tshirt',
+            price: 35,
+            priceUSD: 50,
+            quantity: 2,
+            color: 'offwhite',
+            placement: 'back',
+            artMode: 'presets',
+            isPrePrinted: true,
+          },
+        ],
+      });
+
+      const { rerender } = render(<Modals />);
+
+      // In Arabic: Arabic title, Arabic labels
+      expect(screen.getByText('تيشيرت خوذة الكوفية — أبيض')).toBeInTheDocument();
+      expect(screen.getByText(/المقاس:/i)).toBeInTheDocument();
+
+      // Check WhatsApp link in Arabic
+      let waLink = screen.getByRole('link', { name: /إرسال الطلب للتأكيد عبر واتساب/i });
+      let decoded = decodeURIComponent(waLink.getAttribute('href') || '');
+      expect(decoded).toContain('1. تيشيرت خوذة الكوفية — أبيض - مقاس: L - كمية: 2 (٧٠ د.أ)');
+
+      // Switch language to English
+      act(() => {
+        useStore.setState({ lang: 'en' });
+      });
+      rerender(<Modals />);
+
+      // In English: English title, English labels
+      expect(screen.getByText('Keffiyeh Helmet Tee — White')).toBeInTheDocument();
+      expect(screen.getByText(/Size:/i)).toBeInTheDocument();
+
+      // Check WhatsApp link in English
+      waLink = screen.getByRole('link', { name: /Request confirmation via WhatsApp/i });
+      decoded = decodeURIComponent(waLink.getAttribute('href') || '');
+      expect(decoded).toContain('1. Keffiyeh Helmet Tee — White - Size: L - Qty: 2 (70 JOD)');
+      expect(decoded).not.toContain('مقاس:');
+      expect(decoded).not.toContain('كمية:');
+
+      // Check quantity 2 produces 70 JOD / 100 USD
+      act(() => {
+        useStore.setState({ currency: 'USD' });
+      });
+      rerender(<Modals />);
+      waLink = screen.getByRole('link', { name: /Request confirmation via WhatsApp/i });
+      decoded = decodeURIComponent(waLink.getAttribute('href') || '');
+      expect(decoded).toContain('1. Keffiyeh Helmet Tee — White - Size: L - Qty: 2 (100.00 USD)');
     });
   });
 });

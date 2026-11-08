@@ -27,7 +27,10 @@ export interface CartItem {
   customText?: string;
   selectedPreset?: PresetArt;
   isPrePrinted?: boolean;
+  productId?: string;
   productTitle?: string;
+  productTitleAr?: string;
+  productTitleEn?: string;
   quantity?: number;
 }
 
@@ -65,9 +68,18 @@ export interface ShippingDestination {
   countryNameEn: string;
   governorateId?: string;
   city: string;
+  customArea?: string;
   postalCode?: string;
   addressLine1?: string;
   phone?: string;
+  domesticGovernorateId?: string;
+  domesticCity?: string;
+  domesticCustomArea?: string;
+  domesticAddressLine1?: string;
+  internationalCountryCode?: string;
+  internationalCity?: string;
+  internationalPostalCode?: string;
+  internationalAddressLine1?: string;
 }
 
 export interface ShippingQuoteRequestItem {
