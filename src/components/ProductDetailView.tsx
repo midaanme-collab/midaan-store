@@ -66,8 +66,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
     {
       labelAr: 'بلد الصنع والتنفيذ',
       labelEn: 'Origin & Manufacturing',
-      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع صوت وصورة (قطن نقي 260 جم/م²).',
-      valEn: 'Crafted in Indonesia through dedicated artisan partnership with Sotusura (260 GSM heavy cotton).'
+      valAr: 'صنع في إندونيسيا بشراكة تصنيعية حرفية مع صوت وصورة (نسيج قطني بطباعة DTG مباشرة).',
+      valEn: 'Crafted in Indonesia through dedicated artisan partnership with Sotusura (cotton textile with direct DTG print).'
     },
     {
       labelAr: 'تقنية الطباعة',

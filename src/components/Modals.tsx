@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { X, Trash2, Loader2, AlertCircle, RefreshCw, Truck } from 'lucide-react';
+import { X, Trash2, Truck } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 import { formatArabicJod } from '@/constants/products';
@@ -36,12 +36,6 @@ export default function Modals() {
     (sum, item) => sum + ((currency === 'USD' ? (item.priceUSD || 50) : item.price) * (item.quantity || 1)), 
     0
   );
-
-  const selectedShippingOption = shippingQuote?.selectedOption;
-  const shippingFee = selectedShippingOption?.shippingFee ?? 0;
-  const additionalCharges = selectedShippingOption?.additionalCharges ?? 0;
-  const finalCalculatedTotal = cartSubtotal > 0 ? (cartSubtotal + shippingFee + additionalCharges) : 0;
-  const isEstimate = !shippingQuote || shippingQuote.mode === 'mock' || !selectedShippingOption?.isConfirmed;
 
   /**
    * Single unified currency formatter:
@@ -87,12 +81,8 @@ export default function Modals() {
     const subtotalLineAr = `- قيمة المنتجات (لا تشمل التوصيل): ${formatPrice(cartSubtotal)}`;
     const subtotalLineEn = `- Items subtotal (delivery not included): ${formatPrice(cartSubtotal)}`;
 
-    const shippingLineAr = isEstimate
-      ? `- تكلفة التوصيل (تقديرية): ${formatPrice(shippingFee)} (تُؤكد قبل الدفع)`
-      : `- تكلفة التوصيل: ${formatPrice(shippingFee)}`;
-    const shippingLineEn = isEstimate
-      ? `- Delivery fee (estimated): ${formatPrice(shippingFee)} (confirmed before payment)`
-      : `- Delivery fee: ${formatPrice(shippingFee)}`;
+    const shippingLineAr = `- رسوم التوصيل: تُؤكد عبر واتساب قبل الدفع`;
+    const shippingLineEn = `- Delivery fee: Confirmed via WhatsApp before payment`;
 
     const dutiesLineAr = !isDomestic
       ? `\n- الرسوم الجمركية والضرائب في بلد الوصول: غير مشمولة (تُحدد وتُدفع عند الوصول)`
@@ -101,9 +91,6 @@ export default function Modals() {
       ? `\n- Customs & destination taxes: Excluded (payable upon arrival)`
       : '';
 
-    const totalLineAr = `- المجموع التقديري: ${formatPrice(finalCalculatedTotal)}`;
-    const totalLineEn = `- Estimated total: ${formatPrice(finalCalculatedTotal)}`;
-
     const confirmationNoteAr = `*ملاحظة: يؤكد فريق ميدان تكلفة التوصيل وتوفر المقاس قبل الدفع.*`;
     const confirmationNoteEn = `*Note: The Midaan team confirms delivery fees and size availability before payment.*`;
 
@@ -111,8 +98,8 @@ export default function Modals() {
     const paymentLineEn = paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery';
 
     const msg = isRtl
-      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nوجهة التوصيل: ${destSummary}\nطريقة الدفع المفضلة: ${paymentLineAr}\n\nتفاصيل الحساب:\n${subtotalLineAr}\n${shippingLineAr}${dutiesLineAr}\n${totalLineAr}\n\n${confirmationNoteAr}`
-      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nDelivery Destination: ${destSummary}\nPreferred Payment: ${paymentLineEn}\n\nCost Breakdown:\n${subtotalLineEn}\n${shippingLineEn}${dutiesLineEn}\n${totalLineEn}\n\n${confirmationNoteEn}`;
+      ? `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderDetails}\n\nوجهة التوصيل: ${destSummary}\nطريقة الدفع المفضلة: ${paymentLineAr}\n\nتفاصيل الحساب:\n${subtotalLineAr}\n${shippingLineAr}${dutiesLineAr}\n\n${confirmationNoteAr}`
+      : `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderDetails}\n\nDelivery Destination: ${destSummary}\nPreferred Payment: ${paymentLineEn}\n\nCost Breakdown:\n${subtotalLineEn}\n${shippingLineEn}${dutiesLineEn}\n\n${confirmationNoteEn}`;
 
     return `https://wa.me/962770125316?text=${encodeURIComponent(msg)}`;
   };
@@ -434,64 +421,21 @@ export default function Modals() {
                   />
                 </div>
 
-                {/* 4. Live Aramex Rate Calculator Card */}
+                {/* 4. Shipping & Delivery Service Notice */}
                 <div className="bg-[#111] border border-[#262626] rounded-xl p-3.5 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Truck size={15} className="text-[#D80032]" />
                       <span className="text-xs font-bold text-white font-sans">{strings.calculator.shippingService}</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold font-sans border bg-amber-950/60 border-amber-500/40 text-amber-300">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold font-sans border bg-neutral-900 border-neutral-700 text-neutral-300">
                       {strings.calculator.mockBadge}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-neutral-300 font-sans">
+                  <p className="text-[11px] text-neutral-300 font-sans leading-relaxed">
                     {strings.calculator.shippingNotice}
                   </p>
-
-                  {isShippingLoading ? (
-                    <div className="py-2.5 flex items-center justify-center gap-2 text-xs text-neutral-400 font-sans">
-                      <Loader2 size={15} className="animate-spin text-[#D80032]" />
-                      <span>{strings.calculator.calculatingShipping}</span>
-                    </div>
-                  ) : shippingError ? (
-                    <div className="py-2 space-y-2">
-                      <div className="flex items-start gap-2 text-xs text-red-400 font-sans bg-red-950/30 border border-red-800/40 p-2.5 rounded-lg">
-                        <AlertCircle size={15} className="shrink-0 mt-0.5" />
-                        <span className="flex-1">{shippingError}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => fetchShippingQuote()}
-                        className="w-full py-2 bg-[#1A1A1A] hover:bg-[#222] border border-[#333] text-white text-xs font-sans font-bold rounded-lg flex items-center justify-center gap-1.5 transition-colors"
-                      >
-                        <RefreshCw size={13} />
-                        <span>{strings.calculator.retry}</span>
-                      </button>
-                    </div>
-                  ) : selectedShippingOption ? (
-                    <div className="space-y-1 pt-1.5 border-t border-[#222]">
-                      <div className="flex justify-between items-center text-xs font-sans">
-                        <span className="text-neutral-300 font-medium">
-                          {isRtl ? selectedShippingOption.serviceNameAr : selectedShippingOption.serviceNameEn}
-                        </span>
-                        <span className="font-bold text-white" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                          {formatPrice(selectedShippingOption.shippingFee)}
-                        </span>
-                      </div>
-                      {selectedShippingOption.estimatedDays && (
-                        <p className="text-[11px] text-neutral-400 font-sans">
-                          {isRtl ? 'المدة التقديرية للتسليم:' : 'Estimated transit:'}{' '}
-                          <span className="text-neutral-200">{selectedShippingOption.estimatedDays}</span>
-                        </p>
-                      )}
-                      <div className="flex items-center justify-between text-[10px] text-neutral-500 font-sans pt-0.5">
-                        <span>{isRtl ? 'الوزن للاحتساب:' : 'Chargeable weight:'} {selectedShippingOption.chargeableWeightKg} kg</span>
-                        <span dir="ltr">Ref: {shippingQuote?.quoteReference}</span>
-                      </div>
-                    </div>
-                  ) : null}
                 </div>
 
                 {/* 5. Preferred Payment Method */}
@@ -535,20 +479,20 @@ export default function Modals() {
                 </div>
 
                 {/* 6. Itemized Price Breakdown */}
-                <div className="pt-3 border-t border-[#1A1A1A] space-y-2 font-sans text-xs">
+                <div className="pt-3 border-t border-[#1A1A1A] space-y-2.5 font-sans text-xs">
                   {/* Subtotal */}
-                  <div className="flex justify-between text-neutral-400">
+                  <div className="flex justify-between text-neutral-300">
                     <span>{strings.subtotal}</span>
-                    <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
+                    <span className="font-bold text-white" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
                       {formatPrice(cartSubtotal)}
                     </span>
                   </div>
 
-                  {/* Shipping Fee */}
+                  {/* Delivery Fee Notice */}
                   <div className="flex justify-between text-neutral-400">
-                    <span>{strings.calculator.shippingCostEstimated}</span>
-                    <span className="font-bold text-neutral-200" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                      {selectedShippingOption ? formatPrice(shippingFee) : '—'}
+                    <span>{strings.calculator.shippingCost}</span>
+                    <span className="font-medium text-amber-400">
+                      {strings.calculator.shippingCostEstimated}
                     </span>
                   </div>
 
@@ -561,16 +505,6 @@ export default function Modals() {
                       </span>
                     </div>
                   )}
-
-                  {/* Final Total / Estimated Total */}
-                  <div className="flex justify-between items-end pt-2 border-t border-[#1A1A1A]">
-                    <span className="text-sm font-bold text-white font-sans">
-                      {strings.calculator.estimatedTotal}
-                    </span>
-                    <span className="text-2xl font-black text-white font-sans" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                      {formatPrice(finalCalculatedTotal)}
-                    </span>
-                  </div>
                 </div>
 
                 {/* 7. Customs Disclaimer - ONLY if International */}
@@ -592,35 +526,15 @@ export default function Modals() {
                   <p>{strings.calculator.exchangeRateNotice}</p>
                 </div>
 
-                {/* 9. Action Button */}
-                {isShippingLoading ? (
-                  <button 
-                    disabled
-                    type="button"
-                    className="w-full bg-[#1A1A1A] text-neutral-400 py-4 font-sans text-sm font-bold rounded-xl flex items-center justify-center gap-2 cursor-wait"
-                  >
-                    <Loader2 size={16} className="animate-spin text-[#D80032]" />
-                    <span>{strings.calculator.calculatingShipping}</span>
-                  </button>
-                ) : shippingError ? (
-                  <button 
-                    type="button"
-                    onClick={() => fetchShippingQuote()}
-                    className="w-full bg-[#1A1A1A] hover:bg-[#222] text-red-300 border border-red-800/60 py-4 font-sans text-sm font-bold transition-colors rounded-xl flex items-center justify-center gap-2"
-                  >
-                    <RefreshCw size={16} />
-                    <span>{strings.calculator.retry}</span>
-                  </button>
-                ) : (
-                  <a 
-                    href={getWhatsAppOrderUrl()}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full bg-white text-black hover:bg-neutral-200 py-4 font-sans text-sm font-bold transition-colors rounded-xl flex items-center justify-center gap-2 shadow-xl active:scale-95"
-                  >
-                    <span>{strings.sendOrderWhatsApp}</span>
-                  </a>
-                )}
+                {/* 9. Action Button - Always available, never blocked */}
+                <a 
+                  href={getWhatsAppOrderUrl()}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full bg-white text-black hover:bg-neutral-200 py-4 font-sans text-sm font-bold transition-colors rounded-xl flex items-center justify-center gap-2 shadow-xl active:scale-95"
+                >
+                  <span>{strings.sendOrderWhatsApp}</span>
+                </a>
 
                 <p className="text-[11px] text-neutral-400 font-sans text-center leading-relaxed">
                   {strings.orderRequestNotice}

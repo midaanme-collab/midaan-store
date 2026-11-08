@@ -127,7 +127,7 @@ export default function AboutPage() {
               </p>
               <div className="pt-4 border-t border-[#222] flex flex-wrap gap-4 text-xs text-neutral-400">
                 <span>• {isAr ? 'مبادرة تأسست وصُممت فكرياً في عمّان ببوصلة تركز على فلسطين' : 'Founded & Conceptually Designed in Amman, Palestine-Focused'}</span>
-                <span>• {isAr ? 'تصنيع إندونيسي حرفي (260 جم مع طباعة DTG مباشرة)' : 'Artisan Indonesian Craft (260 GSM Heavy Cotton, DTG Print)'}</span>
+                <span>• {isAr ? 'تصنيع إندونيسي حرفي بشراكة صوت وصورة (طباعة DTG مباشرة)' : 'Artisan Indonesian Craft in Partnership with Sotusura (DTG Print)'}</span>
                 <span>• {isAr ? 'أرشيف مفتوح وحرية نشر مسؤولة' : 'Open Archive & Editorial Independence'}</span>
               </div>
             </section>

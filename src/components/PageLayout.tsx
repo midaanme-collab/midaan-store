@@ -143,7 +143,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             onClick={() => openPolicy('returns')}
             className="hover:text-white transition-colors underline underline-offset-4"
           >
-            {isRtl ? 'الاستبدال والضمان' : 'Returns & Guarantee'}
+            {isRtl ? 'خدمة العملاء والاستفسارات' : 'Customer Support & Inquiries'}
           </button>
           <span className="text-neutral-700">•</span>
           <button

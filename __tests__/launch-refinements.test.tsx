@@ -120,40 +120,7 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
             isPrePrinted: true,
           },
         ],
-        shippingQuote: {
-          success: true,
-          mode: 'mock',
-          quoteReference: 'MID-SIM-TEST1',
-          timestamp: new Date().toISOString(),
-          options: [
-            {
-              serviceCode: 'OND',
-              serviceNameAr: 'توصيل محلي (الأردن)',
-              serviceNameEn: 'Domestic Delivery (Jordan)',
-              productGroup: 'DOM',
-              shippingFee: 2.5,
-              currency: 'JOD',
-              estimatedDays: '1 - 2 أيام عمل',
-              chargeableWeightKg: 0.5,
-              isConfirmed: false,
-              customsIncluded: true,
-              additionalCharges: 0,
-            },
-          ],
-          selectedOption: {
-            serviceCode: 'OND',
-            serviceNameAr: 'توصيل محلي (الأردن)',
-            serviceNameEn: 'Domestic Delivery (Jordan)',
-            productGroup: 'DOM',
-            shippingFee: 2.5,
-            currency: 'JOD',
-            estimatedDays: '1 - 2 أيام عمل',
-            chargeableWeightKg: 0.5,
-            isConfirmed: false,
-            customsIncluded: true,
-            additionalCharges: 0,
-          },
-        },
+        shippingQuote: null,
       });
 
       render(<Modals />);
@@ -169,19 +136,20 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
 
       // Must include merchandise subtotal labeled as not including delivery
       expect(decodedMsg).toContain('قيمة المنتجات (لا تشمل التوصيل)');
-      // Must include estimated delivery fee
-      expect(decodedMsg).toContain('تكلفة التوصيل (تقديرية)');
-      // Must label total as estimated total
-      expect(decodedMsg).toContain('المجموع التقديري');
+      // Must include delivery fee marked as confirmed via WhatsApp before payment
+      expect(decodedMsg).toContain('رسوم التوصيل: تُؤكد عبر واتساب قبل الدفع');
+      // Must NOT include fake mock prices or mock refs
+      expect(decodedMsg).not.toContain('MID-SIM');
+      expect(decodedMsg).not.toContain('٢٫٥٠ د.أ');
+      // Must NOT duplicate merchandise subtotal as total
+      expect(decodedMsg).not.toContain('المجموع التقديري:');
       // Must include confirmation note before payment
       expect(decodedMsg).toContain('يؤكد فريق ميدان تكلفة التوصيل وتوفر المقاس قبل الدفع');
-      // Must NOT include the confusing additional charges line
-      expect(decodedMsg).not.toContain('الرسوم الإضافية المؤكدة: 0');
       // Must NOT include customs line for Jordan domestic
       expect(decodedMsg).not.toContain('الرسوم الجمركية');
     });
 
-    it('generates decoded WhatsApp message for Dubai in USD with customs excluded', () => {
+    it('generates decoded WhatsApp message for Dubai in USD with customs excluded and no mock fee', () => {
       useStore.setState({
         lang: 'en',
         currency: 'USD',
@@ -210,40 +178,7 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
           addressLine1: 'Downtown Dubai',
           phone: '+971500000000',
         },
-        shippingQuote: {
-          success: true,
-          mode: 'mock',
-          quoteReference: 'MID-SIM-TEST2',
-          timestamp: new Date().toISOString(),
-          options: [
-            {
-              serviceCode: 'PPX',
-              serviceNameAr: 'شحن دولي إكسبريس',
-              serviceNameEn: 'Express International Shipping',
-              productGroup: 'EXP',
-              shippingFee: 16.92,
-              currency: 'USD',
-              estimatedDays: '2 - 4 business days',
-              chargeableWeightKg: 0.5,
-              isConfirmed: false,
-              customsIncluded: false,
-              additionalCharges: 0,
-            },
-          ],
-          selectedOption: {
-            serviceCode: 'PPX',
-            serviceNameAr: 'شحن دولي إكسبريس',
-            serviceNameEn: 'Express International Shipping',
-            productGroup: 'EXP',
-            shippingFee: 16.92,
-            currency: 'USD',
-            estimatedDays: '2 - 4 business days',
-            chargeableWeightKg: 0.5,
-            isConfirmed: false,
-            customsIncluded: false,
-            additionalCharges: 0,
-          },
-        },
+        shippingQuote: null,
       });
 
       render(<Modals />);
@@ -258,15 +193,53 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       // Items subtotal
       expect(decodedMsg).toContain('Items subtotal (delivery not included): 50.00 USD');
       // Delivery fee
-      expect(decodedMsg).toContain('Delivery fee (estimated): 16.92 USD');
+      expect(decodedMsg).toContain('Delivery fee: Confirmed via WhatsApp before payment');
       // Destination customs excluded
       expect(decodedMsg).toContain('Customs & destination taxes: Excluded (payable upon arrival)');
-      // Estimated total
-      expect(decodedMsg).toContain('Estimated total: 66.92 USD');
+      // Must NOT include fake mock price or mock ref
+      expect(decodedMsg).not.toContain('16.92');
+      expect(decodedMsg).not.toContain('MID-SIM');
+      // Must NOT duplicate subtotal as total
+      expect(decodedMsg).not.toContain('Estimated total:');
       // Confirmation note
       expect(decodedMsg).toContain('The Midaan team confirms delivery fees and size availability before payment');
-      // Does not claim confirmed zero additional charges
-      expect(decodedMsg).not.toContain('Confirmed Additional Charges: 0');
+    });
+
+    it('renders cart drawer breakdown with explicit notice and no duplicate total line', () => {
+      useStore.setState({
+        lang: 'ar',
+        currency: 'JOD',
+        isCartOpen: true,
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productTitle: 'تيشيرت خوذة الكوفية — أبيض',
+            size: 'L',
+            garment: 'tshirt',
+            price: 35,
+            priceUSD: 50,
+            quantity: 1,
+            color: 'offwhite',
+            placement: 'back',
+            artMode: 'presets',
+            isPrePrinted: true,
+          },
+        ],
+      });
+
+      render(<Modals />);
+
+      // Shows subtotal label
+      expect(screen.getByText('قيمة المنتجات — لا تشمل التوصيل')).toBeInTheDocument();
+      // Shows delivery fee label
+      expect(screen.getByText('رسوم التوصيل')).toBeInTheDocument();
+      // Shows manual confirmation notice
+      expect(screen.getByText('تُؤكد عبر واتساب قبل الدفع')).toBeInTheDocument();
+      // Must not render duplicate total header
+      expect(screen.queryByText('المجموع التقديري')).toBeNull();
+      // The WhatsApp order action button is immediately available
+      const actionButton = screen.getByRole('link', { name: /إرسال الطلب للتأكيد عبر واتساب/i });
+      expect(actionButton).toBeInTheDocument();
     });
   });
 
@@ -282,7 +255,7 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
     });
   });
 
-  describe('5. Truthful Copy & Typo Regression Check', () => {
+  describe('5. Truthful Copy & Unverified Claims Removal', () => {
     it('verifies about page contains "قطعاً" and eliminates typo "قطيعاً"', () => {
       const aboutFilePath = path.join(process.cwd(), 'src/app/about/page.tsx');
       const content = fs.readFileSync(aboutFilePath, 'utf8');
@@ -295,7 +268,29 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(content).toContain('قطعاً حرفية محدودة');
       expect(content).toContain('عمّان');
       expect(content).toContain('إندونيسي');
-      expect(content).toContain('260');
+      // 260 GSM must NOT appear without project owner verification
+      expect(content).not.toContain('260');
+    });
+
+    it('verifies product detail view removes unconfirmed 260 GSM specification', () => {
+      const productDetailPath = path.join(process.cwd(), 'src/components/ProductDetailView.tsx');
+      const content = fs.readFileSync(productDetailPath, 'utf8');
+      expect(content).not.toContain('260');
+    });
+
+    it('verifies exchange rate calculation explanation is removed from public dictionary', () => {
+      const dictPath = path.join(process.cwd(), 'src/locales/dictionary.ts');
+      const content = fs.readFileSync(dictPath, 'utf8');
+      expect(content).not.toContain('1 د.أ = 1.41 USD');
+      expect(content).not.toContain('1 JOD = 1.41 USD');
+    });
+
+    it('verifies footer policies modal removes unapproved guarantees and 48-hour return window', () => {
+      const policiesPath = path.join(process.cwd(), 'src/components/FooterPoliciesModal.tsx');
+      const content = fs.readFileSync(policiesPath, 'utf8');
+      expect(content).not.toContain('٤٨ ساعة');
+      expect(content).not.toContain('48 hours');
+      expect(content).not.toContain('نضمن استبدال');
     });
   });
 });

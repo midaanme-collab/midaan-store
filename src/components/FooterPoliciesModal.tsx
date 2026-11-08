@@ -43,8 +43,8 @@ export default function FooterPoliciesModal({
     },
     {
       id: 'returns',
-      labelAr: 'الاستبدال والضمان',
-      labelEn: 'Returns & Guarantee',
+      labelAr: 'خدمة العملاء والاستفسارات',
+      labelEn: 'Customer Support & Inquiries',
       icon: <RotateCcw size={16} />,
     },
     {
@@ -154,34 +154,27 @@ export default function FooterPoliciesModal({
           {activeTab === 'returns' && (
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-white">
-                {isAr ? 'سياسة الاستبدال والنزاهة المصنعية' : 'Exchanges & Production Guarantee'}
+                {isAr ? 'خدمة العملاء والاستفسارات المباشرة' : 'Customer Support & Inquiries'}
               </h3>
               <p>
                 {isAr
-                  ? 'نظراً لأن قطع ميدان تُطرح كإصدارات محدودة موثقة، فإننا نلتزم بالنزاهة التامة ونضمن استبدال أي قطعة يتبين وجود عيب مصنعي أو خطأ في الطباعة بها عند الاستلام.'
-                  : 'Because Midaan garments are released as limited documented editions, we maintain complete integrity and guarantee immediate replacement for any piece with manufacturing or printing defects upon arrival.'}
+                  ? 'تُطرح قطع ميدان كإصدارات محدودة موثقة. يحرص فريقنا على تقديم تجربة تسوق موثوقة والتواصل الشفاف مع كل عميل قبل تأكيد الطلب وبعد الاستلام.'
+                  : 'Midaan pieces are released as limited, documented editions. Our team is committed to transparent, direct communication with each customer prior to confirmation and following delivery.'}
               </p>
-              <div className="bg-[#141414] p-4 rounded-2xl border border-[#222] space-y-2">
+              <div className="bg-[#141414] p-4 rounded-2xl border border-[#222] space-y-2.5">
                 <div className="font-bold text-white">
-                  {isAr ? 'خطوات الاستبدال:' : 'Replacement Process:'}
+                  {isAr ? 'الاستفسارات والمتابعة:' : 'Inquiries & Follow-up:'}
                 </div>
-                <ul className="list-disc list-inside space-y-1 text-neutral-400">
-                  <li>
-                    {isAr 
-                      ? 'التواصل مع فريق ميدان عبر واتساب خلال ٤٨ ساعة من استلام الشحنة.' 
-                      : 'Contact Midaan on WhatsApp within 48 hours of delivery.'}
-                  </li>
-                  <li>
-                    {isAr 
-                      ? 'إرفاق صورة واضحة للعيب المصنعي أو المشكلة الملاحظة.' 
-                      : 'Provide a clear photograph of the defect or issue.'}
-                  </li>
-                  <li>
-                    {isAr 
-                      ? 'يقوم الفريق بالتنسيق الفوري لاستبدال القطعة دون أي تكلفة إضافية.' 
-                      : 'Our team will immediately coordinate the replacement at no extra charge.'}
-                  </li>
-                </ul>
+                <p className="text-neutral-400">
+                  {isAr
+                    ? 'لأي استفسار يخص المقاسات، تفاصيل القطع، أو متابعة الشحنة بعد الاستلام، يُرجى التواصل مباشرة عبر واتساب مع رقم فريق ميدان الرسمي (+962 7 7012 5316) مع إرفاق تفاصيل الطلب.'
+                    : 'For questions regarding sizing, garment details, or shipment follow-up upon receipt, please reach out directly via WhatsApp to the official Midaan team (+962 7 7012 5316) with your order details.'}
+                </p>
+                <p className="text-neutral-500 text-[11px] pt-1 border-t border-[#222]">
+                  {isAr
+                    ? 'ملاحظة: سياسة الاستبدال والاسترجاع الرسمية قيد الاعتماد النهائي من إدارة المشروع؛ ولحين اعتمادها يتم التنسيق المباشر لكل حالة عبر واتساب.'
+                    : 'Note: The formal returns and exchange policy is under final review by project management. In the interim, all requests are coordinated individually via WhatsApp.'}
+                </p>
               </div>
             </div>
           )}
