@@ -205,13 +205,13 @@ export default function CollabPage() {
               <div className="space-y-4 text-sm sm:text-base text-neutral-300 font-sans leading-relaxed">
                 <p>
                   {isRtl 
-                    ? 'يجمع هذا المشروع المشترك بين ميدان (المبادرة الفكرية والثقافية النابعة من عمّان وفلسطين) وصوت وصورة (العلامة المتخصصة في إنتاج المنسوجات البديلة). يرتكز التعاون على تحويل الرواية البصرية الملتزمة إلى منتج ملموس عالي الجودة يُرتدى في الحياة اليومية.'
-                    : 'This collaborative release unites Midaan (the intellectual and cultural initiative from Amman and Palestine) and Sotusura (the Indonesian label specializing in alternative apparel craft). The project transforms committed visual narrative into high-grade physical garments for everyday life.'}
+                    ? 'يجمع هذا المشروع المشترك بين ميدان (المبادرة الفكرية والثقافية النابعة من عمّان وفلسطين) وصوت وصورة (العلامة المتخصصة في إنتاج المنسوجات البديلة). يرتكز التعاون على تحويل الرواية البصرية الملتزمة إلى منتج ملموس يُرتدى في الحياة اليومية.'
+                    : 'This collaborative release unites Midaan (the intellectual and cultural initiative from Amman and Palestine) and Sotusura (the Indonesian label specializing in alternative apparel craft). The project transforms committed visual narrative into physical garments for everyday life.'}
                 </p>
                 <p>
                   {isRtl
-                    ? 'تم تصنيع القطع في إندونيسيا لمرونتها وملمسها وتوافقها العالي مع تقنية الطباعة الرقمية المباشرة (DTG)، التي تدمج التصميم داخل أنسجة القماش ليبقى ثابتاً ومسامياً مع كثرة الاستخدام والغسيل.'
-                    : 'Crafted in Indonesia for durability, soft texture, and exceptional receptivity to Direct-to-Garment (DTG) printing, infusing archival graphics deep into the fabric fibers without stiffness or cracking.'}
+                    ? 'تم تصنيع القطع في إندونيسيا لمرونتها وملمسها وتوافقها مع تقنية الطباعة المباشرة على النسيج (DTG)، التي تدمج التصميم داخل أنسجة القماش.'
+                    : 'Crafted in Indonesia for soft texture and receptivity to Direct-to-Garment (DTG) printing, infusing archival graphics into the fabric fibers.'}
                 </p>
               </div>
 

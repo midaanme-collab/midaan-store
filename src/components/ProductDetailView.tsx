@@ -74,7 +74,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
       labelAr: 'تقنية الطباعة',
       labelEn: 'Print Execution',
       valAr: 'طباعة مباشرة على النسيج بتقنية DTG تندمج في ألياف النسيج دون ملمس بلاستيكي.',
-      valEn: 'High-definition direct-to-garment printing (DTG) embedded in fabric fibers.'
+      valEn: 'Direct-to-garment printing using DTG technology embedded in fabric fibers.'
     }
   ];
 
@@ -375,7 +375,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
               className="max-h-[80vh] w-auto object-contain filter drop-shadow-2xl rounded-2xl"
             />
             <p className="text-xs text-neutral-400 font-sans mt-4 text-center">
-              {title} • {isAr ? 'طباعة مباشرة على النسيج بتقنية DTG عالية الجودة' : 'High-Definition DTG Direct-to-Garment Print'}
+              {title} • {isAr ? 'طباعة مباشرة على النسيج بتقنية DTG' : 'Direct-to-garment printing using DTG technology'}
             </p>
           </div>
         </div>
