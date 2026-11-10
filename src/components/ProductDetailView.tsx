@@ -25,7 +25,7 @@ interface ProductDetailViewProps {
 }
 
 export default function ProductDetailView({ product }: ProductDetailViewProps) {
-  const { lang, currency, addToCart, setIsCartOpen } = useStore();
+  const { lang, currency, addToCart, setIsCartOpen, openPolicyModal } = useStore();
   const isAr = lang === 'ar';
   const strings = content[isAr ? 'ar' : 'en'];
 
@@ -272,13 +272,26 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   })}
                 </div>
 
-                {/* Sizing on WhatsApp link */}
-                <div className="flex justify-end">
+                {/* Sizing on WhatsApp link & Policy */}
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-400 pt-1">
+                  <div className="flex items-center gap-1.5 text-[11px]">
+                    <span className="text-neutral-400">
+                      {isAr ? 'يرجى التأكد من المقاس قبل الطلب •' : 'Please verify size before ordering •'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => openPolicyModal('returns')}
+                      className="text-neutral-300 hover:text-white underline underline-offset-4 transition-colors font-medium"
+                    >
+                      {isAr ? 'سياسة الاستبدال والاسترجاع' : 'Returns & Exchanges'}
+                    </button>
+                  </div>
+
                   <a
                     href={whatsappInquiryUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 underline underline-offset-4 transition-colors"
+                    className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 underline underline-offset-4 transition-colors ms-auto"
                   >
                     <MessageSquare size={13} />
                     <span>{isAr ? 'استفسر عن المقاس عبر واتساب' : 'Ask about sizing on WhatsApp'}</span>

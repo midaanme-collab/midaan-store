@@ -13,13 +13,11 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
 
-  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
-  const [activePolicyTab, setActivePolicyTab] = useState<PolicyTab>('shipping');
-
-  const openPolicy = (tab: PolicyTab) => {
-    setActivePolicyTab(tab);
-    setIsPolicyModalOpen(true);
-  };
+  const isPolicyModalOpen = useStore((s) => s.isPolicyModalOpen);
+  const setIsPolicyModalOpen = useStore((s) => s.setIsPolicyModalOpen);
+  const activePolicyTab = useStore((s) => s.activePolicyTab);
+  const setActivePolicyTab = useStore((s) => s.setActivePolicyTab);
+  const openPolicy = useStore((s) => s.openPolicyModal);
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#050505] text-[#EDEDED] transition-colors" dir={isRtl ? 'rtl' : 'ltr'}>
@@ -143,7 +141,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             onClick={() => openPolicy('returns')}
             className="hover:text-white transition-colors underline underline-offset-4"
           >
-            {isRtl ? 'خدمة العملاء والاستفسارات' : 'Customer Support & Inquiries'}
+            {isRtl ? 'سياسة الاستبدال والاسترجاع' : 'Returns & Exchanges'}
           </button>
           <span className="text-neutral-700">•</span>
           <button

@@ -13,6 +13,7 @@ export type PresetArt = 'calligraphy' | 'press' | 'far3i' | 'archive_1' | 'archi
 export type TextColor = 'white' | '#D80032' | '#E5E0D0' | 'black';
 export type TextFont = 'sans' | 'serif' | 'mono';
 export type PaymentMethod = 'cliq' | 'cod';
+export type PolicyTab = 'shipping' | 'returns' | 'privacy' | 'contact';
 
 export interface CartItem {
   id: string;

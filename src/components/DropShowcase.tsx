@@ -15,7 +15,7 @@ interface DropShowcaseProps {
 }
 
 export default function DropShowcase({ lang }: DropShowcaseProps) {
-  const { lang: storeLang, currency, addToCart, setIsCartOpen } = useStore();
+  const { lang: storeLang, currency, addToCart, setIsCartOpen, openPolicyModal } = useStore();
   const effectiveLang = (storeLang || lang || "ar") as "ar" | "en";
   const strings = content[effectiveLang];
   const isRtl = effectiveLang === "ar";
@@ -166,20 +166,30 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                       )}
                     </span>
                     
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={`https://wa.me/962770125316?text=${encodeURIComponent(
-                          isRtl 
-                            ? 'مرحباً فريق ميدان، أود الاستفسار عن قياسات وتفاصيل تيشيرتات التعاون (Midaan × Sotusura).' 
-                            : 'Hello Midaan team, I would like to ask about sizing for the Midaan × Sotusura collaboration tees.'
-                        )}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 underline underline-offset-4 transition-colors"
-                      >
-                        <MessageSquare size={13} />
-                        <span>{isRtl ? "استفسر عن المقاس عبر واتساب" : "Ask about sizing on WhatsApp"}</span>
-                      </a>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+                        <button
+                          type="button"
+                          onClick={() => openPolicyModal('returns')}
+                          className="hover:text-white underline underline-offset-4 transition-colors"
+                        >
+                          {isRtl ? "سياسة الاستبدال" : "Returns & Exchanges"}
+                        </button>
+                        <span>•</span>
+                        <a
+                          href={`https://wa.me/962770125316?text=${encodeURIComponent(
+                            isRtl 
+                              ? 'مرحباً فريق ميدان، أود الاستفسار عن قياسات وتفاصيل تيشيرتات التعاون (Midaan × Sotusura).' 
+                              : 'Hello Midaan team, I would like to ask about sizing for the Midaan × Sotusura collaboration tees.'
+                          )}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 underline underline-offset-4 transition-colors"
+                        >
+                          <MessageSquare size={12} />
+                          <span>{isRtl ? "مساعدة المقاس" : "Sizing help"}</span>
+                        </a>
+                      </div>
 
                       <span className={`text-xs font-semibold ${
                         isVariantInStock === true ? "text-emerald-400" : isVariantInStock === false ? "text-neutral-500" : "text-neutral-400"
@@ -222,6 +232,12 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                       );
                     })}
                   </div>
+
+                  <p className="text-[10px] text-neutral-400 font-sans mt-2 leading-relaxed">
+                    {isRtl 
+                      ? '* يرجى التأكد من المقاس قبل تأكيد الطلب؛ لا نقبل التبديل لتغيير الرأي أو المقاس غير المناسب.'
+                      : '* Please confirm size carefully; no exchanges for change of mind or unsuitable size.'}
+                  </p>
                 </div>
 
                 {/* Pricing & Add to Cart Button */}

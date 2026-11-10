@@ -4,6 +4,7 @@ import { useStore } from '../src/store';
 import { JORDAN_GOVERNORATE_AREAS } from '../src/constants/shipping';
 import DropShowcase from '../src/components/DropShowcase';
 import Modals from '../src/components/Modals';
+import FooterPoliciesModal from '../src/components/FooterPoliciesModal';
 import fs from 'fs';
 import path from 'path';
 
@@ -532,6 +533,60 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       waLink = screen.getByRole('link', { name: /Request confirmation via WhatsApp/i });
       decoded = decodeURIComponent(waLink.getAttribute('href') || '');
       expect(decoded).toContain('1. Keffiyeh Helmet Tee — White - Size: L - Qty: 2 (100.00 USD)');
+    });
+  });
+
+  describe('8. Approved Returns & Exchanges Policy', () => {
+    it('renders the approved policy in Arabic and English in FooterPoliciesModal', () => {
+      const { rerender } = render(
+        <FooterPoliciesModal
+          isOpen={true}
+          onClose={jest.fn()}
+          activeTab="returns"
+          onTabChange={jest.fn()}
+          lang="ar"
+        />
+      );
+
+      // Arabic Policy assertions
+      expect(screen.getAllByText('سياسة الاستبدال والاسترجاع').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText(/لا نقبل التبديل أو الإرجاع بسبب تغيير الرأي أو اختيار مقاس غير مناسب/i)).toBeInTheDocument();
+      expect(screen.getByText(/إذا وصلتكم قطعة معيبة أو منتج أو مقاس مختلف عن الطلب المؤكد/i)).toBeInTheDocument();
+      expect(screen.getByText(/يتحمل ميدان رسوم التوصيل المرتبطة بهذا الاستبدال/i)).toBeInTheDocument();
+      expect(screen.getByText(/لا تحد هذه السياسة من حقوق المستهلك المقررة بموجب القوانين المعمول بها/i)).toBeInTheDocument();
+
+      // Ensure no invented 48h deadline or unconditional guarantees
+      expect(screen.queryByText(/48 ساعة/i)).toBeNull();
+      expect(screen.queryByText(/نضمن استبدال/i)).toBeNull();
+
+      // English Policy assertions
+      rerender(
+        <FooterPoliciesModal
+          isOpen={true}
+          onClose={jest.fn()}
+          activeTab="returns"
+          onTabChange={jest.fn()}
+          lang="en"
+        />
+      );
+
+      expect(screen.getAllByText('Returns & Exchanges').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText(/We do not accept exchanges or returns for a change of mind/i)).toBeInTheDocument();
+      expect(screen.getByText(/If you receive a defective item, or a product or size different/i)).toBeInTheDocument();
+      expect(screen.getByText(/Midaan covers the delivery costs associated with this replacement/i)).toBeInTheDocument();
+      expect(screen.getByText(/This policy does not limit your statutory consumer rights under applicable law/i)).toBeInTheDocument();
+    });
+
+    it('opens returns policy modal when clicked from DropShowcase', () => {
+      render(<DropShowcase lang="ar" />);
+
+      const policyButtons = screen.getAllByRole('button', { name: /سياسة الاستبدال/i });
+      expect(policyButtons.length).toBeGreaterThan(0);
+
+      fireEvent.click(policyButtons[0]);
+
+      expect(useStore.getState().isPolicyModalOpen).toBe(true);
+      expect(useStore.getState().activePolicyTab).toBe('returns');
     });
   });
 });

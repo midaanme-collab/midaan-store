@@ -3,7 +3,8 @@ import { persist } from 'zustand/middleware';
 import { 
   Language, GarmentType, GarmentColor, GarmentView, GarmentSize, 
   PrintPlacement, ArtMode, PresetArt, TextColor, TextFont, CartItem, PaymentMethod,
-  ShippingDestination, ShippingQuoteResponse, ShippingQuoteRequest, ShippingQuoteRequestItem
+  ShippingDestination, ShippingQuoteResponse, ShippingQuoteRequest, ShippingQuoteRequestItem,
+  PolicyTab
 } from '@/types';
 import { GOVERNORATES } from '@/constants';
 import { getMaxStock, isValidCatalogProduct, normalizeSize, isHelmetProduct, isPosterProduct, migrateCart } from '@/constants/products';
@@ -79,6 +80,11 @@ interface StoreState {
   setIsWorkshopModalOpen: (isOpen: boolean) => void;
   selectedWorkshop: string;
   setSelectedWorkshop: (workshop: string) => void;
+  isPolicyModalOpen: boolean;
+  setIsPolicyModalOpen: (isOpen: boolean) => void;
+  activePolicyTab: PolicyTab;
+  setActivePolicyTab: (tab: PolicyTab) => void;
+  openPolicyModal: (tab?: PolicyTab) => void;
 
   // Shipping State & Actions
   shippingDestination: ShippingDestination;
@@ -273,6 +279,12 @@ export const useStore = create<StoreState>()(persist((set, get) => ({
   setIsWorkshopModalOpen: (isWorkshopModalOpen) => set({ isWorkshopModalOpen }),
   selectedWorkshop: '',
   setSelectedWorkshop: (selectedWorkshop) => set({ selectedWorkshop }),
+
+  isPolicyModalOpen: false,
+  setIsPolicyModalOpen: (isPolicyModalOpen) => set({ isPolicyModalOpen }),
+  activePolicyTab: 'shipping',
+  setActivePolicyTab: (activePolicyTab) => set({ activePolicyTab }),
+  openPolicyModal: (tab = 'returns') => set({ activePolicyTab: tab, isPolicyModalOpen: true }),
 
   // Shipping State Implementation
   shippingDestination: initialShippingDestination,

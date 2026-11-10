@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Truck, RotateCcw, Shield, MessageCircle, ExternalLink } from 'lucide-react';
+import { PolicyTab } from '@/types';
 
-export type PolicyTab = 'shipping' | 'returns' | 'privacy' | 'contact';
+export type { PolicyTab };
 
 interface FooterPoliciesModalProps {
   isOpen: boolean;
@@ -43,8 +44,8 @@ export default function FooterPoliciesModal({
     },
     {
       id: 'returns',
-      labelAr: 'خدمة العملاء والاستفسارات',
-      labelEn: 'Customer Support & Inquiries',
+      labelAr: 'سياسة الاستبدال والاسترجاع',
+      labelEn: 'Returns & Exchanges',
       icon: <RotateCcw size={16} />,
     },
     {
@@ -154,26 +155,23 @@ export default function FooterPoliciesModal({
           {activeTab === 'returns' && (
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-white">
-                {isAr ? 'خدمة العملاء والاستفسارات المباشرة' : 'Customer Support & Inquiries'}
+                {isAr ? 'سياسة الاستبدال والاسترجاع' : 'Returns & Exchanges'}
               </h3>
-              <p>
-                {isAr
-                  ? 'تُطرح قطع ميدان كإصدارات محدودة موثقة. يحرص فريقنا على تقديم تجربة تسوق موثوقة والتواصل الشفاف مع كل عميل قبل تأكيد الطلب وبعد الاستلام.'
-                  : 'Midaan pieces are released as limited, documented editions. Our team is committed to transparent, direct communication with each customer prior to confirmation and following delivery.'}
-              </p>
-              <div className="bg-[#141414] p-4 rounded-2xl border border-[#222] space-y-2.5">
-                <div className="font-bold text-white">
-                  {isAr ? 'الاستفسارات والمتابعة:' : 'Inquiries & Follow-up:'}
-                </div>
-                <p className="text-neutral-400">
+              <div className="bg-[#141414] p-4 rounded-2xl border border-[#222] space-y-3">
+                <p className="text-neutral-300 leading-relaxed">
                   {isAr
-                    ? 'لأي استفسار يخص المقاسات، تفاصيل القطع، أو متابعة الشحنة بعد الاستلام، يُرجى التواصل مباشرة عبر واتساب مع رقم فريق ميدان الرسمي (+962 7 7012 5316) مع إرفاق تفاصيل الطلب.'
-                    : 'For questions regarding sizing, garment details, or shipment follow-up upon receipt, please reach out directly via WhatsApp to the official Midaan team (+962 7 7012 5316) with your order details.'}
+                    ? 'لا نقبل التبديل أو الإرجاع بسبب تغيير الرأي أو اختيار مقاس غير مناسب، لذا يرجى التأكد من المقاس قبل تأكيد الطلب، ويمكنكم التواصل معنا عبر واتساب للمساعدة.'
+                    : 'We do not accept exchanges or returns for a change of mind or an unsuitable size selected by the customer. Please confirm your size before confirming your order. You can contact us on WhatsApp for sizing assistance.'}
                 </p>
-                <p className="text-neutral-500 text-[11px] pt-1 border-t border-[#222]">
+                <p className="text-neutral-300 leading-relaxed">
                   {isAr
-                    ? 'ملاحظة: سياسة الاستبدال والاسترجاع الرسمية قيد الاعتماد النهائي من إدارة المشروع؛ ولحين اعتمادها يتم التنسيق المباشر لكل حالة عبر واتساب.'
-                    : 'Note: The formal returns and exchange policy is under final review by project management. In the interim, all requests are coordinated individually via WhatsApp.'}
+                    ? 'إذا وصلتكم قطعة معيبة أو منتج أو مقاس مختلف عن الطلب المؤكد، يرجى التواصل معنا عبر واتساب لمراجعة الحالة وترتيب الاستبدال. يتحمل ميدان رسوم التوصيل المرتبطة بهذا الاستبدال.'
+                    : 'If you receive a defective item, or a product or size different from your confirmed order, please contact us on WhatsApp so we can review the issue and arrange a replacement. Midaan covers the delivery costs associated with this replacement.'}
+                </p>
+                <p className="text-neutral-400 text-[11px] pt-2 border-t border-[#222] leading-relaxed">
+                  {isAr
+                    ? 'لا تحد هذه السياسة من حقوق المستهلك المقررة بموجب القوانين المعمول بها.'
+                    : 'This policy does not limit your statutory consumer rights under applicable law.'}
                 </p>
               </div>
             </div>
