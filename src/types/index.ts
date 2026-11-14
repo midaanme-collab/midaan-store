@@ -72,6 +72,7 @@ export interface ShippingDestination {
   customArea?: string;
   postalCode?: string;
   addressLine1?: string;
+  customerName?: string;
   phone?: string;
   domesticGovernorateId?: string;
   domesticCity?: string;
@@ -123,4 +124,25 @@ export interface ShippingQuoteResponse {
   customsDisclaimerAr: string;
   customsDisclaimerEn: string;
   requiresPhysicalMeasurements?: boolean;
+}
+
+export interface CrmOrderPayload {
+  orderId: string;
+  customerName: string;
+  phone: string;
+  deliveryScope: string;
+  countryOrGov: string;
+  cityOrArea: string;
+  address: string;
+  itemsSummary: string;
+  productIds: string;
+  sizes: string;
+  totalQty: number;
+  currency: 'JOD' | 'USD';
+  subtotal: number;
+  deliveryFee: string;
+  grandTotal: number;
+  paymentMethod: string;
+  audienceTag: string;
+  notes: string;
 }

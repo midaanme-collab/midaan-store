@@ -9,6 +9,8 @@ export interface WhatsAppOrderDetails {
   destinationSummary: string;
   paymentMethod?: 'cliq' | 'cod';
   cartSubtotal: number;
+  customerName?: string;
+  phone?: string;
 }
 
 /**
@@ -21,7 +23,7 @@ export interface WhatsAppOrderDetails {
  * - Raw customer-entered text preserved in its original language
  */
 export function buildWhatsAppOrderMessage(details: WhatsAppOrderDetails): string {
-  const { cart, currency, lang, isDomestic, destinationSummary, paymentMethod, cartSubtotal } = details;
+  const { cart, currency, lang, isDomestic, destinationSummary, paymentMethod, cartSubtotal, customerName, phone } = details;
   const isAr = lang === 'ar';
   const isUsd = currency === 'USD';
 
@@ -57,7 +59,16 @@ export function buildWhatsAppOrderMessage(details: WhatsAppOrderDetails): string
       : '';
     const noteLine = `*ملاحظة: يؤكد فريق ميدان تكلفة التوصيل وتوفر المقاس قبل الدفع.*`;
 
-    return `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderLines}\n\nوجهة التوصيل: ${destinationSummary}\nطريقة الدفع${isDomestic ? ' المفضلة' : ''}: ${paymentLine}\n\nتفاصيل الحساب:\n${subtotalLine}\n${shippingLine}${dutiesLine}\n\n${noteLine}`;
+    const customerLines: string[] = [];
+    if (customerName && customerName.trim()) {
+      customerLines.push(`الاسم الكامل: ${customerName.trim()}`);
+    }
+    if (phone && phone.trim()) {
+      customerLines.push(`رقم الهاتف (واتساب): ${phone.trim()}`);
+    }
+    const customerBlock = customerLines.length > 0 ? `\n${customerLines.join('\n')}\n` : '';
+
+    return `مرحباً فريق ميدان،\n\nأود إرسال الطلب التالي للمراجعة والتأكيد:\n\n${orderLines}\n${customerBlock}\nوجهة التوصيل: ${destinationSummary}\nطريقة الدفع${isDomestic ? ' المفضلة' : ''}: ${paymentLine}\n\nتفاصيل الحساب:\n${subtotalLine}\n${shippingLine}${dutiesLine}\n\n${noteLine}`;
   } else {
     const paymentLine = isDomestic
       ? (paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery')
@@ -70,7 +81,16 @@ export function buildWhatsAppOrderMessage(details: WhatsAppOrderDetails): string
       : '';
     const noteLine = `*Note: The Midaan team confirms delivery fees and size availability before payment.*`;
 
-    return `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderLines}\n\nDelivery Destination: ${destinationSummary}\n${isDomestic ? 'Preferred Payment' : 'Payment'}: ${paymentLine}\n\nCost Breakdown:\n${subtotalLine}\n${shippingLine}${dutiesLine}\n\n${noteLine}`;
+    const customerLines: string[] = [];
+    if (customerName && customerName.trim()) {
+      customerLines.push(`Full Name: ${customerName.trim()}`);
+    }
+    if (phone && phone.trim()) {
+      customerLines.push(`Phone Number (WhatsApp): ${phone.trim()}`);
+    }
+    const customerBlock = customerLines.length > 0 ? `\n${customerLines.join('\n')}\n` : '';
+
+    return `Hello Midaan team,\n\nI would like to submit the following order request for confirmation:\n\n${orderLines}\n${customerBlock}\nDelivery Destination: ${destinationSummary}\n${isDomestic ? 'Preferred Payment' : 'Payment'}: ${paymentLine}\n\nCost Breakdown:\n${subtotalLine}\n${shippingLine}${dutiesLine}\n\n${noteLine}`;
   }
 }
 

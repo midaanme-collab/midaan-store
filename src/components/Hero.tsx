@@ -13,13 +13,9 @@ export default function Hero() {
   
   return (
     <section className="relative z-10 pt-14 pb-18 md:pt-16 md:pb-20 px-6 max-w-4xl mx-auto text-center" dir={isRtl ? 'rtl' : 'ltr'}>
-      <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-5 leading-tight font-sans tracking-normal text-balance">
+      <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-8 leading-tight font-sans tracking-normal text-balance">
         {strings.hero.title}
       </h1>
-
-      <p className="max-w-2xl mx-auto text-neutral-300 text-sm sm:text-base md:text-lg leading-relaxed mb-8 font-sans font-normal">
-        {strings.hero.desc}
-      </p>
 
       <div className="flex flex-wrap items-center justify-center gap-4">
         <Link

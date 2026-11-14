@@ -107,6 +107,7 @@ const initialShippingDestination: ShippingDestination = {
   customArea: '',
   postalCode: '11118',
   addressLine1: '',
+  customerName: '',
   phone: '',
   domesticGovernorateId: 'amman',
   domesticCity: 'عمّان (وسط البلد / جبل عمّان / اللويبده)',

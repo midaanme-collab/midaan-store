@@ -19,9 +19,12 @@ export default function CampaignVideoSection() {
     // Strictly preserve muted attribute - no code path unmutes the video
     videoRef.current.muted = true;
     if (videoRef.current.paused) {
-      videoRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch(() => {});
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          setIsPlaying(true);
+        }).catch(() => {});
+      }
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
@@ -34,11 +37,14 @@ export default function CampaignVideoSection() {
       // Respect prefers-reduced-motion
       const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
-        videoRef.current.play().then(() => {
-          setIsPlaying(true);
-        }).catch(() => {
-          setIsPlaying(false);
-        });
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            setIsPlaying(true);
+          }).catch(() => {
+            setIsPlaying(false);
+          });
+        }
       }
     }
   }, []);
@@ -77,21 +83,10 @@ export default function CampaignVideoSection() {
           </div>
         </div>
 
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-[#D80032] text-white px-4 py-1.5 font-sans text-xs font-bold tracking-normal rounded-full shadow-lg shadow-[#D80032]/25 mb-6">
-          <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
-          <span>{strings.campaign.badge}</span>
-        </div>
-
         {/* Campaign Title */}
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-normal text-white mb-6 font-sans leading-tight text-balance">
-          {strings.campaign.heading}
+        <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-normal text-white mb-10 font-sans leading-tight text-balance">
+          {isRtl ? 'ميدان × صوت وصورة' : 'Midaan × Sotusura'}
         </h2>
-
-        {/* Description */}
-        <p className="max-w-2xl mx-auto text-neutral-300 text-base md:text-lg leading-relaxed mb-12 font-sans">
-          {strings.campaign.desc}
-        </p>
 
         {/* 9:16 Vertical Cinema Frame */}
         <div className="relative w-full max-w-[340px] sm:max-w-[380px] aspect-[9/16] mx-auto rounded-[2.5rem] p-2 bg-gradient-to-b from-[#2a2a2a] via-[#141414] to-[#0a0a0a] border border-neutral-700/60 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95),0_0_50px_rgba(216,0,50,0.15)]">

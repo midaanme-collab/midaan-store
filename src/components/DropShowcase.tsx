@@ -65,8 +65,11 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
             <span>{strings.products.label}</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-normal font-sans leading-tight">
-            {strings.products.heading}
+            {isRtl ? 'المتجر' : 'Store'}
           </h2>
+          <p className="text-xl sm:text-2xl font-bold text-neutral-300 mt-2 font-sans">
+            {strings.products.heading}
+          </p>
         </div>
         
         <div className="text-sm text-neutral-300 font-medium">

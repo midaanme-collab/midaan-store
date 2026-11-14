@@ -35,9 +35,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             <Link href="/#drops" className="text-neutral-200 hover:text-[#D80032] transition-colors">
               {strings.nav.store}
             </Link>
-            <Link href="/collab" className="text-[#D80032] hover:text-white transition-colors border border-[#D80032]/40 px-3 py-1 rounded-full bg-[#D80032]/10">
-              {strings.nav.collab}
-            </Link>
             <Link href="/magazine" className="text-neutral-200 hover:text-[#D80032] transition-colors">
               {strings.nav.magazine}
             </Link>
@@ -97,14 +94,10 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           <MidaanLogo size="md" />
         </Link>
         
-        {/* Navigation & WhatsApp Contacts */}
+        {/* Navigation Links */}
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-neutral-200 font-medium mb-6">
           <Link href="/#drops" className="hover:text-white transition-colors">
             {strings.nav.store}
-          </Link>
-          <span className="text-neutral-600">•</span>
-          <Link href="/collab" className="hover:text-white transition-colors">
-            {strings.nav.collab}
           </Link>
           <span className="text-neutral-600">•</span>
           <Link href="/magazine" className="hover:text-white transition-colors">
@@ -114,42 +107,16 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           <Link href="/about" className="hover:text-white transition-colors">
             {isRtl ? 'عن ميدان' : 'About'}
           </Link>
-          <span className="text-neutral-600">•</span>
-          <a 
-            href="https://wa.me/962770125316" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="hover:text-[#D80032] transition-colors flex items-center gap-1.5 text-neutral-100 font-semibold"
-          >
-            <span>{strings.footer.whatsappLabel}</span>
-            <span dir="ltr">{strings.footer.whatsappNumber}</span>
-          </a>
         </div>
 
-        {/* Transparent Policy Links */}
+        {/* Policy & Contact Links */}
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-neutral-400 font-normal mb-6">
           <button
             type="button"
             onClick={() => openPolicy('shipping')}
             className="hover:text-white transition-colors underline underline-offset-4"
           >
-            {isRtl ? 'الشحن والتأكيد اليدوي' : 'Shipping & Confirmation'}
-          </button>
-          <span className="text-neutral-700">•</span>
-          <button
-            type="button"
-            onClick={() => openPolicy('returns')}
-            className="hover:text-white transition-colors underline underline-offset-4"
-          >
-            {isRtl ? 'سياسة الاستبدال والاسترجاع' : 'Returns & Exchanges'}
-          </button>
-          <span className="text-neutral-700">•</span>
-          <button
-            type="button"
-            onClick={() => openPolicy('privacy')}
-            className="hover:text-white transition-colors underline underline-offset-4"
-          >
-            {isRtl ? 'سياسة الخصوصية' : 'Privacy Policy'}
+            {isRtl ? 'السياسات' : 'Policies'}
           </button>
           <span className="text-neutral-700">•</span>
           <button
@@ -160,11 +127,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             {isRtl ? 'تواصل معنا' : 'Contact Us'}
           </button>
         </div>
-
-        {/* Shipping & Order Confirmation Notice */}
-        <p className="max-w-xl mx-auto px-4 text-xs text-neutral-400 leading-relaxed mb-6">
-          {strings.footer.orderNotice}
-        </p>
 
         {/* Rights */}
         <p className="text-xs text-neutral-500 font-medium">

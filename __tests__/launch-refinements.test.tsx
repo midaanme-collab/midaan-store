@@ -5,11 +5,18 @@ import { JORDAN_GOVERNORATE_AREAS } from '../src/constants/shipping';
 import DropShowcase from '../src/components/DropShowcase';
 import Modals from '../src/components/Modals';
 import FooterPoliciesModal from '../src/components/FooterPoliciesModal';
+import PageLayout from '../src/components/PageLayout';
+import Hero from '../src/components/Hero';
+import CampaignVideoSection from '../src/components/CampaignVideoSection';
+import { buildWhatsAppOrderMessage } from '../src/utils/whatsapp';
+import { sendOrderToCrm, CRM_WEBHOOK_URL } from '../src/utils/crm';
 import fs from 'fs';
 import path from 'path';
 
 describe('Launch Refinements & Truthful Experience Suite', () => {
   beforeAll(() => {
+    window.HTMLMediaElement.prototype.play = () => Promise.resolve();
+    window.HTMLMediaElement.prototype.pause = () => {};
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: jest.fn().mockImplementation((query) => ({
@@ -587,6 +594,219 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
 
       expect(useStore.getState().isPolicyModalOpen).toBe(true);
       expect(useStore.getState().activePolicyTab).toBe('returns');
+    });
+  });
+
+  describe('9. Nav, Footer, and Header Logo Verification', () => {
+    it('verifies logo is clickable and links to home page in header and footer', () => {
+      render(
+        <PageLayout>
+          <div>Content</div>
+        </PageLayout>
+      );
+
+      const homeLinks = screen.getAllByRole('link', { name: /Midaan/i });
+      expect(homeLinks.length).toBeGreaterThanOrEqual(2);
+      expect(homeLinks[0]).toHaveAttribute('href', '/');
+      expect(homeLinks[1]).toHaveAttribute('href', '/');
+    });
+
+    it('verifies nav links order: Store, Magazine, About (no collab link)', () => {
+      render(
+        <PageLayout>
+          <div>Content</div>
+        </PageLayout>
+      );
+
+      // In Arabic (default)
+      expect(screen.getAllByText('المتجر').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('المجلة').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('عن ميدان').length).toBeGreaterThanOrEqual(1);
+      expect(screen.queryByText('التعاون')).toBeNull();
+    });
+
+    it('verifies footer links: Store, Magazine, About, Policies, Contact Us (no whatsapp or order notice)', () => {
+      render(
+        <PageLayout>
+          <div>Content</div>
+        </PageLayout>
+      );
+
+      expect(screen.getByText('السياسات')).toBeInTheDocument();
+      expect(screen.getByText('تواصل معنا')).toBeInTheDocument();
+
+      // No standalone whatsapp link in footer
+      expect(screen.queryByText('962770125316')).toBeNull();
+      // No order confirmation notice paragraph in footer
+      expect(screen.queryByText(/تأكيد الطلبات وتكلفة التوصيل يتم يدوياً عبر واتساب/i)).toBeNull();
+    });
+  });
+
+  describe('10. Homepage Structure & Clean Copy', () => {
+    it('verifies Hero has title and buttons without the deleted collab description', () => {
+      render(<Hero />);
+
+      expect(screen.getByText('ميدان: مساحة للإبداع والتعبير والمناصرة')).toBeInTheDocument();
+      expect(screen.queryByText(/اكتشف تعاون ميدان × صوت وصورة/i)).toBeNull();
+      expect(screen.getByText('تسوّق المجموعة')).toBeInTheDocument();
+      expect(screen.getByText('اقرأ المجلة')).toBeInTheDocument();
+    });
+
+    it('verifies CampaignVideoSection keeps title "ميدان × صوت وصورة" and removes red badge, archive, and desc', async () => {
+      await act(async () => {
+        render(<CampaignVideoSection />);
+      });
+
+      // Title is present
+      expect(screen.getByRole('heading', { level: 2, name: 'ميدان × صوت وصورة' })).toBeInTheDocument();
+      // Removed elements
+      expect(screen.queryByText(/أرشيف/i)).toBeNull();
+      expect(screen.queryByText(/حكاية من الشارع/i)).toBeNull();
+      expect(screen.queryByText(/تعاون يجمع ميدان وصوت وصورة في إصدارين/i)).toBeNull();
+    });
+
+    it('verifies DropShowcase section has "المتجر" heading with "مجموعة ميدان × صوت وصورة" under it', () => {
+      render(<DropShowcase lang="ar" />);
+
+      expect(screen.getByRole('heading', { level: 2, name: 'المتجر' })).toBeInTheDocument();
+      expect(screen.getByText('مجموعة ميدان × صوت وصورة')).toBeInTheDocument();
+    });
+  });
+
+  describe('11. Customer Contact Details & Bilingual WhatsApp Message', () => {
+    it('renders customerName and phone inputs in Cart drawer', () => {
+      useStore.setState({
+        isCartOpen: true,
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productId: 'drop-helmet-white',
+            garment: 'tshirt',
+            color: 'offwhite',
+            size: 'L',
+            placement: 'back',
+            artMode: 'presets',
+            price: 35.0,
+            priceUSD: 50.0,
+            isPrePrinted: true,
+            quantity: 1,
+          },
+        ],
+      });
+
+      render(<Modals />);
+
+      expect(screen.getByText('الاسم الكامل')).toBeInTheDocument();
+      expect(screen.getByText('رقم الهاتف (واتساب)')).toBeInTheDocument();
+
+      const nameInput = screen.getByPlaceholderText('الاسم الكامل');
+      const phoneInput = screen.getByPlaceholderText('07XXXXXXXX');
+
+      fireEvent.change(nameInput, { target: { value: 'طارق النابلسي' } });
+      fireEvent.change(phoneInput, { target: { value: '0791234567' } });
+
+      expect(useStore.getState().shippingDestination.customerName).toBe('طارق النابلسي');
+      expect(useStore.getState().shippingDestination.phone).toBe('0791234567');
+    });
+
+    it('includes customerName and phone verbatim in Arabic and English WhatsApp messages', () => {
+      const arabicMsg = buildWhatsAppOrderMessage({
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productId: 'drop-helmet-white',
+            garment: 'tshirt',
+            color: 'offwhite',
+            size: 'L',
+            placement: 'back',
+            artMode: 'presets',
+            price: 35.0,
+            priceUSD: 50.0,
+            isPrePrinted: true,
+            quantity: 1,
+          },
+        ],
+        currency: 'JOD',
+        lang: 'ar',
+        isDomestic: true,
+        destinationSummary: 'الأردن - عمّان - وسط البلد',
+        paymentMethod: 'cliq',
+        cartSubtotal: 35,
+        customerName: 'فادي الأحمد',
+        phone: '0780001122',
+      });
+
+      expect(arabicMsg).toContain('الاسم الكامل: فادي الأحمد');
+      expect(arabicMsg).toContain('رقم الهاتف (واتساب): 0780001122');
+
+      const englishMsg = buildWhatsAppOrderMessage({
+        cart: [
+          {
+            id: 'drop-poster-white-XL',
+            productId: 'drop-poster-white',
+            garment: 'tshirt',
+            color: 'offwhite',
+            size: 'XL',
+            placement: 'back',
+            artMode: 'presets',
+            price: 35.0,
+            priceUSD: 50.0,
+            isPrePrinted: true,
+            quantity: 2,
+          },
+        ],
+        currency: 'USD',
+        lang: 'en',
+        isDomestic: false,
+        destinationSummary: 'UAE - Dubai - Downtown',
+        cartSubtotal: 100,
+        customerName: 'Sarah Connor',
+        phone: '+971501234567',
+      });
+
+      expect(englishMsg).toContain('Full Name: Sarah Connor');
+      expect(englishMsg).toContain('Phone Number (WhatsApp): +971501234567');
+    });
+  });
+
+  describe('12. Direct Google Sheets CRM Webhook Integration', () => {
+    it('dispatches non-blocking fetch to Google Apps Script URL with complete payload', () => {
+      const mockFetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: true }));
+      (global as any).fetch = mockFetch;
+
+      const payload = {
+        orderId: 'ORD-12345-TEST',
+        customerName: 'علي كمال',
+        phone: '0771122334',
+        deliveryScope: 'Domestic (الأردن)',
+        countryOrGov: 'عمّان',
+        cityOrArea: 'اللويبده',
+        address: 'شارع كلية الشريعة',
+        itemsSummary: 'تيشيرت خوذة الكوفية — أبيض (L) x1',
+        productIds: 'drop-helmet-white',
+        sizes: 'L',
+        totalQty: 1,
+        currency: 'JOD' as const,
+        subtotal: 35,
+        deliveryFee: 'Confirmed via WhatsApp',
+        grandTotal: 35,
+        paymentMethod: 'CliQ',
+        audienceTag: 'Drop01_Lead',
+        notes: '',
+      };
+
+      sendOrderToCrm(payload);
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      expect(mockFetch).toHaveBeenCalledWith(CRM_WEBHOOK_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        keepalive: true,
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify(payload),
+      });
     });
   });
 });

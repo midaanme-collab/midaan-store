@@ -11,6 +11,7 @@ import {
   CUSTOMS_DISCLAIMERS,
 } from '@/constants/shipping';
 import { generateWhatsAppOrderUrl } from '@/utils/whatsapp';
+import { sendOrderToCrm, generateOrderId } from '@/utils/crm';
 
 export default function Modals() {
   const { 
@@ -185,7 +186,47 @@ export default function Modals() {
     destinationSummary: getDestinationSummary(),
     paymentMethod,
     cartSubtotal,
+    customerName: shippingDestination.customerName,
+    phone: shippingDestination.phone,
   });
+
+  const handleCheckoutSubmit = () => {
+    const orderId = generateOrderId();
+    const countryOrGov = isDomestic
+      ? (isRtl ? currentGov.nameAr : currentGov.nameEn)
+      : (activeCountry ? (isRtl ? activeCountry.nameAr : activeCountry.nameEn) : shippingDestination.countryCode);
+    const cityOrArea = isDomestic
+      ? (isCustomAreaOption(shippingDestination.city) ? (shippingDestination.customArea || shippingDestination.city) : shippingDestination.city)
+      : (shippingDestination.city || '');
+    const itemsSummary = cart.map(item => `${getLocalizedProductTitle(item, lang)} (${item.size}) x${item.quantity || 1}`).join('; ');
+    const productIds = cart.map(item => item.productId).join(', ');
+    const sizes = cart.map(item => item.size).join(', ');
+    const totalQty = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    const paymentMethodText = isDomestic
+      ? (paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery')
+      : 'Confirmed via WhatsApp';
+
+    sendOrderToCrm({
+      orderId,
+      customerName: (shippingDestination.customerName || '').trim(),
+      phone: (shippingDestination.phone || '').trim(),
+      deliveryScope: isDomestic ? 'Domestic (الأردن)' : 'International (دولي)',
+      countryOrGov,
+      cityOrArea,
+      address: (shippingDestination.addressLine1 || '').trim(),
+      itemsSummary,
+      productIds,
+      sizes,
+      totalQty,
+      currency,
+      subtotal: cartSubtotal,
+      deliveryFee: 'Confirmed via WhatsApp',
+      grandTotal: cartSubtotal,
+      paymentMethod: paymentMethodText,
+      audienceTag: 'Drop01_Lead',
+      notes: '',
+    });
+  };
 
   return (
     <>
@@ -485,19 +526,36 @@ export default function Modals() {
                   </div>
                 )}
 
-                {/* 3. Contact Phone Number */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-neutral-300 font-sans">
-                    {strings.calculator.contactPhone} <span className="text-neutral-500">{strings.calculator.optional}</span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={shippingDestination.phone || ''}
-                    onChange={(e) => setShippingDestination({ phone: e.target.value })}
-                    placeholder={isDomestic ? '07XXXXXXXX' : '+XXXXXXXXXXXX'}
-                    className="w-full bg-[#111] border border-[#262626] rounded-xl p-2.5 text-white text-xs font-sans outline-none focus:border-[#D80032] transition-colors placeholder:text-neutral-600 text-left"
-                    dir="ltr"
-                  />
+                {/* 3. Customer Contact Inputs */}
+                <div className="space-y-3 bg-[#0d0d0d] p-3.5 border border-[#1e1e1e] rounded-xl">
+                  {/* Full Name */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-neutral-300 font-sans">
+                      {isRtl ? 'الاسم الكامل' : 'Full Name'}
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingDestination.customerName || ''}
+                      onChange={(e) => setShippingDestination({ customerName: e.target.value })}
+                      placeholder={isRtl ? 'الاسم الكامل' : 'Full Name'}
+                      className="w-full bg-[#111] border border-[#262626] rounded-xl p-2.5 text-white text-xs font-sans outline-none focus:border-[#D80032] transition-colors placeholder:text-neutral-600"
+                    />
+                  </div>
+
+                  {/* Phone Number (WhatsApp) */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-neutral-300 font-sans">
+                      {isRtl ? 'رقم الهاتف (واتساب)' : 'Phone Number (WhatsApp)'}
+                    </label>
+                    <input
+                      type="tel"
+                      value={shippingDestination.phone || ''}
+                      onChange={(e) => setShippingDestination({ phone: e.target.value })}
+                      placeholder={isDomestic ? '07XXXXXXXX' : '+XXXXXXXXXXXX'}
+                      className="w-full bg-[#111] border border-[#262626] rounded-xl p-2.5 text-white text-xs font-sans outline-none focus:border-[#D80032] transition-colors placeholder:text-neutral-600 text-left"
+                      dir="ltr"
+                    />
+                  </div>
                 </div>
 
                 {/* 4. Delivery Notice */}
@@ -639,6 +697,7 @@ export default function Modals() {
                     href={whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={handleCheckoutSubmit}
                     className="w-full bg-white text-black hover:bg-neutral-200 py-4 font-sans text-sm font-bold transition-colors rounded-xl flex items-center justify-center gap-2 shadow-xl active:scale-95"
                   >
                     <span>{strings.sendOrderWhatsApp}</span>
