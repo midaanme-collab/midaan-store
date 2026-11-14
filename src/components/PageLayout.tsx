@@ -7,6 +7,7 @@ import { content } from '@/locales/dictionary';
 import MidaanLogo from './MidaanLogo';
 import Modals from './Modals';
 import FooterPoliciesModal, { PolicyTab } from './FooterPoliciesModal';
+import SizeChartModal from './SizeChartModal';
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
   const { lang, setLang, setIsCartOpen, cart, currency, setCurrency } = useStore();
@@ -18,6 +19,8 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
   const activePolicyTab = useStore((s) => s.activePolicyTab);
   const setActivePolicyTab = useStore((s) => s.setActivePolicyTab);
   const openPolicy = useStore((s) => s.openPolicyModal);
+  const isSizeChartOpen = useStore((s) => s.isSizeChartOpen);
+  const setIsSizeChartOpen = useStore((s) => s.setIsSizeChartOpen);
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#050505] text-[#EDEDED] transition-colors" dir={isRtl ? 'rtl' : 'ltr'}>
@@ -140,6 +143,13 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
         onClose={() => setIsPolicyModalOpen(false)}
         activeTab={activePolicyTab}
         onTabChange={setActivePolicyTab}
+        lang={lang as 'ar' | 'en'}
+      />
+
+      {/* Global Size Chart Modal */}
+      <SizeChartModal
+        isOpen={isSizeChartOpen}
+        onClose={() => setIsSizeChartOpen(false)}
         lang={lang as 'ar' | 'en'}
       />
 

@@ -17,7 +17,8 @@ import {
   ArrowLeft, 
   ArrowRight,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Ruler
 } from 'lucide-react';
 
 interface ProductDetailViewProps {
@@ -25,7 +26,7 @@ interface ProductDetailViewProps {
 }
 
 export default function ProductDetailView({ product }: ProductDetailViewProps) {
-  const { lang, currency, addToCart, setIsCartOpen, openPolicyModal } = useStore();
+  const { lang, currency, addToCart, setIsCartOpen, openPolicyModal, setIsSizeChartOpen } = useStore();
   const isAr = lang === 'ar';
   const strings = content[isAr ? 'ar' : 'en'];
 
@@ -287,15 +288,26 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                     </button>
                   </div>
 
-                  <a
-                    href={whatsappInquiryUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 underline underline-offset-4 transition-colors ms-auto"
-                  >
-                    <MessageSquare size={13} />
-                    <span>{isAr ? 'استفسر عن المقاس عبر واتساب' : 'Ask about sizing on WhatsApp'}</span>
-                  </a>
+                  <div className="flex items-center gap-2 ms-auto">
+                    <button
+                      type="button"
+                      onClick={() => setIsSizeChartOpen(true)}
+                      className="text-xs text-neutral-300 hover:text-white flex items-center gap-1.5 underline underline-offset-4 transition-colors font-medium"
+                    >
+                      <Ruler size={13} className="text-[#D80032]" />
+                      <span>{isAr ? 'دليل المقاسات والقصة' : 'Size & Fit Guide'}</span>
+                    </button>
+                    <span>•</span>
+                    <a
+                      href={whatsappInquiryUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 underline underline-offset-4 transition-colors"
+                    >
+                      <MessageSquare size={13} />
+                      <span>{isAr ? 'استفسار واتساب' : 'WhatsApp inquiry'}</span>
+                    </a>
+                  </div>
                 </div>
               </div>
 

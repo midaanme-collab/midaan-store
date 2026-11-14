@@ -8,6 +8,9 @@ import FooterPoliciesModal from '../src/components/FooterPoliciesModal';
 import PageLayout from '../src/components/PageLayout';
 import Hero from '../src/components/Hero';
 import CampaignVideoSection from '../src/components/CampaignVideoSection';
+import SizeChartModal, { SIZE_MEASUREMENTS } from '../src/components/SizeChartModal';
+import ProductDetailView from '../src/components/ProductDetailView';
+import { SHARED_PRODUCTS } from '../src/constants/products';
 import { buildWhatsAppOrderMessage } from '../src/utils/whatsapp';
 import { sendOrderToCrm, CRM_WEBHOOK_URL } from '../src/utils/crm';
 import fs from 'fs';
@@ -807,6 +810,131 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
         },
         body: JSON.stringify(payload),
       });
+    });
+  });
+
+  describe('13. Interactive Size & Fit Guide Modal (Relaxed Boxy Fit)', () => {
+    it('contains verified measurements and height/weight recommendations for all 5 sizes', () => {
+      expect(SIZE_MEASUREMENTS).toHaveLength(5);
+
+      // S: Chest 52, Length 70, Shoulder 48, Height 160-170, Weight 55-68
+      const s = SIZE_MEASUREMENTS.find((m) => m.size === 'S');
+      expect(s?.chestCm).toBe(52);
+      expect(s?.lengthCm).toBe(70);
+      expect(s?.shoulderCm).toBe(48);
+      expect(s?.heightRange).toBe('160–170 cm');
+      expect(s?.weightRange).toBe('55–68 kg');
+
+      // M: Chest 55, Length 72, Shoulder 50, Height 168-176, Weight 65-78
+      const m = SIZE_MEASUREMENTS.find((x) => x.size === 'M');
+      expect(m?.chestCm).toBe(55);
+      expect(m?.lengthCm).toBe(72);
+      expect(m?.shoulderCm).toBe(50);
+      expect(m?.heightRange).toBe('168–176 cm');
+      expect(m?.weightRange).toBe('65–78 kg');
+
+      // L: Chest 58, Length 75, Shoulder 53, Height 174-182, Weight 75-88
+      const l = SIZE_MEASUREMENTS.find((x) => x.size === 'L');
+      expect(l?.chestCm).toBe(58);
+      expect(l?.lengthCm).toBe(75);
+      expect(l?.shoulderCm).toBe(53);
+      expect(l?.heightRange).toBe('174–182 cm');
+      expect(l?.weightRange).toBe('75–88 kg');
+
+      // XL: Chest 61, Length 77, Shoulder 56, Height 180-188, Weight 85-100
+      const xl = SIZE_MEASUREMENTS.find((x) => x.size === 'XL');
+      expect(xl?.chestCm).toBe(61);
+      expect(xl?.lengthCm).toBe(77);
+      expect(xl?.shoulderCm).toBe(56);
+      expect(xl?.heightRange).toBe('180–188 cm');
+      expect(xl?.weightRange).toBe('85–100 kg');
+
+      // XXL: Chest 64, Length 79, Shoulder 58, Height 185+, Weight 98-115
+      const xxl = SIZE_MEASUREMENTS.find((x) => x.size === 'XXL');
+      expect(xxl?.chestCm).toBe(64);
+      expect(xxl?.lengthCm).toBe(79);
+      expect(xxl?.shoulderCm).toBe(58);
+      expect(xxl?.heightRange).toBe('185+ cm');
+      expect(xxl?.weightRange).toBe('98–115 kg');
+    });
+
+    it('renders SizeChartModal with quality badges and interactive size selection', () => {
+      render(
+        <SizeChartModal
+          isOpen={true}
+          onClose={jest.fn()}
+          lang="ar"
+          defaultSize="L"
+        />
+      );
+
+      expect(screen.getByText('دليل المقاسات والقصة الصندوقية')).toBeInTheDocument();
+      expect(screen.getByText('تفاوت القياس: ± 1.5 سم')).toBeInTheDocument();
+      expect(screen.getByText('معالج مسبقاً ضد الانكماش (Preshrunk)')).toBeInTheDocument();
+      expect(screen.getByText('صناعة يدوية في إندونيسيا')).toBeInTheDocument();
+
+      // Test size switching inside modal
+      const sizeMBtn = screen.getByRole('button', { name: 'Size M' });
+      fireEvent.click(sizeMBtn);
+
+      expect(screen.getAllByText('55 cm').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('168–176 cm').length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('opens SizeChartModal from DropShowcase and ProductDetailView', () => {
+      act(() => {
+        useStore.setState({ isSizeChartOpen: false });
+      });
+
+      const { unmount } = render(<DropShowcase lang="ar" />);
+      const sizeGuideBtns = screen.getAllByRole('button', { name: /جدول المقاسات/i });
+      expect(sizeGuideBtns.length).toBeGreaterThan(0);
+
+      fireEvent.click(sizeGuideBtns[0]);
+      expect(useStore.getState().isSizeChartOpen).toBe(true);
+
+      unmount();
+
+      act(() => {
+        useStore.setState({ isSizeChartOpen: false });
+      });
+
+      render(<ProductDetailView product={SHARED_PRODUCTS[0]} />);
+      const detailGuideBtn = screen.getByRole('button', { name: /دليل المقاسات والقصة/i });
+      fireEvent.click(detailGuideBtn);
+      expect(useStore.getState().isSizeChartOpen).toBe(true);
+    });
+  });
+
+  describe('14. SEO, OpenGraph, Structured Data & Robots/Sitemap', () => {
+    it('verifies robots.txt exists and points to sitemap.xml', () => {
+      const robotsPath = path.join(process.cwd(), 'public', 'robots.txt');
+      expect(fs.existsSync(robotsPath)).toBe(true);
+      const content = fs.readFileSync(robotsPath, 'utf8');
+      expect(content).toContain('User-agent: *');
+      expect(content).toContain('Sitemap: https://midaan-store.midaanme.workers.dev/sitemap.xml');
+    });
+
+    it('verifies sitemap.xml contains product paths and core pages', () => {
+      const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+      expect(fs.existsSync(sitemapPath)).toBe(true);
+      const content = fs.readFileSync(sitemapPath, 'utf8');
+      expect(content).toContain('/products/drop-helmet-white');
+      expect(content).toContain('/products/drop-poster-white');
+      expect(content).toContain('/about');
+      expect(content).toContain('/magazine');
+    });
+
+    it('verifies root layout file defines bilingual metadata, og:image, and JSON-LD structured data', () => {
+      const layoutPath = path.join(process.cwd(), 'src', 'app', 'layout.tsx');
+      const content = fs.readFileSync(layoutPath, 'utf8');
+      expect(content).toContain('summary_large_image');
+      expect(content).toContain('/helmet-back-white.jpg');
+      expect(content).toContain('application/ld+json');
+      expect(content).toContain('"@type": "Organization"');
+      expect(content).toContain('"@type": "Product"');
+      expect(content).toContain('35');
+      expect(content).toContain('50');
     });
   });
 });

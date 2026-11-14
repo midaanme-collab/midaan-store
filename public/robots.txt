@@ -1,0 +1,5 @@
+# Midaan Collective Robots Configuration
+User-agent: *
+Allow: /
+
+Sitemap: https://midaan-store.midaanme.workers.dev/sitemap.xml

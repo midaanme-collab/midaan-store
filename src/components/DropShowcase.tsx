@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Language, Product, GarmentSize } from "@/types";
-import { ShoppingBag, Check, MessageSquare, ArrowUpRight } from "lucide-react";
+import { ShoppingBag, Check, MessageSquare, ArrowUpRight, Ruler } from "lucide-react";
 import { useStore } from "@/store";
 import Interactive3DTilt from "./Interactive3DTilt";
 import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from "@/constants/products";
@@ -15,7 +15,7 @@ interface DropShowcaseProps {
 }
 
 export default function DropShowcase({ lang }: DropShowcaseProps) {
-  const { lang: storeLang, currency, addToCart, setIsCartOpen, openPolicyModal } = useStore();
+  const { lang: storeLang, currency, addToCart, setIsCartOpen, openPolicyModal, setIsSizeChartOpen } = useStore();
   const effectiveLang = (storeLang || lang || "ar") as "ar" | "en";
   const strings = content[effectiveLang];
   const isRtl = effectiveLang === "ar";
@@ -171,6 +171,15 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                     
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+                        <button
+                          type="button"
+                          onClick={() => setIsSizeChartOpen(true)}
+                          className="hover:text-white underline underline-offset-4 transition-colors flex items-center gap-1 font-medium text-neutral-300"
+                        >
+                          <Ruler size={12} className="text-[#D80032]" />
+                          <span>{isRtl ? "جدول المقاسات" : "Size Guide"}</span>
+                        </button>
+                        <span>•</span>
                         <button
                           type="button"
                           onClick={() => openPolicyModal('returns')}
