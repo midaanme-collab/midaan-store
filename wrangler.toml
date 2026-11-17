@@ -1,6 +1,7 @@
 name = "midaan-store"
 main = "worker/index.ts"
 compatibility_date = "2026-10-28"
+workers_dev = true
 
 routes = [
   { pattern = "midaan.net", custom_domain = true },
