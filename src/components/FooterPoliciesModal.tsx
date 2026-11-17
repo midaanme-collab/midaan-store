@@ -229,6 +229,59 @@ export default function FooterPoliciesModal({
                   <ExternalLink size={13} />
                 </a>
               </div>
+
+              {/* Official Social Channels */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <a
+                  href="https://www.instagram.com/midaanme/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#141414] hover:bg-[#1A1A1A] p-4 rounded-2xl border border-[#222] hover:border-neutral-600 flex items-center justify-between gap-3 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#D80032]/10 text-[#D80032] flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-bold text-white text-xs">
+                        {isAr ? 'إنستغرام' : 'Instagram'}
+                      </div>
+                      <div className="text-neutral-400 font-mono text-[11px]" dir="ltr">
+                        @midaanme
+                      </div>
+                    </div>
+                  </div>
+                  <ExternalLink size={14} className="text-neutral-500 group-hover:text-white transition-colors" />
+                </a>
+
+                <a
+                  href="https://www.facebook.com/midaanme/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#141414] hover:bg-[#1A1A1A] p-4 rounded-2xl border border-[#222] hover:border-neutral-600 flex items-center justify-between gap-3 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#D80032]/10 text-[#D80032] flex items-center justify-center shrink-0">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="font-bold text-white text-xs">
+                        {isAr ? 'فيسبوك' : 'Facebook'}
+                      </div>
+                      <div className="text-neutral-400 font-mono text-[11px]" dir="ltr">
+                        @midaanme
+                      </div>
+                    </div>
+                  </div>
+                  <ExternalLink size={14} className="text-neutral-500 group-hover:text-white transition-colors" />
+                </a>
+              </div>
             </div>
           )}
         </div>

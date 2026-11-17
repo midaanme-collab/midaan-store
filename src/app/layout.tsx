@@ -53,6 +53,8 @@ const jsonLdData = [
     "logo": "https://midaan-store.midaanme.workers.dev/logo.png",
     "description": "An independent cultural and intellectual publication and streetwear initiative exploring identity, social transformations, and civic expression.",
     "sameAs": [
+      "https://www.instagram.com/midaanme/",
+      "https://www.facebook.com/midaanme/",
       "https://wa.me/962770125316"
     ]
   },

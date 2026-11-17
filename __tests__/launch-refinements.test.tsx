@@ -925,7 +925,7 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(content).toContain('/magazine');
     });
 
-    it('verifies root layout file defines bilingual metadata, og:image, and JSON-LD structured data', () => {
+    it('verifies root layout file defines bilingual metadata, og:image, and JSON-LD structured data with official social links', () => {
       const layoutPath = path.join(process.cwd(), 'src', 'app', 'layout.tsx');
       const content = fs.readFileSync(layoutPath, 'utf8');
       expect(content).toContain('summary_large_image');
@@ -935,6 +935,48 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(content).toContain('"@type": "Product"');
       expect(content).toContain('35');
       expect(content).toContain('50');
+      expect(content).toContain('https://www.instagram.com/midaanme/');
+      expect(content).toContain('https://www.facebook.com/midaanme/');
+    });
+
+    it('verifies official Instagram and Facebook social media links in PageLayout footer', () => {
+      render(
+        <PageLayout>
+          <div>Content</div>
+        </PageLayout>
+      );
+      const instagramLinks = screen.getAllByRole('link', { name: /Instagram/i });
+      expect(instagramLinks.length).toBeGreaterThan(0);
+      expect(instagramLinks[0]).toHaveAttribute('href', 'https://www.instagram.com/midaanme/');
+      expect(instagramLinks[0]).toHaveAttribute('target', '_blank');
+      expect(instagramLinks[0]).toHaveAttribute('rel', 'noopener noreferrer');
+
+      const facebookLinks = screen.getAllByRole('link', { name: /Facebook/i });
+      expect(facebookLinks.length).toBeGreaterThan(0);
+      expect(facebookLinks[0]).toHaveAttribute('href', 'https://www.facebook.com/midaanme/');
+      expect(facebookLinks[0]).toHaveAttribute('target', '_blank');
+      expect(facebookLinks[0]).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    it('verifies official Instagram and Facebook links in FooterPoliciesModal Direct Contact tab', () => {
+      render(
+        <FooterPoliciesModal
+          isOpen={true}
+          onClose={jest.fn()}
+          activeTab="contact"
+          onTabChange={jest.fn()}
+          lang="ar"
+        />
+      );
+      const instagramLink = screen.getByRole('link', { name: /إنستغرام/i });
+      expect(instagramLink).toHaveAttribute('href', 'https://www.instagram.com/midaanme/');
+      expect(instagramLink).toHaveAttribute('target', '_blank');
+      expect(instagramLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+      const facebookLink = screen.getByRole('link', { name: /فيسبوك/i });
+      expect(facebookLink).toHaveAttribute('href', 'https://www.facebook.com/midaanme/');
+      expect(facebookLink).toHaveAttribute('target', '_blank');
+      expect(facebookLink).toHaveAttribute('rel', 'noopener noreferrer');
     });
   });
 });
