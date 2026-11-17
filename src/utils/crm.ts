@@ -3,6 +3,58 @@ import { CrmOrderPayload } from '@/types';
 export const CRM_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbyRWThRWC-w1-NXoSUDcSZV7Zbklt26bP9oRZXySmWiBnsnrcYza19VRrDxtsT6KEzU/exec';
 
+export const UTM_STORAGE_KEY = 'midaan_utm_params';
+
+/**
+ * Captures UTM marketing parameters and Meta click ID (fbclid) from current URL into sessionStorage.
+ */
+export function captureUtmParams(customSearch?: string): void {
+  if (typeof window === 'undefined' || !window.sessionStorage) return;
+  try {
+    const searchStr = customSearch !== undefined ? customSearch : (window.location ? window.location.search : '');
+    const urlParams = new URLSearchParams(searchStr);
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'] as const;
+    const captured: Record<string, string> = {};
+
+    utmKeys.forEach((key) => {
+      const val = urlParams.get(key);
+      if (val) {
+        captured[key] = val.trim();
+      }
+    });
+
+    if (Object.keys(captured).length > 0) {
+      const existingStr = window.sessionStorage.getItem(UTM_STORAGE_KEY);
+      const existing = existingStr ? JSON.parse(existingStr) : {};
+      const merged = { ...existing, ...captured };
+      window.sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(merged));
+    }
+  } catch {
+    // Fail silently without interrupting user experience
+  }
+}
+
+/**
+ * Retrieves a compact, sanitized summary of captured UTM parameters for CRM logging.
+ */
+export function getCapturedUtmSummary(): string {
+  if (typeof window === 'undefined' || !window.sessionStorage) return '';
+  try {
+    const stored = window.sessionStorage.getItem(UTM_STORAGE_KEY);
+    if (!stored) return '';
+    const parsed = JSON.parse(stored) as Record<string, string>;
+    const parts: string[] = [];
+    if (parsed.utm_source) parts.push(`src:${parsed.utm_source}`);
+    if (parsed.utm_medium) parts.push(`med:${parsed.utm_medium}`);
+    if (parsed.utm_campaign) parts.push(`cmp:${parsed.utm_campaign}`);
+    if (parsed.utm_content) parts.push(`cnt:${parsed.utm_content}`);
+    if (parsed.fbclid) parts.push(`fbclid:${parsed.fbclid.slice(0, 16)}`);
+    return parts.join(' | ');
+  } catch {
+    return '';
+  }
+}
+
 /**
  * Strips control characters, spreadsheet formula-injection prefixes (^[=+\-@ \t\r]+),
  * and enforces strict maximum length limits on user-supplied fields.
@@ -37,12 +89,18 @@ export function generateOrderId(): string {
  */
 export function sendOrderToCrm(payload: CrmOrderPayload): void {
   try {
+    let finalNotes = payload.notes || '';
+    const utmSummary = getCapturedUtmSummary();
+    if (utmSummary && !finalNotes.includes(utmSummary)) {
+      finalNotes = finalNotes ? `${finalNotes} [UTM: ${utmSummary}]` : `[UTM: ${utmSummary}]`;
+    }
+
     const sanitizedPayload: CrmOrderPayload = {
       ...payload,
       customerName: sanitizeCrmField(payload.customerName, 80),
       phone: sanitizeCrmField(payload.phone, 25),
       address: sanitizeCrmField(payload.address, 200),
-      notes: sanitizeCrmField(payload.notes, 250),
+      notes: sanitizeCrmField(finalNotes, 250),
       cityOrArea: sanitizeCrmField(payload.cityOrArea, 100),
     };
 

@@ -10,8 +10,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://midaan.net"),
-  title: "Midaan Collective | ميدان — مساحة للإبداع والتعبير والمناصرة",
-  description: "An independent cultural and intellectual publication and streetwear initiative exploring identity, social transformations, and civic expression. إصدار فكري ثقافي ومبادرة أزياء مستقلة تبحث في قضايا الهوية والتعبير المدني والمناصرة.",
+  title: "متجر ميدان | Midaan Store — Palestinian Streetwear & Magazine",
+  description: "متجر ميدان في عمّان: تيشيرت خوذة الكوفية، تيشيرت بوستر فلسطين، ومجلة ميدان العدد صفر. أزياء فلسطينية تعبيرية عالية الجودة بطباعة DTG وشحن دولي.",
   manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
     canonical: "https://midaan.net",
   },
   openGraph: {
-    title: "Midaan Collective | ميدان — مساحة للإبداع والتعبير والمناصرة",
-    description: "Wearable advocacy and independent publishing from Amman. مساحة للإبداع والتعبير والمناصرة • أزياء تعبيرية وإصدارات فكرية مستقلة.",
+    title: "متجر ميدان | Midaan Store — Palestinian Streetwear & Magazine",
+    description: "متجر ميدان في عمّان: تيشيرت خوذة الكوفية، تيشيرت بوستر فلسطين، ومجلة ميدان العدد صفر. أزياء فلسطينية تعبيرية عالية الجودة وشحن دولي.",
     url: "https://midaan.net",
     siteName: "Midaan Collective | ميدان",
     locale: "ar",
@@ -38,8 +38,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Midaan Collective | ميدان",
-    description: "Wearable advocacy and independent publishing from Amman. مساحة للإبداع والتعبير والمناصرة.",
+    title: "متجر ميدان | Midaan Store",
+    description: "أزياء فلسطينية تعبيرية ومجلة فكرية مستقلة من عمّان: تيشيرت خوذة الكوفية وبوستر فلسطين.",
     images: ["/helmet-back-white.jpg"],
   },
 };
@@ -48,21 +48,27 @@ const jsonLdData = [
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Midaan Collective",
+    "name": "Midaan Collective | ميدان",
     "alternateName": "ميدان",
     "url": "https://midaan.net",
     "logo": "https://midaan.net/logo.png",
     "description": "An independent cultural and intellectual publication and streetwear initiative exploring identity, social transformations, and civic expression.",
     "sameAs": [
       "https://www.instagram.com/midaanme/",
-      "https://www.facebook.com/midaanme/",
-      "https://wa.me/962770125316"
-    ]
+      "https://www.facebook.com/midaanme/"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+962770125316",
+      "contactType": "customer service",
+      "availableLanguage": ["Arabic", "English"]
+    }
   },
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "تيشيرت خوذة الكوفية — أبيض | Keffiyeh Helmet T-Shirt — White",
+    "name": "Keffiyeh Helmet Tee — White",
+    "alternateName": "تيشيرت خوذة الكوفية — أبيض",
     "image": [
       "https://midaan.net/helmet-back-white.jpg"
     ],
@@ -78,21 +84,22 @@ const jsonLdData = [
         "priceCurrency": "JOD",
         "price": "35",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan.net/products/drop-helmet-white"
+        "url": "https://midaan.net/#drops"
       },
       {
         "@type": "Offer",
         "priceCurrency": "USD",
         "price": "50",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan.net/products/drop-helmet-white"
+        "url": "https://midaan.net/#drops"
       }
     ]
   },
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "تيشيرت بوستر فلسطين — أبيض | Palestine Poster T-Shirt — White",
+    "name": "Palestine Poster Tee — White",
+    "alternateName": "تيشيرت بوستر فلسطين — أبيض",
     "image": [
       "https://midaan.net/palestine-back-white.jpg"
     ],
@@ -108,14 +115,14 @@ const jsonLdData = [
         "priceCurrency": "JOD",
         "price": "35",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan.net/products/drop-poster-white"
+        "url": "https://midaan.net/#drops"
       },
       {
         "@type": "Offer",
         "priceCurrency": "USD",
         "price": "50",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan.net/products/drop-poster-white"
+        "url": "https://midaan.net/#drops"
       }
     ]
   }

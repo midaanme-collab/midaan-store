@@ -244,6 +244,26 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                     })}
                   </div>
 
+                  {/* Scarcity Urgency Badge for Low Stock (<= 3 units) */}
+                  {activeVariant && activeVariant.stockCount > 0 && activeVariant.stockCount <= 3 && (
+                    <div 
+                      role="status" 
+                      className="mt-3 p-2.5 px-3 rounded-xl bg-[#D80032]/10 border border-[#D80032]/30 text-[#D80032] text-xs font-semibold flex items-center justify-between"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#D80032] animate-pulse" />
+                        <span>
+                          {isRtl
+                            ? `متبقي ${activeVariant.stockCount} فقط بهذا المقاس`
+                            : `Only ${activeVariant.stockCount} left in this size`}
+                        </span>
+                      </span>
+                      <span className="text-[11px] text-neutral-400 font-normal">
+                        {isRtl ? 'إصدار محدود ٣٥ قطعة' : 'Limited 35 units'}
+                      </span>
+                    </div>
+                  )}
+
                   <p className="text-[10px] text-neutral-400 font-sans mt-2 leading-relaxed">
                     {isRtl 
                       ? '* يرجى التأكد من المقاس قبل تأكيد الطلب؛ لا نقبل التبديل لتغيير الرأي أو المقاس غير المناسب.'

@@ -22,8 +22,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
   if (!product) return {};
 
-  const title = `${product.titleAr} / ${product.titleEn} | ميدان`;
-  const desc = `${product.descriptionAr} — إصدار محدود من ميدان وصوت وصورة.`;
+  const isHelmet = isHelmetProduct(product.id) || product.id.includes('helmet');
+  const title = isHelmet
+    ? 'تيشيرت خوذة الكوفية | Keffiyeh Helmet Tee — Midaan Store'
+    : 'تيشيرت بوستر فلسطين | Palestine Poster Tee — Midaan Store';
+  const desc = isHelmet
+    ? 'تيشيرت خوذة الكوفية من ميدان وصوت وصورة: قطن ١٠٠٪، طباعة DTG مباشرة على النسيج في إندونيسيا، قصة بوكسي مريحة مع شحن محلي ودولي.'
+    : 'تيشيرت بوستر فلسطين الأرشيفي من ميدان وصوت وصورة: قطن ١٠٠٪، طباعة DTG مباشرة على النسيج في إندونيسيا، قصة بوكسي مريحة مع شحن محلي ودولي.';
   const canonicalUrl = `https://midaan.net/products/${product.id}`;
   const imgUrl = product.images[0] || '/helmet-back-white.jpg';
 

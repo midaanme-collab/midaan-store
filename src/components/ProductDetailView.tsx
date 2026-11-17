@@ -295,6 +295,26 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                   })}
                 </div>
 
+                {/* Scarcity Urgency Badge for Low Stock (<= 3 units) */}
+                {selectedVariant && selectedVariant.stockCount > 0 && selectedVariant.stockCount <= 3 && (
+                  <div 
+                    role="status" 
+                    className="mb-3 p-2.5 px-3 rounded-xl bg-[#D80032]/10 border border-[#D80032]/30 text-[#D80032] text-xs font-semibold flex items-center justify-between"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-[#D80032] animate-pulse" />
+                      <span>
+                        {isAr
+                          ? `متبقي ${selectedVariant.stockCount} فقط بهذا المقاس`
+                          : `Only ${selectedVariant.stockCount} left in this size`}
+                      </span>
+                    </span>
+                    <span className="text-[11px] text-neutral-400 font-normal">
+                      {isAr ? 'إصدار محدود ٣٥ قطعة' : 'Limited 35 units'}
+                    </span>
+                  </div>
+                )}
+
                 {/* Sizing on WhatsApp link & Policy */}
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-400 pt-1">
                   <div className="flex items-center gap-1.5 text-[11px]">

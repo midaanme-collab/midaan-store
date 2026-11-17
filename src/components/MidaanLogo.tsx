@@ -9,7 +9,7 @@ export default function MidaanLogo({ size = "md" }: { size?: "sm" | "md" | "lg" 
     <div className="flex items-center gap-3">
       <Image 
         src="/logo.png" 
-        alt="MIDAAN" 
+        alt="Midaan Collective | شعار متجر ميدان" 
         width={200}
         height={80}
         priority

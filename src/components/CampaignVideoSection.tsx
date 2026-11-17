@@ -78,7 +78,7 @@ export default function CampaignVideoSection() {
           <div className="flex flex-col items-center">
             <Image 
               src="/logo.png" 
-              alt="Midaan" 
+              alt="Midaan Collective Logo | شعار ميدان" 
               width={200}
               height={100}
               className="h-16 sm:h-20 md:h-24 w-auto object-contain brightness-0 invert drop-shadow-[0_6px_24px_rgba(255,255,255,0.2)] transition-transform" 
@@ -92,7 +92,7 @@ export default function CampaignVideoSection() {
           <div className="flex flex-col items-center">
             <Image 
               src="/sotusura.png" 
-              alt="Sotusura" 
+              alt="Sotusura Brand Logo | شعار صوت وصورة" 
               width={200}
               height={100}
               className="h-16 sm:h-20 md:h-24 w-auto object-contain rounded-2xl shadow-2xl transition-transform" 

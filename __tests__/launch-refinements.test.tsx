@@ -1180,4 +1180,87 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       }).not.toThrow();
     });
   });
+
+  describe('9. UTM Ad Attribution & Low-Stock Scarcity Tests', () => {
+    it('captures UTM parameters into sessionStorage and appends to CRM notes', async () => {
+      const { captureUtmParams, getCapturedUtmSummary, sendOrderToCrm, UTM_STORAGE_KEY } = await import('../src/utils/crm');
+
+      // Mock sessionStorage
+      const store: Record<string, string> = {};
+      const mockSessionStorage = {
+        getItem: (key: string) => store[key] || null,
+        setItem: (key: string, val: string) => { store[key] = val; },
+        removeItem: (key: string) => { delete store[key]; },
+        clear: () => { Object.keys(store).forEach(k => delete store[k]); },
+      };
+      Object.defineProperty(window, 'sessionStorage', {
+        value: mockSessionStorage,
+        writable: true,
+      });
+
+      // Capture UTM parameters from URL search query
+      captureUtmParams('?utm_source=meta&utm_medium=paid_social&utm_campaign=drop01&utm_content=video_sout&fbclid=AbCdEf123456');
+
+      const summary = getCapturedUtmSummary();
+      expect(summary).toContain('src:meta');
+      expect(summary).toContain('med:paid_social');
+      expect(summary).toContain('cmp:drop01');
+      expect(summary).toContain('cnt:video_sout');
+      expect(summary).toContain('fbclid:AbCdEf123456');
+
+      // Verify sendOrderToCrm includes UTM in payload.notes
+      const mockFetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: true }));
+      window.fetch = mockFetch;
+
+      sendOrderToCrm({
+        orderId: 'ORD-TEST-1',
+        customerName: 'Ahmad User',
+        phone: '962770123456',
+        deliveryScope: 'Domestic',
+        countryOrGov: 'Amman',
+        cityOrArea: 'Jabal Amman',
+        address: 'First Circle',
+        itemsSummary: 'Keffiyeh Helmet Tee (XL) x1',
+        productIds: 'drop-helmet-white',
+        sizes: 'XL',
+        totalQty: 1,
+        currency: 'JOD',
+        subtotal: 35,
+        deliveryFee: 'Confirmed via WhatsApp',
+        grandTotal: 35,
+        paymentMethod: 'Cash on Delivery',
+        audienceTag: 'Drop01_Lead',
+        notes: 'Call before delivery',
+      });
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(body.notes).toContain('Call before delivery [UTM:');
+      expect(body.notes).toContain('cmp:drop01');
+    });
+
+    it('displays scarcity badge when selecting a size with low stock (<= 3 units)', () => {
+      render(<DropShowcase lang="ar" />);
+
+      // Find XL button for Helmet Tee (stock is 2, which is <= 3)
+      const xlButtons = screen.getAllByRole('button', { name: /size xl/i });
+      expect(xlButtons.length).toBeGreaterThan(0);
+
+      fireEvent.click(xlButtons[0]);
+
+      // Expect low stock scarcity badge to be visible
+      const scarcityBadge = screen.getByText(/متبقي 2 فقط بهذا المقاس/i);
+      expect(scarcityBadge).toBeInTheDocument();
+      expect(screen.getByText(/إصدار محدود ٣٥ قطعة/i)).toBeInTheDocument();
+    });
+
+    it('validates Organization JSON-LD has WhatsApp contactPoint', () => {
+      const layoutPath = path.join(process.cwd(), 'src', 'app', 'layout.tsx');
+      const content = fs.readFileSync(layoutPath, 'utf8');
+
+      expect(content).toContain('"@type": "ContactPoint"');
+      expect(content).toContain('+962770125316');
+      expect(content).toContain('"availability": "https://schema.org/InStock"');
+    });
+  });
 });

@@ -67,8 +67,40 @@ export default function ArticleDetailView({ article, lang }: ArticleDetailViewPr
   const pullQuote = isAr ? article.pullQuoteAr : article.pullQuoteEn;
   const paragraphs = isAr ? article.contentAr : article.contentEn;
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "description": excerpt,
+    "inLanguage": isAr ? "ar" : "en",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://midaan.net/magazine/${lang}/articles/${article.id}`
+    },
+    "author": {
+      "@type": "Person",
+      "name": author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Midaan Collective | ميدان",
+      "url": "https://midaan.net",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://midaan.net/logo.png"
+      }
+    },
+    "image": "https://midaan.net/magazine/issue-zero-cover-thumb.png"
+  };
+
   return (
     <PageLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleJsonLd)
+        }}
+      />
       <div 
         className="w-full bg-[#050505] text-[#EDEDED] min-h-screen py-10 md:py-20 px-4 md:px-8 font-sans transition-colors"
         dir={isAr ? 'rtl' : 'ltr'}
