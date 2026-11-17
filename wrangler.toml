@@ -2,6 +2,11 @@ name = "midaan-store"
 main = "worker/index.ts"
 compatibility_date = "2026-10-28"
 
+routes = [
+  { pattern = "midaan.net", custom_domain = true },
+  { pattern = "www.midaan.net", custom_domain = true }
+]
+
 [assets]
 directory = "./out"
 not_found_handling = "404-page"
