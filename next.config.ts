@@ -29,10 +29,19 @@ try {
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }
-  fs.writeFileSync(
-    path.join(publicDir, "build-info.json"),
-    JSON.stringify(buildInfo, null, 2) + "\n"
-  );
+  const buildInfoContent = JSON.stringify(buildInfo, null, 2) + "\n";
+  fs.writeFileSync(path.join(publicDir, "build-info.json"), buildInfoContent);
+
+  const distDir = path.join(process.cwd(), "dist");
+  if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
+  }
+  fs.writeFileSync(path.join(distDir, "build-info.json"), buildInfoContent);
+
+  const headersPath = path.join(publicDir, "_headers");
+  if (fs.existsSync(headersPath)) {
+    fs.copyFileSync(headersPath, path.join(distDir, "_headers"));
+  }
 } catch {
   // Graceful fallback to avoid build interruptions
 }

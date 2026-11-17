@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Trash2, Truck, AlertCircle } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
@@ -23,6 +23,7 @@ export default function Modals() {
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   const isDomestic = shippingDestination.countryCode === 'JO';
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const cartSubtotal = cart.reduce(
     (sum, item) => sum + ((currency === 'USD' ? (item.priceUSD || 50) : item.price) * (item.quantity || 1)), 
@@ -190,7 +191,16 @@ export default function Modals() {
     phone: shippingDestination.phone,
   });
 
-  const handleCheckoutSubmit = () => {
+  const handleCheckoutSubmit = (e?: React.MouseEvent) => {
+    if (isSubmitting) {
+      if (e) e.preventDefault();
+      return;
+    }
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 3000);
+
     const orderId = generateOrderId();
     const countryOrGov = isDomestic
       ? (isRtl ? currentGov.nameAr : currentGov.nameEn)
@@ -421,6 +431,7 @@ export default function Modals() {
                         </label>
                         <input
                           type="text"
+                          maxLength={80}
                           value={shippingDestination.customArea || ''}
                           onChange={(e) => setShippingDestination({ customArea: e.target.value, domesticCustomArea: e.target.value })}
                           placeholder={isRtl ? 'أدخل اسم منطقتك (مثال: طبربور، دير غبار)' : 'Enter area name (e.g. Tabarbour, Deir Ghbar)'}
@@ -443,6 +454,7 @@ export default function Modals() {
                       </label>
                       <input
                         type="text"
+                        maxLength={200}
                         value={shippingDestination.addressLine1 || ''}
                         onChange={(e) => setShippingDestination({ addressLine1: e.target.value, domesticAddressLine1: e.target.value })}
                         placeholder={isRtl ? 'مثال: شارع الرينبو، بناية 14' : 'e.g. Rainbow Street, Bldg 14'}
@@ -517,6 +529,7 @@ export default function Modals() {
                       </label>
                       <input
                         type="text"
+                        maxLength={200}
                         value={shippingDestination.addressLine1 || ''}
                         onChange={(e) => setShippingDestination({ addressLine1: e.target.value, internationalAddressLine1: e.target.value })}
                         placeholder={isRtl ? 'الشارع / رقم المبنى' : 'Street / Building Number'}
@@ -535,6 +548,7 @@ export default function Modals() {
                     </label>
                     <input
                       type="text"
+                      maxLength={80}
                       value={shippingDestination.customerName || ''}
                       onChange={(e) => setShippingDestination({ customerName: e.target.value })}
                       placeholder={isRtl ? 'الاسم الكامل' : 'Full Name'}
@@ -549,6 +563,7 @@ export default function Modals() {
                     </label>
                     <input
                       type="tel"
+                      maxLength={25}
                       value={shippingDestination.phone || ''}
                       onChange={(e) => setShippingDestination({ phone: e.target.value })}
                       placeholder={isDomestic ? '07XXXXXXXX' : '+XXXXXXXXXXXX'}
@@ -694,11 +709,13 @@ export default function Modals() {
                   </div>
                 ) : (
                   <a 
-                    href={whatsappUrl}
+                    href={isSubmitting ? undefined : whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
                     onClick={handleCheckoutSubmit}
-                    className="w-full bg-white text-black hover:bg-neutral-200 py-4 font-sans text-sm font-bold transition-colors rounded-xl flex items-center justify-center gap-2 shadow-xl active:scale-95"
+                    className={`w-full bg-white text-black hover:bg-neutral-200 py-4 font-sans text-sm font-bold transition-all rounded-xl flex items-center justify-center gap-2 shadow-xl active:scale-95 ${
+                      isSubmitting ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''
+                    }`}
                   >
                     <span>{strings.sendOrderWhatsApp}</span>
                   </a>

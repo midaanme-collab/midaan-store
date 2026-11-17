@@ -12,7 +12,7 @@ import SizeChartModal, { SIZE_MEASUREMENTS } from '../src/components/SizeChartMo
 import ProductDetailView from '../src/components/ProductDetailView';
 import { SHARED_PRODUCTS } from '../src/constants/products';
 import { buildWhatsAppOrderMessage } from '../src/utils/whatsapp';
-import { sendOrderToCrm, CRM_WEBHOOK_URL } from '../src/utils/crm';
+import { sendOrderToCrm, sanitizeCrmField, CRM_WEBHOOK_URL } from '../src/utils/crm';
 import fs from 'fs';
 import path from 'path';
 
@@ -1000,6 +1000,85 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(facebookLink).toHaveAttribute('href', 'https://www.facebook.com/midaanme/');
       expect(facebookLink).toHaveAttribute('target', '_blank');
       expect(facebookLink).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+  });
+
+  describe('15. High-Security Hardening: Security Headers, CRM Input Sanitization & Checkout Debounce', () => {
+    it('verifies sanitizeCrmField strips formula injection prefixes, control characters, and enforces length limits', () => {
+      // Formula injection prefixes
+      expect(sanitizeCrmField('=SUM(A1:A10)', 80)).toBe('SUM(A1:A10)');
+      expect(sanitizeCrmField('+cmd|\' /C calc\'!A0', 80)).toBe("cmd|' /C calc'!A0");
+      expect(sanitizeCrmField('-10+20', 80)).toBe('10+20');
+      expect(sanitizeCrmField('@dangerousFormula', 80)).toBe('dangerousFormula');
+      expect(sanitizeCrmField('  \t\r =attack', 80)).toBe('attack');
+
+      // Control characters
+      expect(sanitizeCrmField('Normal\x00Text\x1FHere', 80)).toBe('NormalTextHere');
+
+      // Max length enforcement
+      const longName = 'A'.repeat(120);
+      expect(sanitizeCrmField(longName, 80)).toHaveLength(80);
+
+      const longPhone = '0'.repeat(50);
+      expect(sanitizeCrmField(longPhone, 25)).toHaveLength(25);
+
+      const longAddress = 'B'.repeat(300);
+      expect(sanitizeCrmField(longAddress, 200)).toHaveLength(200);
+
+      const longNotes = 'C'.repeat(400);
+      expect(sanitizeCrmField(longNotes, 250)).toHaveLength(250);
+    });
+
+    it('verifies sendOrderToCrm sanitizes payload fields before webhook dispatch', () => {
+      const mockFetch = jest.fn().mockImplementation(() => Promise.resolve(new Response(null, { status: 200 })));
+      window.fetch = mockFetch;
+
+      const payloadWithInjection = {
+        orderId: 'ORD-TEST-123',
+        customerName: ' =Dr. Ahmad ',
+        phone: ' +962770123456 ',
+        deliveryScope: 'Domestic',
+        countryOrGov: 'Amman',
+        cityOrArea: ' @Jabal Amman ',
+        address: ' -Rainbow Street, Bldg 14 ',
+        itemsSummary: 'Tee (L) x1',
+        productIds: 'drop-helmet-white',
+        sizes: 'L',
+        totalQty: 1,
+        currency: 'JOD' as const,
+        subtotal: 35,
+        deliveryFee: 'Confirmed',
+        grandTotal: 35,
+        paymentMethod: 'CliQ',
+        audienceTag: 'Drop01_Lead',
+        notes: ' =Special Instructions ',
+      };
+
+      sendOrderToCrm(payloadWithInjection);
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(callBody.customerName).toBe('Dr. Ahmad');
+      expect(callBody.phone).toBe('962770123456');
+      expect(callBody.cityOrArea).toBe('Jabal Amman');
+      expect(callBody.address).toBe('Rainbow Street, Bldg 14');
+      expect(callBody.notes).toBe('Special Instructions');
+    });
+
+    it('verifies public/_headers contains production security headers for /*', () => {
+      const headersPath = path.join(process.cwd(), 'public', '_headers');
+      expect(fs.existsSync(headersPath)).toBe(true);
+      const content = fs.readFileSync(headersPath, 'utf8');
+
+      expect(content).toContain('X-Frame-Options: DENY');
+      expect(content).toContain('X-Content-Type-Options: nosniff');
+      expect(content).toContain('Referrer-Policy: strict-origin-when-cross-origin');
+      expect(content).toContain('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()');
+      expect(content).toContain('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+      expect(content).toContain("Content-Security-Policy: default-src 'self'");
+      expect(content).toContain("frame-ancestors 'none'");
+      expect(content).toContain("form-action 'self' https://wa.me");
+      expect(content).toContain("connect-src 'self' https://script.google.com https://script.googleusercontent.com");
     });
   });
 });

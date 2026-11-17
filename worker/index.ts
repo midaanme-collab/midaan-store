@@ -86,6 +86,15 @@ export function getCorsHeaders(origin: string): Record<string, string> {
   };
 }
 
+export const SECURITY_HEADERS: Record<string, string> = {
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me;",
+};
+
 // In-memory sliding window rate limiter (max 30 requests per minute per IP per isolate)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
@@ -252,12 +261,23 @@ const worker = {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           'Content-Type': 'application/json',
+          ...SECURITY_HEADERS,
         },
       });
     }
 
-    // 3. Static Assets Forwarding
-    return env.ASSETS.fetch(request);
+    // 3. Static Assets Forwarding with Security Headers
+    const assetRes = await env.ASSETS.fetch(request);
+    const assetHeaders: Record<string, string> = { ...SECURITY_HEADERS };
+    assetRes.headers.forEach((value, key) => {
+      assetHeaders[key] = value;
+    });
+    Object.assign(assetHeaders, SECURITY_HEADERS);
+    return new Response(assetRes.body, {
+      status: assetRes.status,
+      statusText: assetRes.statusText,
+      headers: assetHeaders,
+    });
   },
 };
 
