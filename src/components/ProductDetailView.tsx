@@ -8,6 +8,7 @@ import { content } from '@/locales/dictionary';
 import { formatProductPrice, normalizeSize } from '@/constants/products';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
+import { trackViewContent, trackAddToCart } from '@/utils/metaPixel';
 import { 
   ShoppingBag, 
   Check, 
@@ -79,6 +80,17 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
     }
   ];
 
+  // Track ViewContent on mount or product/currency change
+  React.useEffect(() => {
+    const price = currency === 'JOD' ? product.basePriceJOD : (product.basePriceUSD || 50);
+    trackViewContent({
+      id: product.id,
+      title: isAr ? product.titleAr : product.titleEn,
+      price,
+      currency,
+    });
+  }, [product.id, currency, isAr, product.titleAr, product.titleEn, product.basePriceJOD, product.basePriceUSD]);
+
   const selectedVariant = selectedSize ? product.variants.find((v) => normalizeSize(v.size) === normalizeSize(selectedSize)) : null;
   const isVariantInStock = selectedVariant ? selectedVariant.inStock && selectedVariant.stockCount > 0 : false;
 
@@ -88,6 +100,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
       return;
     }
     if (!isVariantInStock) return;
+
+    const unitPrice = currency === 'JOD' ? product.basePriceJOD : (product.basePriceUSD || 50);
 
     addToCart({
       id: `${product.id}-${selectedSize}`,
@@ -104,6 +118,14 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
       productTitle: isAr ? product.titleAr : product.titleEn,
       productTitleAr: product.titleAr,
       productTitleEn: product.titleEn,
+      quantity: 1,
+    });
+
+    trackAddToCart({
+      id: product.id,
+      title: isAr ? product.titleAr : product.titleEn,
+      price: unitPrice,
+      currency,
       quantity: 1,
     });
 

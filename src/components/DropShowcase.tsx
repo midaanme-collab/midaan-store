@@ -9,6 +9,7 @@ import { useStore } from "@/store";
 import Interactive3DTilt from "./Interactive3DTilt";
 import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from "@/constants/products";
 import { content } from "@/locales/dictionary";
+import { trackAddToCart } from "@/utils/metaPixel";
 
 interface DropShowcaseProps {
   lang?: Language;
@@ -33,6 +34,8 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
 
     const normSize = normalizeSize(rawSize);
 
+    const unitPrice = currency === 'USD' ? (prod.basePriceUSD || 50.0) : prod.basePriceJOD;
+
     addToCart({
       id: `${prod.id}-${normSize}`,
       productId: prod.id,
@@ -47,6 +50,14 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
       productTitle: isRtl ? prod.titleAr : prod.titleEn,
       productTitleAr: prod.titleAr,
       productTitleEn: prod.titleEn,
+    });
+
+    trackAddToCart({
+      id: prod.id,
+      title: isRtl ? prod.titleAr : prod.titleEn,
+      price: unitPrice,
+      currency,
+      quantity: 1,
     });
 
     setAddedItem(prod.id);

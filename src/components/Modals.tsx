@@ -12,6 +12,7 @@ import {
 } from '@/constants/shipping';
 import { generateWhatsAppOrderUrl } from '@/utils/whatsapp';
 import { sendOrderToCrm, generateOrderId } from '@/utils/crm';
+import { trackInitiateCheckout, trackLead } from '@/utils/metaPixel';
 
 export default function Modals() {
   const { 
@@ -29,6 +30,20 @@ export default function Modals() {
     (sum, item) => sum + ((currency === 'USD' ? (item.priceUSD || 50) : item.price) * (item.quantity || 1)), 
     0
   );
+
+  // Track Meta Pixel InitiateCheckout when cart drawer opens with items
+  React.useEffect(() => {
+    if (isCartOpen && cart.length > 0) {
+      const totalQty = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const contentIds = cart.map((item) => item.productId);
+      trackInitiateCheckout({
+        num_items: totalQty,
+        value: cartSubtotal,
+        currency,
+        content_ids: contentIds,
+      });
+    }
+  }, [isCartOpen, cart, cartSubtotal, currency]);
 
   /**
    * Currency formatter matching the design system:
@@ -235,6 +250,13 @@ export default function Modals() {
       paymentMethod: paymentMethodText,
       audienceTag: 'Drop01_Lead',
       notes: '',
+    });
+
+    // Track Meta Pixel Lead event on WhatsApp checkout submission
+    trackLead({
+      order_id: orderId,
+      value: cartSubtotal,
+      currency,
     });
   };
 

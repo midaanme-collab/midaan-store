@@ -1078,7 +1078,106 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(content).toContain("Content-Security-Policy: default-src 'self'");
       expect(content).toContain("frame-ancestors 'none'");
       expect(content).toContain("form-action 'self' https://wa.me");
-      expect(content).toContain("connect-src 'self' https://script.google.com https://script.googleusercontent.com");
+      expect(content).toContain("https://script.google.com");
+      expect(content).toContain("https://connect.facebook.net");
+      expect(content).toContain("https://www.facebook.com");
+    });
+  });
+
+  describe('8. Meta Pixel (476490290557651) Integration & Event Tracking', () => {
+    let mockFbq: jest.Mock;
+
+    beforeEach(() => {
+      mockFbq = jest.fn();
+      window.fbq = mockFbq;
+    });
+
+    afterEach(() => {
+      delete window.fbq;
+    });
+
+    it('verifies Meta Pixel ID 476490290557651 in root layout and metaPixel helper', () => {
+      const layoutPath = path.join(process.cwd(), 'src', 'app', 'layout.tsx');
+      const layoutContent = fs.readFileSync(layoutPath, 'utf8');
+      expect(layoutContent).toContain('476490290557651');
+      expect(layoutContent).toContain('https://connect.facebook.net/en_US/fbevents.js');
+      expect(layoutContent).toContain('https://www.facebook.com/tr?id=476490290557651&ev=PageView&noscript=1');
+      expect(layoutContent).toContain('<MetaPixelNavigation />');
+    });
+
+    it('tracks ViewContent, AddToCart, InitiateCheckout, and Lead with standard payloads', async () => {
+      const { trackViewContent, trackAddToCart, trackInitiateCheckout, trackLead } = await import('../src/utils/metaPixel');
+
+      // 1. ViewContent
+      trackViewContent({
+        id: 'palestine-helmet-tshirt',
+        title: 'خوذة الدراجة النارية والكوفية',
+        price: 35,
+        currency: 'JOD',
+      });
+      expect(mockFbq).toHaveBeenCalledWith('track', 'ViewContent', {
+        content_ids: ['palestine-helmet-tshirt'],
+        content_name: 'خوذة الدراجة النارية والكوفية',
+        content_type: 'product',
+        value: 35,
+        currency: 'JOD',
+      });
+
+      // 2. AddToCart
+      trackAddToCart({
+        id: 'palestine-vintage-poster-tshirt',
+        title: 'بوستر فلسطين الأرشيفي',
+        price: 50,
+        currency: 'USD',
+        quantity: 2,
+      });
+      expect(mockFbq).toHaveBeenCalledWith('track', 'AddToCart', {
+        content_ids: ['palestine-vintage-poster-tshirt'],
+        content_name: 'بوستر فلسطين الأرشيفي',
+        content_type: 'product',
+        value: 100,
+        currency: 'USD',
+      });
+
+      // 3. InitiateCheckout
+      trackInitiateCheckout({
+        num_items: 3,
+        value: 105,
+        currency: 'JOD',
+        content_ids: ['palestine-helmet-tshirt', 'palestine-vintage-poster-tshirt'],
+      });
+      expect(mockFbq).toHaveBeenCalledWith('track', 'InitiateCheckout', {
+        num_items: 3,
+        value: 105,
+        currency: 'JOD',
+        content_ids: ['palestine-helmet-tshirt', 'palestine-vintage-poster-tshirt'],
+        content_type: 'product',
+      });
+
+      // 4. Lead (WhatsApp order submission)
+      trackLead({
+        order_id: 'MID-20261117-9999',
+        value: 105,
+        currency: 'JOD',
+      });
+      expect(mockFbq).toHaveBeenCalledWith('track', 'Lead', {
+        order_id: 'MID-20261117-9999',
+        value: 105,
+        currency: 'JOD',
+        content_category: 'Order_Inquiry',
+      });
+    });
+
+    it('fails silently without throwing when fbq is undefined (ad-blocker safe)', async () => {
+      delete window.fbq;
+      const { trackViewContent, trackAddToCart, trackInitiateCheckout, trackLead } = await import('../src/utils/metaPixel');
+
+      expect(() => {
+        trackViewContent({ id: 'test', title: 'Test', price: 35, currency: 'JOD' });
+        trackAddToCart({ id: 'test', title: 'Test', price: 35, currency: 'JOD' });
+        trackInitiateCheckout({ num_items: 1, value: 35, currency: 'JOD' });
+        trackLead({ order_id: 'test', value: 35, currency: 'JOD' });
+      }).not.toThrow();
     });
   });
 });
