@@ -8,7 +8,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://midaan-store.midaanme.workers.dev"),
+  metadataBase: new URL("https://midaan.net"),
   title: "Midaan Collective | ميدان — مساحة للإبداع والتعبير والمناصرة",
   description: "An independent cultural and intellectual publication and streetwear initiative exploring identity, social transformations, and civic expression. إصدار فكري ثقافي ومبادرة أزياء مستقلة تبحث في قضايا الهوية والتعبير المدني والمناصرة.",
   manifest: "/manifest.json",
@@ -17,12 +17,12 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   alternates: {
-    canonical: "https://midaan-store.midaanme.workers.dev",
+    canonical: "https://midaan.net",
   },
   openGraph: {
     title: "Midaan Collective | ميدان — مساحة للإبداع والتعبير والمناصرة",
     description: "Wearable advocacy and independent publishing from Amman. مساحة للإبداع والتعبير والمناصرة • أزياء تعبيرية وإصدارات فكرية مستقلة.",
-    url: "https://midaan-store.midaanme.workers.dev",
+    url: "https://midaan.net",
     siteName: "Midaan Collective | ميدان",
     locale: "ar",
     type: "website",
@@ -49,8 +49,8 @@ const jsonLdData = [
     "@type": "Organization",
     "name": "Midaan Collective",
     "alternateName": "ميدان",
-    "url": "https://midaan-store.midaanme.workers.dev",
-    "logo": "https://midaan-store.midaanme.workers.dev/logo.png",
+    "url": "https://midaan.net",
+    "logo": "https://midaan.net/logo.png",
     "description": "An independent cultural and intellectual publication and streetwear initiative exploring identity, social transformations, and civic expression.",
     "sameAs": [
       "https://www.instagram.com/midaanme/",
@@ -63,7 +63,7 @@ const jsonLdData = [
     "@type": "Product",
     "name": "تيشيرت خوذة الكوفية — أبيض | Keffiyeh Helmet T-Shirt — White",
     "image": [
-      "https://midaan-store.midaanme.workers.dev/helmet-back-white.jpg"
+      "https://midaan.net/helmet-back-white.jpg"
     ],
     "description": "صنع في إندونيسيا • طباعة مباشرة على النسيج بتقنية DTG • قصة صندوقية واسعة Relaxed Boxy Fit. Preshrunk 100% Cotton.",
     "sku": "drop-helmet-white",
@@ -77,14 +77,14 @@ const jsonLdData = [
         "priceCurrency": "JOD",
         "price": "35",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan-store.midaanme.workers.dev/products/drop-helmet-white"
+        "url": "https://midaan.net/products/drop-helmet-white"
       },
       {
         "@type": "Offer",
         "priceCurrency": "USD",
         "price": "50",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan-store.midaanme.workers.dev/products/drop-helmet-white"
+        "url": "https://midaan.net/products/drop-helmet-white"
       }
     ]
   },
@@ -93,7 +93,7 @@ const jsonLdData = [
     "@type": "Product",
     "name": "تيشيرت بوستر فلسطين — أبيض | Palestine Poster T-Shirt — White",
     "image": [
-      "https://midaan-store.midaanme.workers.dev/palestine-back-white.jpg"
+      "https://midaan.net/palestine-back-white.jpg"
     ],
     "description": "صنع في إندونيسيا • طباعة مباشرة على النسيج بتقنية DTG • قصة صندوقية واسعة Relaxed Boxy Fit. Preshrunk 100% Cotton.",
     "sku": "drop-poster-white",
@@ -107,14 +107,14 @@ const jsonLdData = [
         "priceCurrency": "JOD",
         "price": "35",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan-store.midaanme.workers.dev/products/drop-poster-white"
+        "url": "https://midaan.net/products/drop-poster-white"
       },
       {
         "@type": "Offer",
         "priceCurrency": "USD",
         "price": "50",
         "availability": "https://schema.org/InStock",
-        "url": "https://midaan-store.midaanme.workers.dev/products/drop-poster-white"
+        "url": "https://midaan.net/products/drop-poster-white"
       }
     ]
   }

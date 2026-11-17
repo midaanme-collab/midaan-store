@@ -40,6 +40,8 @@ export interface Env extends AramexEnv {
  * worker subdomains. Previews are hosted exclusively on verified Pages domains.
  */
 export const ALLOWED_ORIGIN_PATTERNS: (string | RegExp)[] = [
+  'https://midaan.net',
+  'https://www.midaan.net',
   'https://midaan.store',
   'https://www.midaan.store',
   'https://midaan-store.pages.dev',

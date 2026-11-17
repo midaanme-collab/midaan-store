@@ -932,7 +932,7 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(fs.existsSync(robotsPath)).toBe(true);
       const content = fs.readFileSync(robotsPath, 'utf8');
       expect(content).toContain('User-agent: *');
-      expect(content).toContain('Sitemap: https://midaan-store.midaanme.workers.dev/sitemap.xml');
+      expect(content).toContain('Sitemap: https://midaan.net/sitemap.xml');
     });
 
     it('verifies sitemap.xml contains product paths and core pages', () => {
@@ -957,6 +957,9 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(content).toContain('50');
       expect(content).toContain('https://www.instagram.com/midaanme/');
       expect(content).toContain('https://www.facebook.com/midaanme/');
+      expect(content).toContain('metadataBase: new URL("https://midaan.net")');
+      expect(content).toContain('canonical: "https://midaan.net"');
+      expect(content).toContain('url: "https://midaan.net"');
     });
 
     it('verifies official Instagram and Facebook social media links in PageLayout footer', () => {

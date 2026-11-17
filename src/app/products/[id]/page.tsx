@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const title = `${product.titleAr} / ${product.titleEn} | ميدان`;
   const desc = `${product.descriptionAr} — إصدار محدود من ميدان وصوت وصورة.`;
-  const canonicalUrl = `https://midaan-store.midaanme.workers.dev/products/${product.id}`;
+  const canonicalUrl = `https://midaan.net/products/${product.id}`;
   const imgUrl = product.images[0] || '/helmet-back-white.jpg';
 
   return {

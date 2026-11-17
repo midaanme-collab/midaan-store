@@ -19,6 +19,8 @@ const mockEnv: Env = {
 
 describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
   const allowedTestCases = [
+    'https://midaan.net',
+    'https://www.midaan.net',
     'https://midaan.store',
     'https://www.midaan.store',
     'https://midaan-store.pages.dev',

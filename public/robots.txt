@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://midaan-store.midaanme.workers.dev/sitemap.xml
+Sitemap: https://midaan.net/sitemap.xml

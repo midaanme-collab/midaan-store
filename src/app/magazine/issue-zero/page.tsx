@@ -30,7 +30,7 @@ export default function IssueZeroReader() {
               "name": "Midaan Collective",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://midaan-store.midaanme.workers.dev/logo.png"
+                "url": "https://midaan.net/logo.png"
               }
             }
           })

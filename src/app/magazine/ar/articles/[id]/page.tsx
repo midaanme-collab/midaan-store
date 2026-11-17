@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const article = ARTICLES.find((a) => a.id === id);
   if (!article) return {};
 
-  const canonicalUrl = `https://midaan-store.midaanme.workers.dev/magazine/ar/articles/${article.id}`;
-  const enUrl = `https://midaan-store.midaanme.workers.dev/magazine/en/articles/${article.id}`;
+  const canonicalUrl = `https://midaan.net/magazine/ar/articles/${article.id}`;
+  const enUrl = `https://midaan.net/magazine/en/articles/${article.id}`;
 
   return {
     title: `${article.titleAr} | مجلة ميدان`,
