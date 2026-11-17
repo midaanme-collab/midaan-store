@@ -59,25 +59,13 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
   return (
     <section id="drops" dir={isRtl ? "rtl" : "ltr"} className="w-full bg-[#050505] py-20 px-4 md:px-8 font-sans border-t border-[#1F1F1F] scroll-mt-24">
       {/* Section Header */}
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between border-b border-[#262626] pb-8 mb-16 gap-6">
-        <div>
-          <div className="inline-block bg-[#D80032]/10 border border-[#D80032]/30 text-[#D80032] px-3.5 py-1 rounded-full text-xs font-bold uppercase mb-3">
-            <span>{strings.products.label}</span>
-          </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-normal font-sans leading-tight">
-            {isRtl ? 'المتجر' : 'Store'}
-          </h2>
-          <p className="text-xl sm:text-2xl font-bold text-neutral-300 mt-2 font-sans">
-            {strings.products.heading}
-          </p>
+      <div className="max-w-5xl mx-auto border-b border-[#262626] pb-8 mb-16">
+        <div className="inline-block bg-[#D80032]/10 border border-[#D80032]/30 text-[#D80032] px-3.5 py-1 rounded-full text-xs font-bold uppercase mb-3">
+          <span>{strings.products.label}</span>
         </div>
-        
-        <div className="text-sm text-neutral-300 font-medium">
-          <span className="text-neutral-400">{strings.products.fixedPriceLabel}:</span>{" "}
-          <span className="text-white font-bold text-xl ml-1" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-            {displayPrice}
-          </span>
-        </div>
+        <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-normal font-sans leading-tight">
+          {isRtl ? 'المتجر' : 'Store'}
+        </h2>
       </div>
 
       {/* Two Approved Products Grid with Subtle 3D Tilt */}

@@ -655,24 +655,44 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(screen.getByText('اقرأ المجلة')).toBeInTheDocument();
     });
 
-    it('verifies CampaignVideoSection keeps title "ميدان × صوت وصورة" and removes red badge, archive, and desc', async () => {
+    it('verifies CampaignVideoSection displays logos, removes shop button, and provides sound toggle', async () => {
       await act(async () => {
         render(<CampaignVideoSection />);
       });
 
-      // Title is present
+      // Accessible title is present for screen readers
       expect(screen.getByRole('heading', { level: 2, name: 'ميدان × صوت وصورة' })).toBeInTheDocument();
-      // Removed elements
+      // Removed elements: archive, street tale, collab description, and CTA button
       expect(screen.queryByText(/أرشيف/i)).toBeNull();
       expect(screen.queryByText(/حكاية من الشارع/i)).toBeNull();
       expect(screen.queryByText(/تعاون يجمع ميدان وصوت وصورة في إصدارين/i)).toBeNull();
+      expect(screen.queryByRole('link', { name: /تسوّق المجموعة|Shop the Collection/i })).toBeNull();
+
+      // Sound toggle button is present
+      const soundBtn = screen.getByRole('button', { name: /تشغيل الصوت/i });
+      expect(soundBtn).toBeInTheDocument();
     });
 
-    it('verifies DropShowcase section has "المتجر" heading with "مجموعة ميدان × صوت وصورة" under it', () => {
+    it('verifies DropShowcase section header shows ONLY "المتجر" and "إصدار محدود" badge, removing subtitle and fixed price text', () => {
       render(<DropShowcase lang="ar" />);
 
+      // Only "المتجر" heading and "إصدار محدود" badge in header
       expect(screen.getByRole('heading', { level: 2, name: 'المتجر' })).toBeInTheDocument();
-      expect(screen.getByText('مجموعة ميدان × صوت وصورة')).toBeInTheDocument();
+      expect(screen.getAllByText('إصدار محدود').length).toBeGreaterThan(0);
+
+      // Removed subtitle and fixed price text from section header
+      expect(screen.queryByText('مجموعة ميدان × صوت وصورة')).toBeNull();
+      expect(screen.queryByText(/سعر القطعة ثابت/i)).toBeNull();
+    });
+
+    it('verifies upcoming 3rd product template (drop-palestine-hybrid) is prepared with approved specs', () => {
+      const { UPCOMING_PALESTINE_HYBRID_PRODUCT } = require('../src/constants/products');
+      expect(UPCOMING_PALESTINE_HYBRID_PRODUCT).toBeDefined();
+      expect(UPCOMING_PALESTINE_HYBRID_PRODUCT.id).toBe('drop-palestine-hybrid');
+      expect(UPCOMING_PALESTINE_HYBRID_PRODUCT.titleEn).toBe('Palestine Tee');
+      expect(UPCOMING_PALESTINE_HYBRID_PRODUCT.titleAr).toBe('تيشيرت فلسطين');
+      expect(UPCOMING_PALESTINE_HYBRID_PRODUCT.descriptionEn).toContain('Hybrid Silk Screen & DTG Print in the same design');
+      expect(UPCOMING_PALESTINE_HYBRID_PRODUCT.descriptionAr).toContain('طباعة مدمجة تجمع بين الشاشة الحريرية (Silk Screen) والطباعة الرقمية المباشرة (DTG) في نفس التصميم');
     });
   });
 

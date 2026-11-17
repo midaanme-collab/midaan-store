@@ -98,7 +98,60 @@ export const SHARED_PRODUCTS: Product[] = [
     orderToPrintTimeHours: 24,
     isPrePrinted: true,
   },
+  /*
+   * Upcoming 3rd Product Preparation (Inactive / Pending final photos & physical stock confirmation):
+   * Ready to enable in SHARED_PRODUCTS once photos and sizes are supplied.
+  {
+    id: 'drop-palestine-hybrid',
+    slug: 'palestine-tee',
+    titleEn: 'Palestine Tee',
+    titleAr: 'تيشيرت فلسطين',
+    category: 'drops',
+    descriptionEn: 'Made in Indonesia • Hybrid Silk Screen & DTG Print in the same design',
+    descriptionAr: 'صنع في إندونيسيا • طباعة مدمجة تجمع بين الشاشة الحريرية (Silk Screen) والطباعة الرقمية المباشرة (DTG) في نفس التصميم',
+    basePriceJOD: 35.0,
+    basePriceUSD: 50.0,
+    printSpec: 'HYBRID_SILK_SCREEN_AND_DTG',
+    images: ['/palestine-back-white.jpg'],
+    variants: [
+      { id: 'v-psth-s', sku: 'PSTH-W-S', size: 'S', inStock: false, stockCount: 0 },
+      { id: 'v-psth-m', sku: 'PSTH-W-M', size: 'M', inStock: false, stockCount: 0 },
+      { id: 'v-psth-l', sku: 'PSTH-W-L', size: 'L', inStock: false, stockCount: 0 },
+      { id: 'v-psth-xl', sku: 'PSTH-W-XL', size: 'XL', inStock: false, stockCount: 0 },
+      { id: 'v-psth-2xl', sku: 'PSTH-W-2XL', size: '2XL', inStock: false, stockCount: 0 },
+    ],
+    orderToPrintTimeHours: 24,
+    isPrePrinted: true,
+  },
+  */
 ];
+
+/**
+ * Pre-defined schema object for the upcoming 3rd product ('drop-palestine-hybrid').
+ * Ready to be imported and activated when final photos and size stock are provided.
+ */
+export const UPCOMING_PALESTINE_HYBRID_PRODUCT: Product = {
+  id: 'drop-palestine-hybrid',
+  slug: 'palestine-tee',
+  titleEn: 'Palestine Tee',
+  titleAr: 'تيشيرت فلسطين',
+  category: 'drops',
+  descriptionEn: 'Made in Indonesia • Hybrid Silk Screen & DTG Print in the same design',
+  descriptionAr: 'صنع في إندونيسيا • طباعة مدمجة تجمع بين الشاشة الحريرية (Silk Screen) والطباعة الرقمية المباشرة (DTG) في نفس التصميم',
+  basePriceJOD: 35.0,
+  basePriceUSD: 50.0,
+  printSpec: 'HYBRID_SILK_SCREEN_AND_DTG',
+  images: ['/palestine-back-white.jpg'],
+  variants: [
+    { id: 'v-psth-s', sku: 'PSTH-W-S', size: 'S', inStock: false, stockCount: 0 },
+    { id: 'v-psth-m', sku: 'PSTH-W-M', size: 'M', inStock: false, stockCount: 0 },
+    { id: 'v-psth-l', sku: 'PSTH-W-L', size: 'L', inStock: false, stockCount: 0 },
+    { id: 'v-psth-xl', sku: 'PSTH-W-XL', size: 'XL', inStock: false, stockCount: 0 },
+    { id: 'v-psth-2xl', sku: 'PSTH-W-2XL', size: '2XL', inStock: false, stockCount: 0 },
+  ],
+  orderToPrintTimeHours: 24,
+  isPrePrinted: true,
+};
 
 const HELMET_ALIASES = [
   'drop-helmet-white',

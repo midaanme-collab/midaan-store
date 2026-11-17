@@ -2,22 +2,37 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Play, Pause, ShoppingBag } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 
 export default function CampaignVideoSection() {
-  const { lang, currency } = useStore();
+  const { lang } = useStore();
   const strings = content[lang as keyof typeof content];
   const isRtl = lang === 'ar';
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
-  const togglePlay = () => {
+  const toggleSound = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (!videoRef.current) return;
-    // Strictly preserve muted attribute - no code path unmutes the video
-    videoRef.current.muted = true;
+    const nextMuted = !videoRef.current.muted;
+    videoRef.current.muted = nextMuted;
+    videoRef.current.volume = 1.0;
+    setIsMuted(nextMuted);
+    if (videoRef.current.paused) {
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => setIsPlaying(true)).catch(() => {});
+      }
+    }
+  };
+
+  const togglePlay = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (!videoRef.current) return;
     if (videoRef.current.paused) {
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
@@ -34,6 +49,8 @@ export default function CampaignVideoSection() {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = true;
+      videoRef.current.volume = 1.0;
+      setIsMuted(true);
       // Respect prefers-reduced-motion
       const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
@@ -57,18 +74,18 @@ export default function CampaignVideoSection() {
       <div className="max-w-5xl mx-auto flex flex-col items-center text-center relative z-10">
         
         {/* Dual Collaboration Logos: Midaan x Sotusura */}
-        <div className="flex items-center justify-center gap-6 md:gap-12 mb-8">
+        <div className="flex items-center justify-center gap-6 sm:gap-10 md:gap-14 mb-10">
           <div className="flex flex-col items-center">
             <Image 
               src="/logo.png" 
               alt="Midaan" 
-              width={160}
-              height={80}
-              className="h-14 md:h-20 w-auto object-contain brightness-0 invert drop-shadow-[0_4px_16px_rgba(255,255,255,0.15)]" 
+              width={200}
+              height={100}
+              className="h-16 sm:h-20 md:h-24 w-auto object-contain brightness-0 invert drop-shadow-[0_6px_24px_rgba(255,255,255,0.2)] transition-transform" 
             />
           </div>
 
-          <div className="text-2xl md:text-4xl font-light text-neutral-600 select-none">
+          <div className="text-3xl sm:text-4xl md:text-5xl font-light text-neutral-600 select-none">
             ×
           </div>
 
@@ -76,15 +93,15 @@ export default function CampaignVideoSection() {
             <Image 
               src="/sotusura.png" 
               alt="Sotusura" 
-              width={160}
-              height={80}
-              className="h-14 md:h-20 w-auto object-contain rounded-xl shadow-xl" 
+              width={200}
+              height={100}
+              className="h-16 sm:h-20 md:h-24 w-auto object-contain rounded-2xl shadow-2xl transition-transform" 
             />
           </div>
         </div>
 
-        {/* Campaign Title */}
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-normal text-white mb-10 font-sans leading-tight text-balance">
+        {/* Accessible Heading for Screen Readers */}
+        <h2 className="sr-only">
           {isRtl ? 'ميدان × صوت وصورة' : 'Midaan × Sotusura'}
         </h2>
 
@@ -101,7 +118,7 @@ export default function CampaignVideoSection() {
               loop
               muted
               playsInline
-              onClick={togglePlay}
+              onClick={toggleSound}
               className="w-full h-full object-cover cursor-pointer"
             />
 
@@ -119,7 +136,7 @@ export default function CampaignVideoSection() {
               </div>
             </div>
 
-            {/* Play/Pause center overlay when paused */}
+            {/* Play overlay when paused */}
             {!isPlaying && (
               <button
                 type="button"
@@ -127,46 +144,50 @@ export default function CampaignVideoSection() {
                 className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] cursor-pointer w-full h-full border-none"
                 aria-label={strings.campaign.playBtn}
               >
-                <div className="w-16 h-16 rounded-full bg-white/20 border border-white/30 backdrop-blur-md flex items-center justify-center text-white hover:scale-105 transition-transform">
+                <div className="w-16 h-16 rounded-full bg-white/20 border border-white/30 backdrop-blur-md flex items-center justify-center text-white hover:scale-105 transition-transform shadow-2xl">
                   <Play size={28} className={isRtl ? 'mr-0.5' : 'ml-0.5'} />
                 </div>
               </button>
             )}
 
             {/* Bottom Controls Bar */}
-            <div className="absolute bottom-6 inset-x-6 z-30 flex items-center justify-center">
+            <div className="absolute bottom-5 inset-x-5 z-30 flex items-center justify-between pointer-events-none">
+              {/* Play/Pause Minimal Toggle */}
               <button
                 type="button"
                 onClick={togglePlay}
-                className="w-full py-3.5 px-6 rounded-2xl font-sans text-xs font-bold flex items-center justify-center gap-2.5 bg-black/60 hover:bg-black/80 text-white border border-white/20 backdrop-blur-md shadow-xl transition-all active:scale-95"
+                className="pointer-events-auto p-2.5 rounded-full bg-black/65 hover:bg-black/85 text-white border border-white/15 backdrop-blur-md shadow-xl transition-all active:scale-95"
                 aria-label={isPlaying ? strings.campaign.pauseBtn : strings.campaign.playBtn}
               >
-                {isPlaying ? (
+                {isPlaying ? <Pause size={14} /> : <Play size={14} className={isRtl ? 'mr-0.5' : 'ml-0.5'} />}
+              </button>
+
+              {/* Sleek Prominent Floating Sound Toggle Button */}
+              <button
+                type="button"
+                onClick={toggleSound}
+                className="pointer-events-auto flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 hover:bg-black/90 text-white border border-white/20 backdrop-blur-md shadow-2xl transition-all active:scale-95 group"
+                aria-label={isMuted ? (isRtl ? 'تشغيل الصوت' : 'Unmute video') : (isRtl ? 'كتم الصوت' : 'Mute video')}
+              >
+                {isMuted ? (
                   <>
-                    <Pause size={16} />
-                    <span>{strings.campaign.pauseBtn}</span>
+                    <VolumeX size={16} className="text-[#D80032] group-hover:scale-110 transition-transform" />
+                    <span className="font-sans text-[11px] font-bold">
+                      {isRtl ? 'تشغيل الصوت' : 'Unmute'}
+                    </span>
                   </>
                 ) : (
                   <>
-                    <Play size={16} className={isRtl ? 'mr-0.5' : 'ml-0.5'} />
-                    <span>{strings.campaign.playBtn}</span>
+                    <Volume2 size={16} className="text-emerald-400 group-hover:scale-110 transition-transform" />
+                    <span className="font-sans text-[11px] font-bold">
+                      {isRtl ? 'كتم الصوت' : 'Mute'}
+                    </span>
                   </>
                 )}
               </button>
             </div>
 
           </div>
-        </div>
-
-        {/* CTA to drops */}
-        <div className="mt-10">
-          <a
-            href="#drops"
-            className="inline-flex items-center gap-2 bg-white hover:bg-neutral-200 text-black font-sans text-sm font-bold px-8 py-3.5 rounded-full transition-transform active:scale-95 shadow-xl hover:shadow-white/20"
-          >
-            <ShoppingBag size={16} />
-            <span>{strings.campaign.shopBtn}</span>
-          </a>
         </div>
 
       </div>
