@@ -47,6 +47,62 @@ export function formatProductPrice(currency: 'JOD' | 'USD', lang: 'ar' | 'en'): 
   return '35 JOD';
 }
 
+export interface ProductBadgeInfo {
+  text: string;
+  dotColor: string;
+  badgeType: 'limited_edition' | 'preorder' | 'notify_me' | 'archival';
+}
+
+/**
+ * Returns localized badge label, color, and badge type for products and editions.
+ */
+export function getProductBadge(product: Product, lang: 'ar' | 'en'): ProductBadgeInfo {
+  if (product.badgeAr && lang === 'ar') {
+    return {
+      text: product.badgeAr,
+      dotColor: product.badgeType === 'preorder' ? 'bg-[#D80032]' : product.badgeType === 'notify_me' ? 'bg-amber-400' : 'bg-emerald-400',
+      badgeType: product.badgeType || 'limited_edition',
+    };
+  }
+  if (product.badgeEn && lang === 'en') {
+    return {
+      text: product.badgeEn,
+      dotColor: product.badgeType === 'preorder' ? 'bg-[#D80032]' : product.badgeType === 'notify_me' ? 'bg-amber-400' : 'bg-emerald-400',
+      badgeType: product.badgeType || 'limited_edition',
+    };
+  }
+
+  if (product.releaseStatus === 'preorder' || product.badgeType === 'preorder') {
+    return {
+      text: lang === 'ar' ? 'نسخة مطبوعة — طلب مسبق' : 'PRINT EDITION — PRE-ORDER',
+      dotColor: 'bg-[#D80032]',
+      badgeType: 'preorder',
+    };
+  }
+
+  if (product.releaseStatus === 'notify_me' || product.badgeType === 'notify_me') {
+    return {
+      text: lang === 'ar' ? 'أعلمني عند التوفر' : 'NOTIFY ME',
+      dotColor: 'bg-amber-400',
+      badgeType: 'notify_me',
+    };
+  }
+
+  if (product.releaseStatus === 'archived' || product.badgeType === 'archival') {
+    return {
+      text: lang === 'ar' ? 'أرشيف موثق' : 'ARCHIVAL EDITION',
+      dotColor: 'bg-neutral-400',
+      badgeType: 'archival',
+    };
+  }
+
+  return {
+    text: lang === 'ar' ? 'إصدار محدود' : 'LIMITED EDITION',
+    dotColor: 'bg-emerald-400',
+    badgeType: 'limited_edition',
+  };
+}
+
 /**
  * Centralized shared product catalog.
  * Strict inventory matching pre-printed physical stock:
@@ -75,6 +131,8 @@ export const SHARED_PRODUCTS: Product[] = [
     ],
     orderToPrintTimeHours: 24,
     isPrePrinted: true,
+    releaseStatus: 'available',
+    badgeType: 'limited_edition',
   },
   {
     id: 'drop-poster-white',
@@ -97,6 +155,8 @@ export const SHARED_PRODUCTS: Product[] = [
     ],
     orderToPrintTimeHours: 24,
     isPrePrinted: true,
+    releaseStatus: 'available',
+    badgeType: 'limited_edition',
   },
   /*
    * Upcoming 3rd Product Preparation (Inactive / Pending final photos & physical stock confirmation):
@@ -124,6 +184,62 @@ export const SHARED_PRODUCTS: Product[] = [
     isPrePrinted: true,
   },
   */
+];
+
+/**
+ * Modular Editions Architecture:
+ * Pre-defined configurations for upcoming Print Magazine Editions (طلب مسبق)
+ * and future Drops (Notify Me / Pre-Order).
+ */
+export const UPCOMING_EDITIONS: Product[] = [
+  {
+    id: 'midaan-magazine-issue-one-print',
+    slug: 'issue-one-print-edition',
+    titleEn: "Midaan Magazine — Issue One (Collector's Print Edition)",
+    titleAr: 'مجلة ميدان — العدد الأول (نسخة مطبوعة فاخرة)',
+    category: 'print_editions',
+    descriptionEn: 'Heavyweight uncoated Munken Print White paper • Hand-numbered limited archive run • Features exclusive essays, photojournalism & historical testaments.',
+    descriptionAr: 'ورق قطني فاخر غير لامع (Munken Print White) • ترقيم يدوي للأعداد المحدودة • يتضمن نصوصاً واستقصاءات فكرية وبصرية حصرية لم تنشر رقمياً.',
+    basePriceJOD: 18.0,
+    basePriceUSD: 25.0,
+    printSpec: 'PRINT_OFFSET_MUNKEN_240GSM',
+    images: ['/magazine/issue-zero-cover-thumb.png'],
+    releaseStatus: 'preorder',
+    badgeType: 'preorder',
+    badgeAr: 'نسخة مطبوعة — طلب مسبق',
+    badgeEn: 'PRINT EDITION — PRE-ORDER',
+    variants: [
+      { id: 'v-mag1-std', sku: 'MAG-PRT-01', size: 'L', inStock: true, stockCount: 150 },
+    ],
+    orderToPrintTimeHours: 72,
+    isPrePrinted: false,
+  },
+  {
+    id: 'drop-02-apparel-preview',
+    slug: 'drop-02-apparel',
+    titleEn: 'Drop 02 Apparel — Palestinian Heavyweight Hoodies & Scarves',
+    titleAr: 'المجموعة الثانية — سترات وأوشحة فلسطينية ثقيلة',
+    category: 'drops',
+    descriptionEn: '450 GSM French Terry Cotton • Direct-to-Garment print & hand-finished Palestinian embroidery • Made between Amman & Palestine.',
+    descriptionAr: 'قطن ثقيل ٤٥٠ غرام (French Terry) • طباعة مباشرة وتطريز فلسطيني يدوي متقن • حياكة وإنتاج مستقل بين عمّان وفلسطين.',
+    basePriceJOD: 55.0,
+    basePriceUSD: 75.0,
+    printSpec: 'DTG_AND_EMBROIDERY',
+    images: ['/helmet-back-white.jpg'],
+    releaseStatus: 'notify_me',
+    badgeType: 'notify_me',
+    badgeAr: 'المجموعة القادمة // قريباً',
+    badgeEn: 'NEXT DROP // COMING SOON',
+    variants: [
+      { id: 'v-d2-s', sku: 'D2-S', size: 'S', inStock: false, stockCount: 0 },
+      { id: 'v-d2-m', sku: 'D2-M', size: 'M', inStock: false, stockCount: 0 },
+      { id: 'v-d2-l', sku: 'D2-L', size: 'L', inStock: false, stockCount: 0 },
+      { id: 'v-d2-xl', sku: 'D2-XL', size: 'XL', inStock: false, stockCount: 0 },
+      { id: 'v-d2-2xl', sku: 'D2-2XL', size: '2XL', inStock: false, stockCount: 0 },
+    ],
+    orderToPrintTimeHours: 48,
+    isPrePrinted: false,
+  },
 ];
 
 /**

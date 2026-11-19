@@ -246,3 +246,28 @@ export function trackDownloadPdf(edition: 'ar' | 'en'): void {
     link_url: fileUrl,
   });
 }
+
+/**
+ * Event for Midaan Dispatch (Newsletter / Early Access) subscription.
+ */
+export function trackNewsletterSignup(details: {
+  email?: string;
+  source?: string;
+}): void {
+  const source = details.source || 'website';
+
+  fbqTrack('Lead', {
+    content_name: 'Midaan_Dispatch_Newsletter',
+    content_category: 'Newsletter_Subscription',
+  });
+
+  fbqCustomTrack('Subscribe', {
+    source,
+  });
+
+  gtagEvent('sign_up', {
+    method: 'email',
+    content_name: 'Midaan_Dispatch_Newsletter',
+    source,
+  });
+}

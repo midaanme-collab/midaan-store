@@ -8,6 +8,7 @@ import MidaanLogo from './MidaanLogo';
 import Modals from './Modals';
 import FooterPoliciesModal, { PolicyTab } from './FooterPoliciesModal';
 import SizeChartModal from './SizeChartModal';
+import MidaanDispatchNewsletter from './MidaanDispatchNewsletter';
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
   const { lang, setLang, setIsCartOpen, cart, currency, setCurrency } = useStore();
@@ -93,6 +94,9 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
 
       {/* Footer */}
       <footer className="bg-[#0A0A0A] text-[#EDEDED] py-16 border-t border-[#1A1A1A] text-center flex flex-col items-center justify-center">
+        {/* Newsletter Subscription */}
+        <MidaanDispatchNewsletter variant="footer" source="site_footer" />
+
         <Link href="/" className="inline-block cursor-pointer mb-6" aria-label="Midaan">
           <MidaanLogo size="md" />
         </Link>

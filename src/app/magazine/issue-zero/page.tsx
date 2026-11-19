@@ -20,6 +20,8 @@ import {
 import { useStore } from '@/store';
 import { trackDownloadPdf } from '@/utils/analytics';
 import { FOUNDING_MANIFESTO, ARTICLES, Article } from '@/constants/articles';
+import EditorialCommerceCrossLink from '@/components/EditorialCommerceCrossLink';
+import MidaanDispatchNewsletter from '@/components/MidaanDispatchNewsletter';
 
 export default function IssueZeroReader() {
   const { lang, setLang } = useStore();
@@ -573,6 +575,12 @@ export default function IssueZeroReader() {
             </div>
           </div>
         </article>
+
+        {/* Editorial Cross-Link & Newsletter */}
+        <div className="max-w-4xl mx-auto px-4 md:px-0">
+          <EditorialCommerceCrossLink lang={isAr ? 'ar' : 'en'} />
+          <MidaanDispatchNewsletter variant="section" source="issue_zero_reader" lang={isAr ? 'ar' : 'en'} />
+        </div>
 
         {/* Issue One Coming Soon Preview Banner */}
         <section className="py-20 px-4 md:px-8 bg-gradient-to-t from-[#0A0A0A] to-[#050505] border-t border-[#1F1F1F]">

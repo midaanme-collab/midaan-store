@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           ar: `${baseUrl}/`,
           en: `${baseUrl}/`,
+          'x-default': `${baseUrl}/`,
         },
       },
     },
@@ -29,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           ar: `${baseUrl}/about`,
           en: `${baseUrl}/about`,
+          'x-default': `${baseUrl}/about`,
         },
       },
     },
@@ -41,6 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           ar: `${baseUrl}/products/drop-helmet-white`,
           en: `${baseUrl}/products/drop-helmet-white`,
+          'x-default': `${baseUrl}/products/drop-helmet-white`,
         },
       },
     },
@@ -53,6 +56,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           ar: `${baseUrl}/products/drop-poster-white`,
           en: `${baseUrl}/products/drop-poster-white`,
+          'x-default': `${baseUrl}/products/drop-poster-white`,
         },
       },
     },
@@ -65,6 +69,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           ar: `${baseUrl}/magazine`,
           en: `${baseUrl}/magazine`,
+          'x-default': `${baseUrl}/magazine`,
         },
       },
     },
@@ -77,6 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           ar: `${baseUrl}/magazine/issue-zero`,
           en: `${baseUrl}/magazine/issue-zero`,
+          'x-default': `${baseUrl}/magazine/issue-zero`,
         },
       },
     },

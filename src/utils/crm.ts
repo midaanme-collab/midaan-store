@@ -1,4 +1,4 @@
-import { CrmOrderPayload } from '@/types';
+import { CrmOrderPayload, NewsletterPayload } from '@/types';
 
 export const DEFAULT_CRM_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbyRWThRWC-w1-NXoSUDcSZV7Zbklt26bP9oRZXySmWiBnsnrcYza19VRrDxtsT6KEzU/exec';
@@ -171,3 +171,70 @@ export function sendOrderToCrm(payload: CrmOrderPayload): void {
  * Backward-compatible alias for sendOrderToCrm.
  */
 export const logOrderToCrm = sendOrderToCrm;
+
+/**
+ * Fires a non-blocking POST request to the Google Apps Script Webhook
+ * for Midaan Dispatch (Newsletter / Early Access) subscriptions.
+ * Enforces sanitization, UTM marketing attribution, and payload type: "newsletter".
+ */
+export function sendNewsletterToCrm(payload: NewsletterPayload): void {
+  try {
+    const cleanEmail = sanitizeCrmField(payload.email, 100);
+    if (!cleanEmail) return;
+
+    const cleanPhone = sanitizeCrmField(payload.phone, 25);
+    const cleanSource = sanitizeCrmField(payload.source || 'website_footer', 50);
+    const utmSummary = getCapturedUtmSummary();
+
+    const sheetPayload: Record<string, any> = {
+      type: 'newsletter',
+      Order_ID: `NEWS-${Date.now()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
+      Timestamp: new Date().toISOString(),
+      Customer_Name: 'Midaan Dispatch Subscriber',
+      Email: cleanEmail,
+      Phone_WhatsApp: cleanPhone || '',
+      Delivery_Scope: 'Digital',
+      Country_or_Governorate: 'Newsletter',
+      City_or_Area: cleanSource,
+      Detailed_Address: 'Digital / Midaan Dispatch',
+      Items_Summary: 'Midaan Dispatch Newsletter & Early Access',
+      Total_Qty: 1,
+      Currency: 'JOD',
+      Grand_Total: 0,
+      Payment_Preference: 'None (Free Subscription)',
+      Order_Status: 'Subscribed',
+      Ad_Audience_Segment: 'Midaan_Dispatch_Early_Access',
+      Notes: utmSummary ? `[Source: ${cleanSource}] [UTM: ${utmSummary}]` : `[Source: ${cleanSource}]`,
+      Language: payload.language || 'ar',
+
+      // Backward-compatible camelCase keys:
+      email: cleanEmail,
+      phone: cleanPhone || '',
+      source: cleanSource,
+      language: payload.language || 'ar',
+    };
+
+    if (typeof window !== 'undefined') {
+      const payloadString = JSON.stringify(sheetPayload);
+
+      if (typeof fetch === 'function') {
+        fetch(CRM_WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          keepalive: true,
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: payloadString,
+        }).catch((err) => {
+          console.warn('Newsletter CRM dispatch error:', err);
+        });
+      } else if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+        const blob = new Blob([payloadString], { type: 'text/plain;charset=utf-8' });
+        navigator.sendBeacon(CRM_WEBHOOK_URL, blob);
+      }
+    }
+  } catch (err) {
+    console.warn('Newsletter submission error:', err);
+  }
+}

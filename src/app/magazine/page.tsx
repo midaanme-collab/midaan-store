@@ -9,6 +9,8 @@ import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 import { trackDownloadPdf } from '@/utils/analytics';
 import { FOUNDING_MANIFESTO, ARTICLES } from '@/constants/articles';
+import MidaanDispatchNewsletter from '@/components/MidaanDispatchNewsletter';
+import { UPCOMING_EDITIONS, getProductBadge } from '@/constants/products';
 
 export default function MagazineLanding() {
   const { lang } = useStore();
@@ -137,6 +139,9 @@ export default function MagazineLanding() {
             </div>
 
           </div>
+
+          {/* Midaan Dispatch Newsletter & Early Access Capture */}
+          <MidaanDispatchNewsletter variant="section" source="magazine_landing" lang={isRtl ? 'ar' : 'en'} />
 
           {/* Founding Manifesto: Entihab */}
           <div className="mt-16 bg-gradient-to-br from-[#141414] via-[#0F0F0F] to-[#0A0A0A] border border-[#262626] rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">

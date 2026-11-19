@@ -11,9 +11,12 @@ import CampaignVideoSection from '../src/components/CampaignVideoSection';
 import SizeChartModal, { SIZE_MEASUREMENTS } from '../src/components/SizeChartModal';
 import ProductDetailView from '../src/components/ProductDetailView';
 import IssueZeroReader from '../src/app/magazine/issue-zero/page';
-import { SHARED_PRODUCTS } from '../src/constants/products';
+import MidaanDispatchNewsletter from '../src/components/MidaanDispatchNewsletter';
+import EditorialCommerceCrossLink from '../src/components/EditorialCommerceCrossLink';
+import { SHARED_PRODUCTS, UPCOMING_EDITIONS, getProductBadge } from '../src/constants/products';
 import { buildWhatsAppOrderMessage } from '../src/utils/whatsapp';
-import { sendOrderToCrm, sanitizeCrmField, CRM_WEBHOOK_URL } from '../src/utils/crm';
+import { sendOrderToCrm, sendNewsletterToCrm, sanitizeCrmField, CRM_WEBHOOK_URL } from '../src/utils/crm';
+import { trackNewsletterSignup } from '../src/utils/analytics';
 import fs from 'fs';
 import path from 'path';
 
@@ -1364,6 +1367,116 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
 
       // Issue One teaser
       expect(screen.getByText(/العدد الأول — قريباً/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('18. World-Class Editorial & Commerce Features (Newsletter, Modular Architecture, GA4)', () => {
+    it('dispatches newsletter subscription payload to Google Apps Script webhook with type: "newsletter"', () => {
+      const mockFetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: true }));
+      const originalFetch = global.fetch;
+      global.fetch = mockFetch;
+
+      sendNewsletterToCrm({
+        email: 'reader@midaan.net',
+        phone: '+962770000000',
+        source: 'magazine_article',
+        language: 'ar',
+      });
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      const [url, options] = mockFetch.mock.calls[0];
+      expect(url).toBe(CRM_WEBHOOK_URL);
+      expect(options.method).toBe('POST');
+      expect(options.keepalive).toBe(true);
+
+      const parsedBody = JSON.parse(options.body);
+      expect(parsedBody.type).toBe('newsletter');
+      expect(parsedBody.Email).toBe('reader@midaan.net');
+      // Strips leading '+' to prevent spreadsheet formula injection
+      expect(parsedBody.Phone_WhatsApp).toBe('962770000000');
+      expect(parsedBody.Ad_Audience_Segment).toBe('Midaan_Dispatch_Early_Access');
+      expect(parsedBody.Order_Status).toBe('Subscribed');
+
+      global.fetch = originalFetch;
+    });
+
+    it('fires Meta Pixel and GA4 analytics for newsletter subscription', () => {
+      const mockFbq = jest.fn();
+      const mockGtag = jest.fn();
+      window.fbq = mockFbq;
+      window.gtag = mockGtag;
+
+      trackNewsletterSignup({
+        email: 'subscriber@midaan.net',
+        source: 'footer',
+      });
+
+      expect(mockFbq).toHaveBeenCalledWith('track', 'Lead', expect.objectContaining({
+        content_name: 'Midaan_Dispatch_Newsletter',
+        content_category: 'Newsletter_Subscription',
+      }));
+
+      expect(mockFbq).toHaveBeenCalledWith('trackCustom', 'Subscribe', expect.objectContaining({
+        source: 'footer',
+      }));
+
+      expect(mockGtag).toHaveBeenCalledWith('event', 'sign_up', expect.objectContaining({
+        method: 'email',
+        content_name: 'Midaan_Dispatch_Newsletter',
+        source: 'footer',
+      }));
+    });
+
+    it('verifies Modular Editions Architecture with getProductBadge and UPCOMING_EDITIONS', () => {
+      // 1. Limited Edition Badge
+      const helmetBadgeAr = getProductBadge(SHARED_PRODUCTS[0], 'ar');
+      expect(helmetBadgeAr.text).toBe('إصدار محدود');
+      expect(helmetBadgeAr.dotColor).toBe('bg-emerald-400');
+
+      const helmetBadgeEn = getProductBadge(SHARED_PRODUCTS[0], 'en');
+      expect(helmetBadgeEn.text).toBe('LIMITED EDITION');
+
+      // 2. Pre-Order Print Magazine Badge
+      const printEdition = UPCOMING_EDITIONS.find((e) => e.category === 'print_editions')!;
+      expect(printEdition).toBeDefined();
+      expect(printEdition.releaseStatus).toBe('preorder');
+
+      const printBadgeAr = getProductBadge(printEdition, 'ar');
+      expect(printBadgeAr.text).toBe('نسخة مطبوعة — طلب مسبق');
+      expect(printBadgeAr.badgeType).toBe('preorder');
+
+      // 3. Notify Me Apparel Badge
+      const drop2Preview = UPCOMING_EDITIONS.find((e) => e.id === 'drop-02-apparel-preview')!;
+      expect(drop2Preview).toBeDefined();
+      expect(drop2Preview.releaseStatus).toBe('notify_me');
+
+      const drop2BadgeAr = getProductBadge(drop2Preview, 'ar');
+      expect(drop2BadgeAr.text).toBe('المجموعة القادمة // قريباً');
+      expect(drop2BadgeAr.badgeType).toBe('notify_me');
+    });
+
+    it('renders MidaanDispatchNewsletter component in section and footer variants', () => {
+      const { rerender } = render(<MidaanDispatchNewsletter variant="section" lang="ar" />);
+
+      expect(screen.getByText(/اشترك في نشرة ميدان/i)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/أدخل بريدك الإلكتروني/i)).toBeInTheDocument();
+
+      rerender(<MidaanDispatchNewsletter variant="footer" lang="en" />);
+      expect(screen.getByText(/Subscribe to Midaan Dispatch/i)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/Enter your email address/i)).toBeInTheDocument();
+    });
+
+    it('renders EditorialCommerceCrossLink connecting readers to Drop 01 and Issue Zero PDF archive', () => {
+      render(<EditorialCommerceCrossLink lang="ar" />);
+
+      // Link to Drop 01
+      expect(screen.getByText(/إصدار الميدان الأول \/\/ Sotusura/i)).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /تسوق القطع الموثقة/i })).toHaveAttribute('href', '/#drops');
+
+      // Link to Issue Zero Reader & PDFs
+      expect(screen.getByText(/مجلة ميدان — العدد صفر \(انتحاب\)/i)).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /تصفح القارئ التفاعلي/i })).toHaveAttribute('href', '/magazine/issue-zero');
+      expect(screen.getByRole('link', { name: /PDF عربي/i })).toHaveAttribute('href', '/magazine/issue-zero.pdf');
     });
   });
 });

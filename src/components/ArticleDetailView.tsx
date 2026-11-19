@@ -5,6 +5,8 @@ import PageLayout from '@/components/PageLayout';
 import { Article, ARTICLES } from '@/constants/articles';
 import Link from 'next/link';
 import { trackDownloadPdf } from '@/utils/analytics';
+import EditorialCommerceCrossLink from '@/components/EditorialCommerceCrossLink';
+import MidaanDispatchNewsletter from '@/components/MidaanDispatchNewsletter';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -253,6 +255,9 @@ export default function ArticleDetailView({ article, lang }: ArticleDetailViewPr
               </Link>
             </div>
 
+            {/* Internal SEO Cross-Link Card (Drop 01 & Issue Zero PDF Archive) */}
+            <EditorialCommerceCrossLink lang={isAr ? 'ar' : 'en'} />
+
             {/* Next Article Card (المقال التالي) */}
             <div className="mt-12 bg-gradient-to-br from-[#121212] via-[#0E0E0E] to-[#0A0A0A] border border-[#262626] hover:border-[#D80032] rounded-3xl p-6 sm:p-8 transition-all group">
               <span className="text-[11px] font-bold uppercase text-[#D80032] tracking-wider block mb-2">
@@ -272,6 +277,9 @@ export default function ArticleDetailView({ article, lang }: ArticleDetailViewPr
                 </div>
               </Link>
             </div>
+
+            {/* Midaan Dispatch Newsletter Capture */}
+            <MidaanDispatchNewsletter variant="section" source={`article_${article.id}`} lang={isAr ? 'ar' : 'en'} />
 
           </article>
 

@@ -15,6 +15,9 @@ export type TextFont = 'sans' | 'serif' | 'mono';
 export type PaymentMethod = 'cliq' | 'cod';
 export type PolicyTab = 'shipping' | 'returns' | 'privacy' | 'contact';
 
+export type ProductBadgeType = 'limited_edition' | 'preorder' | 'notify_me' | 'archival';
+export type ProductReleaseStatus = 'available' | 'preorder' | 'notify_me' | 'archived';
+
 export interface CartItem {
   id: string;
   garment: GarmentType;
@@ -61,6 +64,10 @@ export interface Product {
   orderToPrintTimeHours: number;
   isPrePrinted?: boolean;
   backPrintOnly?: boolean;
+  releaseStatus?: ProductReleaseStatus;
+  badgeType?: ProductBadgeType;
+  badgeAr?: string;
+  badgeEn?: string;
 }
 
 export interface ShippingDestination {
@@ -145,4 +152,11 @@ export interface CrmOrderPayload {
   paymentMethod: string;
   audienceTag: string;
   notes: string;
+}
+
+export interface NewsletterPayload {
+  email: string;
+  phone?: string;
+  source?: string;
+  language?: Language;
 }
