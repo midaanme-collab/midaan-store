@@ -1,15 +1,4 @@
 {
-  "version": "1.0.1-safari-checkout-fix",
-  "commit": "safari-whatsapp-redirect-fix",
-  "branch": "security/hardening-midaan-store",
-  "builtAt": "2026-11-19T10:03:00.000Z",
-  "environment": "production",
-  "domain": "https://midaan.net",
-  "metaPixelId": "476490290557651",
-  "features": {
-    "safariRedirect": "Synchronous location assign with pre-opened tab and intact modal",
-    "analytics": "Meta Pixel + GA4 (Custom Events)",
-    "crmWebhook": "Google Sheets Orders_CRM + Inventory_Tracker Auto-Deduction",
-    "seo": "App Router Dynamic Sitemap, Robots & JSON-LD"
-  }
+  "commit": "7df6d7c706b9222bce36a202c1867837f359eb82",
+  "builtAt": "2026-11-19T10:24:47.813Z"
 }

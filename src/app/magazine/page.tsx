@@ -62,12 +62,12 @@ export default function MagazineLanding() {
               {/* Card Body & Actions */}
               <div className="flex-1 flex flex-col justify-between self-stretch py-2">
                 <div>
-                  <div className="text-xs font-bold text-[#D80032] uppercase mb-2">
-                    {isRtl ? 'الإصدار التأسيسي // خريف 2026' : 'FOUNDING ISSUE // AUTUMN 2026'}
+                  <div className="text-xs font-bold text-[#D80032] uppercase mb-2 font-mono">
+                    {isRtl ? 'الإصدار التأسيسي // خريف ٢٠٢٦' : 'FOUNDING ISSUE // AUTUMN 2026'}
                   </div>
                   
                   <h2 className="text-2xl sm:text-3xl font-black text-white font-sans leading-tight mb-3">
-                    {strings.magazine.issueZeroTitle}
+                    {isRtl ? 'العدد صفر: انتحاب' : 'Issue Zero: Entihab'}
                   </h2>
                   
                   <p className="text-xs sm:text-sm text-neutral-300 font-sans leading-relaxed mb-6">

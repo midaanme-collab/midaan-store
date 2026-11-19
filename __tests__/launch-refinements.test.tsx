@@ -10,6 +10,7 @@ import Hero from '../src/components/Hero';
 import CampaignVideoSection from '../src/components/CampaignVideoSection';
 import SizeChartModal, { SIZE_MEASUREMENTS } from '../src/components/SizeChartModal';
 import ProductDetailView from '../src/components/ProductDetailView';
+import IssueZeroReader from '../src/app/magazine/issue-zero/page';
 import { SHARED_PRODUCTS } from '../src/constants/products';
 import { buildWhatsAppOrderMessage } from '../src/utils/whatsapp';
 import { sendOrderToCrm, sanitizeCrmField, CRM_WEBHOOK_URL } from '../src/utils/crm';
@@ -1318,6 +1319,51 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(content).toContain('"@type": "ContactPoint"');
       expect(content).toContain('+962770125316');
       expect(content).toContain('"availability": "https://schema.org/InStock"');
+    });
+  });
+
+  describe('17. Dedicated Issue Zero Reader & Decluttered Store Showcase', () => {
+    it('verifies DropShowcase removes all redundant labels and maintains clean hierarchy', () => {
+      render(<DropShowcase lang="ar" />);
+
+      // Redundant labels must NOT exist
+      expect(screen.queryByText(/عرض صفحة وتفاصيل القطعة الموثقة/i)).toBeNull();
+      expect(screen.queryByText(/مساعدة المقاس/i)).toBeNull();
+      expect(screen.queryByText(/Sizing help/i)).toBeNull();
+
+      // Verified single subtitle
+      expect(screen.getAllByText('صنع في إندونيسيا • طباعة مباشرة على النسيج (DTG)').length).toBe(2);
+
+      // Links to product pages exist
+      const helmetLinks = screen.getAllByRole('link', { name: /تيشيرت خوذة الكوفية — أبيض/i });
+      expect(helmetLinks.length).toBeGreaterThan(0);
+      expect(helmetLinks[0].getAttribute('href')).toBe('/products/drop-helmet-white');
+
+      // Size Guide & Exchange Policy links are present
+      expect(screen.getAllByRole('button', { name: /جدول المقاسات/i }).length).toBe(2);
+      expect(screen.getAllByRole('button', { name: /سياسة الاستبدال/i }).length).toBe(2);
+    });
+
+    it('renders complete Issue Zero reader page with table of contents and full texts', () => {
+      render(<IssueZeroReader />);
+
+      // Colophon and Header
+      expect(screen.getAllByText(/HKJ-PAL-2026-ZERO/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByRole('heading', { level: 1, name: /العدد صفر: انتحاب/i })).toBeInTheDocument();
+
+      // Table of Contents with 5 entries
+      expect(screen.getByText('فهرس العدد التأسيسي')).toBeInTheDocument();
+      expect(screen.getAllByText('البيان التأسيسي: انتحاب (العدد صفر)').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('صراع الأرض والسماء: لماذا لا يمكن فهم قضية فلسطين بعيداً عن العقيدة؟').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('سأموت قبل الأربعين').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('حبر اليقين: من مشقة الوداع إلى سكينة الشهادة').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('سجل وصايا الشهداء الفلسطينيين').length).toBeGreaterThanOrEqual(1);
+
+      // Full Manifesto text rendered
+      expect(screen.getByText(/في هذا الميدان، نحن لا نكتب الرثاء، بل نوثق النبض الذي لا يموت/i)).toBeInTheDocument();
+
+      // Issue One teaser
+      expect(screen.getByText(/العدد الأول — قريباً/i)).toBeInTheDocument();
     });
   });
 });

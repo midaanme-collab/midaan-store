@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Language, Product, GarmentSize } from "@/types";
-import { ShoppingBag, Check, MessageSquare, ArrowUpRight, Ruler } from "lucide-react";
+import { ShoppingBag, Check, ArrowUpRight, Ruler } from "lucide-react";
 import { useStore } from "@/store";
 import Interactive3DTilt from "./Interactive3DTilt";
 import { SHARED_PRODUCTS, normalizeSize, formatProductPrice } from "@/constants/products";
@@ -95,17 +95,16 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
               showGlare={true}
               className="bg-gradient-to-br from-[#121212] via-[#0E0E0E] to-[#080808] border border-[#262626] hover:border-neutral-500 rounded-3xl overflow-hidden flex flex-col justify-between shadow-2xl transition-colors duration-300"
             >
-              {/* Product Image Frame */}
-              <div className="relative aspect-[4/5] bg-gradient-to-b from-[#181818] to-[#0A0A0A] flex items-center justify-center border-b border-[#222] p-8 overflow-hidden group">
+              {/* Product Image Frame (Clickable to detail page) */}
+              <Link 
+                href={`/products/${prod.id}`}
+                className="relative aspect-[4/5] bg-gradient-to-b from-[#181818] to-[#0A0A0A] flex items-center justify-center border-b border-[#222] p-8 overflow-hidden group block cursor-pointer"
+                aria-label={isRtl ? prod.titleAr : prod.titleEn}
+              >
                 {/* Limited Edition Badge */}
                 <div className="absolute top-5 start-5 z-20 bg-black/80 backdrop-blur-md border border-white/10 text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
                   <span>{strings.products.label}</span>
-                </div>
-
-                {/* Price Badge on Card */}
-                <div className="absolute top-5 end-5 z-20 bg-[#D80032] text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-lg" dir={isRtl && currency === 'JOD' ? 'rtl' : 'ltr'}>
-                  {displayPrice}
                 </div>
 
                 {/* Product Image with Hover Zoom */}
@@ -117,33 +116,26 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                   priority
                   className="w-4/5 h-auto max-h-[380px] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-105 select-none"
                 />
-
-                {/* Localized Bottom Bar Specs */}
-                <div className="absolute bottom-4 inset-x-6 z-20 flex justify-between items-center text-xs text-neutral-300 bg-black/80 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
-                  <span>{isRtl ? 'صنع في إندونيسيا' : 'Made in Indonesia'}</span>
-                  <span className="text-white font-bold">{strings.products.dtgPrint}</span>
-                </div>
-              </div>
+              </Link>
 
               {/* Product Info & Controls */}
               <div className="p-7 md:p-8 flex flex-col flex-1">
                 <div className="mb-6">
-                  <h3 className="font-black text-2xl md:text-3xl text-white leading-tight font-sans mb-3">
+                  <h3 className="font-black text-2xl md:text-3xl text-white leading-tight font-sans mb-1.5">
                     <Link href={`/products/${prod.id}`} className="hover:text-[#D80032] transition-colors inline-flex items-center gap-2 group/link">
                       <span>{isRtl ? prod.titleAr : prod.titleEn}</span>
                       <ArrowUpRight size={18} className="text-neutral-500 group-hover/link:text-[#D80032] transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
                     </Link>
                   </h3>
-                  <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#161616] border border-[#262626] rounded-xl p-3.5 mb-2">
+
+                  {/* Single Clean Subtitle */}
+                  <p className="text-xs text-neutral-400 font-sans mb-3">
+                    {isRtl ? 'صنع في إندونيسيا • طباعة مباشرة على النسيج (DTG)' : 'Made in Indonesia • Direct-to-Garment (DTG) Print'}
+                  </p>
+
+                  <p className="text-sm text-neutral-300 font-sans leading-relaxed bg-[#141414] border border-[#222] rounded-xl p-3.5">
                     {isRtl ? prod.descriptionAr : prod.descriptionEn}
                   </p>
-                  <Link 
-                    href={`/products/${prod.id}`}
-                    className="text-xs text-[#D80032] hover:underline font-semibold inline-flex items-center gap-1"
-                  >
-                    <span>{isRtl ? 'عرض صفحة وتفاصيل القطعة الموثقة' : 'View full piece details & story'}</span>
-                    <ArrowUpRight size={12} />
-                  </Link>
                 </div>
 
                 {/* Size Selection */}
@@ -159,6 +151,7 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                   )}
 
                   <div className="flex justify-between items-center text-xs text-neutral-300 mb-3">
+                    {/* Single Select Size Label */}
                     <span className="font-bold flex items-center gap-1.5">
                       <span>{strings.products.selectSize}:</span>
                       {currentSelectedSize && (
@@ -168,47 +161,24 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                       )}
                     </span>
                     
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
-                        <button
-                          type="button"
-                          onClick={() => setIsSizeChartOpen(true)}
-                          className="hover:text-white underline underline-offset-4 transition-colors flex items-center gap-1 font-medium text-neutral-300"
-                        >
-                          <Ruler size={12} className="text-[#D80032]" />
-                          <span>{isRtl ? "جدول المقاسات" : "Size Guide"}</span>
-                        </button>
-                        <span>•</span>
-                        <button
-                          type="button"
-                          onClick={() => openPolicyModal('returns')}
-                          className="hover:text-white underline underline-offset-4 transition-colors"
-                        >
-                          {isRtl ? "سياسة الاستبدال" : "Returns & Exchanges"}
-                        </button>
-                        <span>•</span>
-                        <a
-                          href={`https://wa.me/962770125316?text=${encodeURIComponent(
-                            isRtl 
-                              ? 'مرحباً فريق ميدان، أود الاستفسار عن قياسات وتفاصيل تيشيرتات التعاون (Midaan × Sotusura).' 
-                              : 'Hello Midaan team, I would like to ask about sizing for the Midaan × Sotusura collaboration tees.'
-                          )}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 underline underline-offset-4 transition-colors"
-                        >
-                          <MessageSquare size={12} />
-                          <span>{isRtl ? "مساعدة المقاس" : "Sizing help"}</span>
-                        </a>
-                      </div>
-
-                      <span className={`text-xs font-semibold ${
-                        isVariantInStock === true ? "text-emerald-400" : isVariantInStock === false ? "text-neutral-500" : "text-neutral-400"
-                      }`}>
-                        {currentSelectedSize 
-                          ? (isVariantInStock ? strings.products.inStock : strings.products.outOfStock)
-                          : (isRtl ? "اختر المقاس" : "Select size")}
-                      </span>
+                    {/* Links row: Size Guide • Exchange Policy */}
+                    <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+                      <button
+                        type="button"
+                        onClick={() => setIsSizeChartOpen(true)}
+                        className="hover:text-white underline underline-offset-4 transition-colors flex items-center gap-1 font-medium text-neutral-300"
+                      >
+                        <Ruler size={12} className="text-[#D80032]" />
+                        <span>{isRtl ? "جدول المقاسات" : "Size Guide"}</span>
+                      </button>
+                      <span>•</span>
+                      <button
+                        type="button"
+                        onClick={() => openPolicyModal('returns')}
+                        className="hover:text-white underline underline-offset-4 transition-colors"
+                      >
+                        {isRtl ? "سياسة الاستبدال" : "Returns & Exchanges"}
+                      </button>
                     </div>
                   </div>
 

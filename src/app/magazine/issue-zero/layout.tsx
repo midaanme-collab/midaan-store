@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   description: 'تصفح وحمّل العدد صفر من مجلة ميدان الثقافية المستقلة (انتحاب / Entihab) بصيغة PDF كاملة باللغتين العربية والإنجليزية مجاناً.',
   alternates: {
     canonical: 'https://midaan.net/magazine/issue-zero',
+    languages: {
+      ar: 'https://midaan.net/magazine/issue-zero',
+      en: 'https://midaan.net/magazine/issue-zero',
+      'x-default': 'https://midaan.net/magazine/issue-zero',
+    },
   },
   openGraph: {
     title: 'قراءة وتحميل مجلة ميدان العدد صفر | Midaan Issue Zero',
