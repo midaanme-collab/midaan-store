@@ -46,7 +46,6 @@ export const ALLOWED_ORIGIN_PATTERNS: (string | RegExp)[] = [
   'https://www.midaan.store',
   'https://midaan-store.pages.dev',
   /^https:\/\/[a-z0-9\-]+\.midaan-store\.pages\.dev$/,
-  'https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://localhost:8787',
@@ -92,7 +91,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https: https://www.facebook.com; media-src 'self' blob: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://www.facebook.com https://connect.facebook.net; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me;",
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https: https://www.facebook.com https://www.googletagmanager.com https://www.google-analytics.com; media-src 'self' blob: data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://www.facebook.com https://connect.facebook.net https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://wa.me;",
 };
 
 // In-memory sliding window rate limiter (max 30 requests per minute per IP per isolate)

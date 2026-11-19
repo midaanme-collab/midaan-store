@@ -275,6 +275,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                         key={sz}
                         type="button"
                         disabled={!inStock}
+                        aria-label={`Size ${sz}${!inStock ? (isAr ? ' - نفدت الكمية' : ' - Sold Out') : ''}`}
                         onClick={() => {
                           setSelectedSize(sz);
                           setSizeError(false);
@@ -305,8 +306,8 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
                       <span className="w-2 h-2 rounded-full bg-[#D80032] animate-pulse" />
                       <span>
                         {isAr
-                          ? `متبقي ${selectedVariant.stockCount} فقط بهذا المقاس`
-                          : `Only ${selectedVariant.stockCount} left in this size`}
+                          ? (selectedVariant.stockCount === 1 ? 'تبقى قطعة واحدة فقط بهذا المقاس' : `متبقي ${selectedVariant.stockCount} فقط بهذا المقاس`)
+                          : (selectedVariant.stockCount === 1 ? 'Only 1 left in this size' : `Only ${selectedVariant.stockCount} left in this size`)}
                       </span>
                     </span>
                     <span className="text-[11px] text-neutral-400 font-normal">

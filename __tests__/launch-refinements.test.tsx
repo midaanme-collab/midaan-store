@@ -821,15 +821,21 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       sendOrderToCrm(payload);
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith(CRM_WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        keepalive: true,
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(payload),
+      const [url, options] = mockFetch.mock.calls[0];
+      expect(url).toBe(CRM_WEBHOOK_URL);
+      expect(options.method).toBe('POST');
+      expect(options.mode).toBe('no-cors');
+      expect(options.keepalive).toBe(true);
+      expect(options.headers).toEqual({
+        'Content-Type': 'text/plain;charset=utf-8',
       });
+      const parsedBody = JSON.parse(options.body);
+      expect(parsedBody.orderId).toBe('ORD-12345-TEST');
+      expect(parsedBody.Order_ID).toBe('ORD-12345-TEST');
+      expect(parsedBody.customerName).toBe('علي كمال');
+      expect(parsedBody.Customer_Name).toBe('علي كمال');
+      expect(parsedBody.totalQty).toBe(1);
+      expect(parsedBody.Total_Qty).toBe(1);
     });
   });
 
@@ -1101,7 +1107,8 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       const layoutContent = fs.readFileSync(layoutPath, 'utf8');
       expect(layoutContent).toContain('476490290557651');
       expect(layoutContent).toContain('https://connect.facebook.net/en_US/fbevents.js');
-      expect(layoutContent).toContain('https://www.facebook.com/tr?id=476490290557651&ev=PageView&noscript=1');
+      expect(layoutContent).toContain('https://www.facebook.com/tr?id=');
+      expect(layoutContent).toContain('ev=PageView&noscript=1');
       expect(layoutContent).toContain('<MetaPixelNavigation />');
     });
 

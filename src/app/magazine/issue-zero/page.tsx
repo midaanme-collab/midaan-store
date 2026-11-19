@@ -5,6 +5,7 @@ import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Download, Globe } from 'lucide-react';
 import { useStore } from '@/store';
+import { trackDownloadPdf } from '@/utils/analytics';
 
 export default function IssueZeroReader() {
   const { lang, setLang } = useStore();
@@ -63,6 +64,7 @@ export default function IssueZeroReader() {
               <a 
                 href={pdfSrc} 
                 download={isRtl ? "Midaan_Magazine_Issue_Zero_AR.pdf" : "Midaan_Magazine_Issue_Zero_EN.pdf"}
+                onClick={() => trackDownloadPdf(isRtl ? 'ar' : 'en')}
                 className="bg-[#D80032] hover:bg-[#B00028] text-white px-4 py-1.5 rounded-lg flex items-center gap-2 text-xs font-bold transition-colors shadow-md"
               >
                 <Download size={14} />

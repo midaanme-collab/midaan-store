@@ -6,6 +6,7 @@ import { BookOpen, Download, ArrowUpRight, ArrowLeft, ArrowRight } from 'lucide-
 import { useStore } from '@/store';
 import Link from 'next/link';
 import { content } from '@/locales/dictionary';
+import { trackDownloadPdf } from '@/utils/analytics';
 
 export default function Voice() {
   const { lang } = useStore();
@@ -57,6 +58,7 @@ export default function Voice() {
               <a 
                 href="/magazine/issue-zero.pdf"
                 download="Midaan_Magazine_Issue_Zero_AR.pdf"
+                onClick={() => trackDownloadPdf('ar')}
                 className="bg-[#141414] hover:bg-[#1C1C1C] text-neutral-200 hover:text-white border border-[#2A2A2A] py-3 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-colors text-center"
               >
                 <Download size={14} className="text-[#D80032]" />
@@ -66,6 +68,7 @@ export default function Voice() {
               <a 
                 href="/magazine/issue-zero-en.pdf"
                 download="Midaan_Magazine_Issue_Zero_EN.pdf"
+                onClick={() => trackDownloadPdf('en')}
                 className="bg-[#141414] hover:bg-[#1C1C1C] text-neutral-200 hover:text-white border border-[#2A2A2A] py-3 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-colors text-center"
               >
                 <Download size={14} className="text-[#D80032]" />

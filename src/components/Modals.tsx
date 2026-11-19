@@ -12,7 +12,7 @@ import {
 } from '@/constants/shipping';
 import { generateWhatsAppOrderUrl } from '@/utils/whatsapp';
 import { sendOrderToCrm, generateOrderId } from '@/utils/crm';
-import { trackInitiateCheckout, trackLead } from '@/utils/metaPixel';
+import { trackInitiateCheckout, trackWhatsAppCheckout } from '@/utils/metaPixel';
 
 export default function Modals() {
   const { 
@@ -252,11 +252,13 @@ export default function Modals() {
       notes: '',
     });
 
-    // Track Meta Pixel Lead event on WhatsApp checkout submission
-    trackLead({
+    // Track Meta Pixel Lead & WhatsApp Checkout event on order submission
+    trackWhatsAppCheckout({
       order_id: orderId,
       value: cartSubtotal,
       currency,
+      num_items: totalQty,
+      items_summary: itemsSummary,
     });
   };
 

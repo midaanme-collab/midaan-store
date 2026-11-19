@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import PageLayout from '@/components/PageLayout';
 import { Article, ARTICLES } from '@/constants/articles';
 import Link from 'next/link';
+import { trackDownloadPdf } from '@/utils/analytics';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -73,13 +74,15 @@ export default function ArticleDetailView({ article, lang }: ArticleDetailViewPr
     "headline": title,
     "description": excerpt,
     "inLanguage": isAr ? "ar" : "en",
+    "datePublished": "2026-10-01",
+    "dateModified": "2026-10-01",
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://midaan.net/magazine/${lang}/articles/${article.id}`
     },
     "author": {
       "@type": "Person",
-      "name": author
+      "name": author || (isAr ? "مجلة ميدان" : "Midaan Magazine")
     },
     "publisher": {
       "@type": "Organization",
@@ -143,6 +146,7 @@ export default function ArticleDetailView({ article, lang }: ArticleDetailViewPr
                 target="_blank"
                 rel="noreferrer"
                 download
+                onClick={() => trackDownloadPdf(isAr ? 'ar' : 'en')}
                 className="inline-flex items-center gap-1.5 bg-[#D80032] hover:bg-[#B00028] text-white px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shadow-sm"
               >
                 <Download size={13} />

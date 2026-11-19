@@ -4,9 +4,11 @@ import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import Link from 'next/link';
 import Image from 'next/image';
-import { BookOpen, Download, ArrowLeft, ArrowRight } from 'lucide-react';
+import { BookOpen, Download, ArrowLeft, ArrowRight, FileText, Sparkles } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
+import { trackDownloadPdf } from '@/utils/analytics';
+import { FOUNDING_MANIFESTO, ARTICLES } from '@/constants/articles';
 
 export default function MagazineLanding() {
   const { lang } = useStore();
@@ -89,6 +91,7 @@ export default function MagazineLanding() {
                     <a 
                       href="/magazine/issue-zero.pdf"
                       download="Midaan_Magazine_Issue_Zero_AR.pdf"
+                      onClick={() => trackDownloadPdf('ar')}
                       className="bg-[#141414] hover:bg-[#1C1C1C] text-neutral-200 hover:text-white border border-[#2A2A2A] py-2.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors text-center"
                     >
                       <Download size={13} className="text-[#D80032]" />
@@ -98,6 +101,7 @@ export default function MagazineLanding() {
                     <a 
                       href="/magazine/issue-zero-en.pdf"
                       download="Midaan_Magazine_Issue_Zero_EN.pdf"
+                      onClick={() => trackDownloadPdf('en')}
                       className="bg-[#141414] hover:bg-[#1C1C1C] text-neutral-200 hover:text-white border border-[#2A2A2A] py-2.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors text-center"
                     >
                       <Download size={13} className="text-[#D80032]" />
@@ -132,6 +136,92 @@ export default function MagazineLanding() {
               </button>
             </div>
 
+          </div>
+
+          {/* Founding Manifesto: Entihab */}
+          <div className="mt-16 bg-gradient-to-br from-[#141414] via-[#0F0F0F] to-[#0A0A0A] border border-[#262626] rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 start-0 w-2 h-full bg-[#D80032]" />
+            
+            <div className="flex items-center gap-2.5 text-xs font-bold text-[#D80032] uppercase tracking-wider mb-3">
+              <Sparkles size={14} />
+              <span>{isRtl ? 'وثيقة الإطلاق والعهد' : 'Founding Covenant'}</span>
+            </div>
+
+            <h2 className="text-2xl sm:text-4xl font-black text-white font-sans leading-tight mb-8">
+              {isRtl ? FOUNDING_MANIFESTO.titleAr : FOUNDING_MANIFESTO.titleEn}
+            </h2>
+
+            <div className="space-y-6 text-neutral-300 font-sans leading-relaxed text-sm sm:text-base border-s-2 border-neutral-800 ps-6">
+              {(isRtl ? FOUNDING_MANIFESTO.paragraphsAr : FOUNDING_MANIFESTO.paragraphsEn).map((paragraph, idx) => (
+                <p key={idx} className={idx === 0 ? "text-white font-semibold text-base sm:text-lg italic" : ""}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-[#222] flex flex-wrap items-center justify-between gap-4 text-xs text-neutral-400">
+              <span className="font-medium">
+                {isRtl ? 'هيئة تحرير مجلة ميدان — تشرين الأول / أكتوبر ٢٠٢٦' : 'Midaan Editorial Collective — October 2026'}
+              </span>
+              <Link 
+                href="/magazine/issue-zero" 
+                className="inline-flex items-center gap-1.5 text-white hover:text-[#D80032] font-bold transition-colors"
+              >
+                <span>{isRtl ? 'تصفح المجلة التفاعلية الكاملة' : 'Browse Full Interactive Reader'}</span>
+                {isRtl ? <ArrowLeft size={13} /> : <ArrowRight size={13} />}
+              </Link>
+            </div>
+          </div>
+
+          {/* Issue Zero Articles Directory */}
+          <div className="mt-16">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#222]">
+              <div>
+                <h3 className="text-xl sm:text-3xl font-black text-white font-sans">
+                  {isRtl ? 'مقالات وأبحاث العدد صفر' : 'Issue Zero Articles & Research'}
+                </h3>
+                <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+                  {isRtl ? '٤ أبحاث فكرية وتاريخية موثقة متوفرة باللغتين العربية والإنجليزية' : '4 documented intellectual & historical essays available in Arabic & English'}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {ARTICLES.map((art) => (
+                <Link
+                  key={art.id}
+                  href={isRtl ? `/magazine/ar/articles/${art.id}` : `/magazine/en/articles/${art.id}`}
+                  className="bg-[#0E0E0E] hover:bg-[#141414] border border-[#222] hover:border-[#D80032] rounded-2xl p-6 transition-all group flex flex-col justify-between shadow-lg"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-xs mb-3">
+                      <span className="text-[#D80032] font-bold">
+                        {isRtl ? art.categoryAr : art.categoryEn}
+                      </span>
+                      <span className="text-neutral-500 font-mono text-[11px]">
+                        {isRtl ? art.readTimeAr : art.readTimeEn}
+                      </span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-black text-white group-hover:text-[#D80032] transition-colors font-sans mb-3 leading-snug">
+                      {isRtl ? art.titleAr : art.titleEn}
+                    </h4>
+
+                    <p className="text-xs sm:text-sm text-neutral-400 font-sans leading-relaxed line-clamp-3 mb-4">
+                      {isRtl ? art.excerptAr : art.excerptEn}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-[#1C1C1C] flex items-center justify-between text-xs text-neutral-300 font-medium">
+                    <span className="text-neutral-500">{isRtl ? 'قراءة البحث كاملاً' : 'Read full essay'}</span>
+                    <span className="text-white group-hover:translate-x-0.5 transition-transform flex items-center gap-1 font-bold">
+                      <FileText size={13} className="text-[#D80032]" />
+                      <span>{isRtl ? 'عرض المقال' : 'View Article'}</span>
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>

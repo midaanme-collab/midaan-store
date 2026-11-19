@@ -236,7 +236,7 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                               ? "bg-[#161616] border-[#D80032]/60 text-neutral-200 hover:border-neutral-400 hover:text-white"
                               : "bg-[#161616] border-[#2A2A2A] text-neutral-200 hover:border-neutral-400 hover:text-white"
                           }`}
-                          aria-label={`Size ${v.size}`}
+                          aria-label={`Size ${v.size}${isOutOfStock ? (isRtl ? ' - نفدت الكمية' : ' - Sold Out') : ''}`}
                         >
                           <span>{v.size}</span>
                         </button>
@@ -254,8 +254,8 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
                         <span className="w-2 h-2 rounded-full bg-[#D80032] animate-pulse" />
                         <span>
                           {isRtl
-                            ? `متبقي ${activeVariant.stockCount} فقط بهذا المقاس`
-                            : `Only ${activeVariant.stockCount} left in this size`}
+                            ? (activeVariant.stockCount === 1 ? 'تبقى قطعة واحدة فقط بهذا المقاس' : `متبقي ${activeVariant.stockCount} فقط بهذا المقاس`)
+                            : (activeVariant.stockCount === 1 ? 'Only 1 left in this size' : `Only ${activeVariant.stockCount} left in this size`)}
                         </span>
                       </span>
                       <span className="text-[11px] text-neutral-400 font-normal">

@@ -1,7 +1,12 @@
 import { CrmOrderPayload } from '@/types';
 
-export const CRM_WEBHOOK_URL =
+export const DEFAULT_CRM_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbyRWThRWC-w1-NXoSUDcSZV7Zbklt26bP9oRZXySmWiBnsnrcYza19VRrDxtsT6KEzU/exec';
+
+export const CRM_WEBHOOK_URL =
+  (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_CRM_WEBHOOK_URL)
+    ? process.env.NEXT_PUBLIC_CRM_WEBHOOK_URL
+    : DEFAULT_CRM_WEBHOOK_URL;
 
 export const UTM_STORAGE_KEY = 'midaan_utm_params';
 
@@ -95,28 +100,66 @@ export function sendOrderToCrm(payload: CrmOrderPayload): void {
       finalNotes = finalNotes ? `${finalNotes} [UTM: ${utmSummary}]` : `[UTM: ${utmSummary}]`;
     }
 
-    const sanitizedPayload: CrmOrderPayload = {
+    const customerName = sanitizeCrmField(payload.customerName, 80);
+    const phone = sanitizeCrmField(payload.phone, 25);
+    const address = sanitizeCrmField(payload.address, 200);
+    const cityOrArea = sanitizeCrmField(payload.cityOrArea, 100);
+    const notes = sanitizeCrmField(finalNotes, 250);
+
+    const sheetPayload: Record<string, any> = {
+      // Exact Orders_CRM Sheet Columns:
+      Order_ID: payload.orderId,
+      Timestamp: new Date().toISOString(),
+      Customer_Name: customerName,
+      Phone_WhatsApp: phone,
+      Delivery_Scope: payload.deliveryScope,
+      Country_or_Governorate: payload.countryOrGov,
+      City_or_Area: cityOrArea,
+      Detailed_Address: address,
+      Items_Summary: payload.itemsSummary,
+      Product_IDs: payload.productIds,
+      Sizes: payload.sizes,
+      Total_Qty: payload.totalQty,
+      Currency: payload.currency,
+      Items_Subtotal: payload.subtotal,
+      Delivery_Fee: payload.deliveryFee,
+      Grand_Total: payload.grandTotal,
+      Payment_Preference: payload.paymentMethod,
+      Order_Status: 'Pending',
+      Ad_Audience_Segment: payload.audienceTag || 'Drop01_Lead',
+      Notes: notes,
+
+      // Backward-compatible camelCase keys:
       ...payload,
-      customerName: sanitizeCrmField(payload.customerName, 80),
-      phone: sanitizeCrmField(payload.phone, 25),
-      address: sanitizeCrmField(payload.address, 200),
-      notes: sanitizeCrmField(finalNotes, 250),
-      cityOrArea: sanitizeCrmField(payload.cityOrArea, 100),
+      customerName,
+      phone,
+      address,
+      notes,
+      cityOrArea,
     };
 
-    if (typeof window !== 'undefined' && typeof fetch === 'function') {
-      fetch(CRM_WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        keepalive: true,
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(sanitizedPayload),
-      }).catch((err) => {
-        // Non-blocking, do not interrupt checkout flow
-        console.warn('CRM logging error:', err);
-      });
+    if (typeof window !== 'undefined') {
+      const payloadString = JSON.stringify(sheetPayload);
+
+      // 1. Non-blocking fetch with keepalive: true
+      if (typeof fetch === 'function') {
+        fetch(CRM_WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          keepalive: true,
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: payloadString,
+        }).catch((err) => {
+          // Non-blocking, do not interrupt checkout flow
+          console.warn('CRM logging error:', err);
+        });
+      } else if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+        // Fallback for older browsers
+        const blob = new Blob([payloadString], { type: 'text/plain;charset=utf-8' });
+        navigator.sendBeacon(CRM_WEBHOOK_URL, blob);
+      }
     }
   } catch (err) {
     // Non-blocking

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { fbqTrack } from '@/utils/metaPixel';
+import { trackPageView } from '@/utils/analytics';
 import { captureUtmParams } from '@/utils/crm';
 
 export default function MetaPixelNavigation() {
@@ -18,7 +18,7 @@ export default function MetaPixelNavigation() {
       isFirstRender.current = false;
       return;
     }
-    fbqTrack('PageView');
+    trackPageView(pathname);
   }, [pathname]);
 
   return null;

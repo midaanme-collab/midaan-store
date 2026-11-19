@@ -26,7 +26,6 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
     'https://midaan-store.pages.dev',
     'https://preview-123.midaan-store.pages.dev',
     'https://cultural-store-expansion.midaan-store.pages.dev',
-    'https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:8787',
@@ -66,14 +65,14 @@ describe('1. CORS Origin Allowlist Validation (isAllowedOrigin)', () => {
     expect(isAllowedOrigin('https://midaan-store.attacker-account.workers.dev')).toBe(false);
   });
 
-  test('verified preview origin is accepted while other branch hostnames and other accounts are rejected', () => {
-    // Current approved preview origin
-    expect(isAllowedOrigin('https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev')).toBe(true);
+  test('verified production and pages preview origins are accepted while unknown origins are rejected', () => {
+    // Current approved production origin
+    expect(isAllowedOrigin('https://midaan.net')).toBe(true);
+    expect(isAllowedOrigin('https://preview-123.midaan-store.pages.dev')).toBe(true);
 
-    // Another branch hostname on the same midaanme account is rejected
+    // Staging and unknown workers.dev hostnames are rejected
+    expect(isAllowedOrigin('https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev')).toBe(false);
     expect(isAllowedOrigin('https://another-branch-midaan-store.midaanme.workers.dev')).toBe(false);
-
-    // An unrelated account trying to impersonate this preview is rejected
     expect(isAllowedOrigin('https://security-hardening-midaan-store-midaan-store.attacker-account.workers.dev')).toBe(false);
   });
 });
@@ -330,7 +329,7 @@ describe('7. Build Info Metadata Endpoint', () => {
     );
     const env: Env = { ASSETS: { fetch: mockAssetFetch } };
 
-    const req = new Request('https://security-hardening-midaan-store-midaan-store.midaanme.workers.dev/build-info.json');
+    const req = new Request('https://midaan.net/build-info.json');
     const res = await worker.fetch(req, env);
 
     expect(res.status).toBe(200);

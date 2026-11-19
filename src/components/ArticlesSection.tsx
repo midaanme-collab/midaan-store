@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useStore } from '@/store';
-import { ARTICLES, Article } from '@/constants/articles';
+import { ARTICLES, Article, FOUNDING_MANIFESTO } from '@/constants/articles';
 import { content } from '@/locales/dictionary';
 import { X, ArrowUpRight } from 'lucide-react';
 
@@ -96,6 +96,27 @@ export default function ArticlesSection() {
               </Link>
             ))}
           </div>
+        </div>
+
+        {/* Founding Manifesto Callout */}
+        <div className="max-w-7xl mx-auto mt-10 bg-gradient-to-r from-[#141414] via-[#0F0F0F] to-[#0A0A0A] border border-[#262626] rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="border-s-2 border-[#D80032] ps-4">
+            <span className="text-xs font-bold text-[#D80032] uppercase tracking-wider block mb-1">
+              {isRtl ? 'البيان التأسيسي: انتحاب' : 'Founding Manifesto: Entihab'}
+            </span>
+            <h3 className="text-lg sm:text-xl font-black text-white font-sans">
+              {isRtl ? FOUNDING_MANIFESTO.titleAr : FOUNDING_MANIFESTO.titleEn}
+            </h3>
+            <p className="text-xs sm:text-sm text-neutral-300 font-sans mt-2 max-w-2xl leading-relaxed">
+              {isRtl ? FOUNDING_MANIFESTO.paragraphsAr[0] : FOUNDING_MANIFESTO.paragraphsEn[0]}
+            </p>
+          </div>
+          <Link
+            href="/magazine"
+            className="whitespace-nowrap bg-white text-black hover:bg-neutral-200 px-5 py-3 rounded-xl text-xs font-bold transition-all shrink-0 active:scale-95 shadow-md"
+          >
+            {isRtl ? 'قراءة وثيقة التأسيس' : 'Read Manifesto'}
+          </Link>
         </div>
       </section>
 
