@@ -11,7 +11,7 @@ import {
   CUSTOMS_DISCLAIMERS,
 } from '@/constants/shipping';
 import { generateWhatsAppOrderUrl } from '@/utils/whatsapp';
-import { sendOrderToCrm, generateOrderId } from '@/utils/crm';
+import { sendOrderToCrm, logOrderToCrm, generateOrderId } from '@/utils/crm';
 import { trackInitiateCheckout, trackWhatsAppCheckout } from '@/utils/metaPixel';
 
 export default function Modals() {
@@ -207,14 +207,32 @@ export default function Modals() {
   });
 
   const handleCheckoutSubmit = (e?: React.MouseEvent) => {
+    // Prevent default to control navigation synchronously across browsers and prevent Safari cancellation
+    if (e) {
+      e.preventDefault();
+    }
     if (isSubmitting) {
-      if (e) e.preventDefault();
       return;
     }
+
+    // Pre-open blank tab synchronously in desktop browser to prevent Safari popup blocker
+    let targetWindow: Window | null = null;
+    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (!isMobile && typeof window !== 'undefined') {
+      try {
+        targetWindow = window.open('', '_blank');
+        if (targetWindow) {
+          targetWindow.opener = null;
+        }
+      } catch {
+        targetWindow = null;
+      }
+    }
+
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-    }, 3000);
+    }, 4000);
 
     const orderId = generateOrderId();
     const countryOrGov = isDomestic
@@ -231,7 +249,8 @@ export default function Modals() {
       ? (paymentMethod === 'cliq' ? 'CliQ' : 'Cash on Delivery')
       : 'Confirmed via WhatsApp';
 
-    sendOrderToCrm({
+    // 1. Synchronously log order to Google Sheets CRM (non-blocking keepalive / sendBeacon) without await
+    logOrderToCrm({
       orderId,
       customerName: (shippingDestination.customerName || '').trim(),
       phone: (shippingDestination.phone || '').trim(),
@@ -252,7 +271,7 @@ export default function Modals() {
       notes: '',
     });
 
-    // Track Meta Pixel Lead & WhatsApp Checkout event on order submission
+    // 2. Synchronously track Meta Pixel Lead & WhatsApp Checkout event without await
     trackWhatsAppCheckout({
       order_id: orderId,
       value: cartSubtotal,
@@ -260,6 +279,13 @@ export default function Modals() {
       num_items: totalQty,
       items_summary: itemsSummary,
     });
+
+    // 3. Synchronously open WhatsApp URL without closing or resetting the modal
+    if (targetWindow && !targetWindow.closed) {
+      targetWindow.location.href = whatsappUrl;
+    } else if (typeof window !== 'undefined') {
+      window.location.assign(whatsappUrl);
+    }
   };
 
   return (
@@ -733,12 +759,12 @@ export default function Modals() {
                   </div>
                 ) : (
                   <a 
-                    href={isSubmitting ? undefined : whatsappUrl}
+                    href={whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
                     onClick={handleCheckoutSubmit}
                     className={`w-full bg-white text-black hover:bg-neutral-200 py-4 font-sans text-sm font-bold transition-all rounded-xl flex items-center justify-center gap-2 shadow-xl active:scale-95 ${
-                      isSubmitting ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''
+                      isSubmitting ? 'opacity-80' : ''
                     }`}
                   >
                     <span>{strings.sendOrderWhatsApp}</span>

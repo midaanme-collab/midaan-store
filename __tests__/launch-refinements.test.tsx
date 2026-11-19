@@ -252,6 +252,50 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       const actionButton = screen.getByRole('link', { name: /إرسال الطلب للتأكيد عبر واتساب/i });
       expect(actionButton).toBeInTheDocument();
     });
+
+    it('executes checkout click synchronously without removing href or closing modal in Safari', () => {
+      const mockTab = { closed: false, location: { href: '' }, opener: null };
+      const openMock = jest.fn().mockReturnValue(mockTab);
+      const originalOpen = window.open;
+      window.open = openMock;
+
+      useStore.setState({
+        lang: 'ar',
+        currency: 'JOD',
+        isCartOpen: true,
+        cart: [
+          {
+            id: 'drop-helmet-white-L',
+            productTitle: 'تيشيرت خوذة الكوفية — أبيض',
+            size: 'L',
+            garment: 'tshirt',
+            price: 35,
+            priceUSD: 50,
+            quantity: 1,
+            color: 'offwhite',
+            placement: 'back',
+            artMode: 'presets',
+            isPrePrinted: true,
+          },
+        ],
+      });
+
+      render(<Modals />);
+
+      const waLink = screen.getByRole('link', { name: /إرسال الطلب للتأكيد عبر واتساب/i });
+      fireEvent.click(waLink);
+
+      // Modal stays open
+      expect(useStore.getState().isCartOpen).toBe(true);
+      // Href is maintained on the element
+      expect(waLink.getAttribute('href')).toContain('https://wa.me/962770125316?text=');
+      // Navigation was triggered synchronously without blocking
+      expect(openMock).toHaveBeenCalled();
+      expect(mockTab.location.href).toContain('https://wa.me/962770125316?text=');
+
+      // Restore
+      window.open = originalOpen;
+    });
   });
 
   describe('4. Jordan Governorate Areas', () => {
@@ -836,6 +880,12 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(parsedBody.Customer_Name).toBe('علي كمال');
       expect(parsedBody.totalQty).toBe(1);
       expect(parsedBody.Total_Qty).toBe(1);
+    });
+
+    it('exports logOrderToCrm as synchronous non-blocking alias of sendOrderToCrm', async () => {
+      const { logOrderToCrm, sendOrderToCrm } = await import('../src/utils/crm');
+      expect(typeof logOrderToCrm).toBe('function');
+      expect(logOrderToCrm).toBe(sendOrderToCrm);
     });
   });
 

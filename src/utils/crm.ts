@@ -166,3 +166,8 @@ export function sendOrderToCrm(payload: CrmOrderPayload): void {
     console.warn('CRM dispatch error:', err);
   }
 }
+
+/**
+ * Backward-compatible alias for sendOrderToCrm.
+ */
+export const logOrderToCrm = sendOrderToCrm;
