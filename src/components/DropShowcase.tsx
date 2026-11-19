@@ -7,7 +7,7 @@ import { Language, Product, GarmentSize } from "@/types";
 import { ShoppingBag, Check, ArrowUpRight, Ruler } from "lucide-react";
 import { useStore } from "@/store";
 import Interactive3DTilt from "./Interactive3DTilt";
-import { SHARED_PRODUCTS, UPCOMING_EDITIONS, normalizeSize, formatProductPrice, getProductBadge } from "@/constants/products";
+import { SHARED_PRODUCTS, normalizeSize, formatProductPrice, getProductBadge } from "@/constants/products";
 import { content } from "@/locales/dictionary";
 import { trackAddToCart } from "@/utils/metaPixel";
 
@@ -275,79 +275,6 @@ export default function DropShowcase({ lang }: DropShowcaseProps) {
             </Interactive3DTilt>
           );
         })}
-      </div>
-
-      {/* Upcoming Modular Editions (Print Magazine Pre-Order & Drop 02 Apparel Preview) */}
-      <div className="max-w-5xl mx-auto mt-16 pt-12 border-t border-[#1F1F1F]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <div className="text-xs font-bold uppercase text-[#D80032] mb-1 font-mono tracking-wider">
-              {isRtl ? 'الأرشيف والإصدارات القادمة' : 'ARCHIVE & UPCOMING RELEASES'}
-            </div>
-            <h3 className="text-xl sm:text-2xl font-black text-white font-sans">
-              {isRtl ? 'إصدارات قادمة ومطبوعة (طلب مسبق)' : 'Upcoming & Print Editions (Pre-Order)'}
-            </h3>
-          </div>
-          <p className="text-xs text-neutral-400 max-w-sm sm:text-end">
-            {isRtl 
-              ? 'احجز نسختك المطبوعة من مجلة ميدان أو انضم لقائمة إشعارات المجموعة القادمة.'
-              : 'Reserve your physical print issue or get notified when Drop 02 launches.'}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {UPCOMING_EDITIONS.map((edition) => {
-            const badge = getProductBadge(edition, effectiveLang);
-            const isPreorder = edition.releaseStatus === 'preorder';
-
-            return (
-              <div
-                key={edition.id}
-                className="bg-gradient-to-br from-[#121212] via-[#0E0E0E] to-[#0A0A0A] border border-[#262626] rounded-2xl p-6 flex flex-col justify-between shadow-xl"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="inline-flex items-center gap-1.5 bg-black/60 border border-white/10 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                      <span className={`w-1.5 h-1.5 rounded-full ${badge.dotColor}`} />
-                      <span>{badge.text}</span>
-                    </span>
-                    <span className="text-xs text-neutral-400 font-mono">
-                      {isPreorder ? (isRtl ? '١٨ د.أ / 25 USD' : '18 JOD / 25 USD') : (isRtl ? 'قريباً' : 'Coming Soon')}
-                    </span>
-                  </div>
-
-                  <h4 className="text-lg font-black text-white font-sans mb-2 leading-snug">
-                    {isRtl ? edition.titleAr : edition.titleEn}
-                  </h4>
-
-                  <p className="text-xs text-neutral-400 font-sans leading-relaxed mb-6">
-                    {isRtl ? edition.descriptionAr : edition.descriptionEn}
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-[#1C1C1C] flex items-center justify-between text-xs">
-                  <span className="text-neutral-500 font-medium">
-                    {isPreorder 
-                      ? (isRtl ? 'متاح للحجز عبر نشرة ميدان' : 'Available for reserve via Dispatch') 
-                      : (isRtl ? 'إنتاج محدود ومستقل' : 'Limited independent production')}
-                  </span>
-                  <a
-                    href="#footer-newsletter"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const el = document.getElementById('footer-newsletter') || document.querySelector('footer');
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="text-[#D80032] hover:text-white font-bold transition-colors inline-flex items-center gap-1"
-                  >
-                    <span>{isRtl ? 'سجل اهتمامك' : 'Join Waitlist'}</span>
-                    <span>←</span>
-                  </a>
-                </div>
-              </div>
-            );
-          })}
-        </div>
       </div>
     </section>
   );

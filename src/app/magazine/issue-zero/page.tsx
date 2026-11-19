@@ -151,7 +151,7 @@ export default function IssueZeroReader() {
                 <span>{isRtl ? 'المجلة' : 'Magazine'}</span>
               </Link>
               <span>/</span>
-              <span className="text-neutral-500 hidden sm:inline">MIDAAN ISSUE ZERO // HKJ-PAL-2026-ZERO</span>
+              <span className="text-neutral-500 hidden sm:inline">{isRtl ? 'العدد صفر' : 'Issue Zero'}</span>
             </div>
 
             <div className="flex items-center gap-2.5">
@@ -208,7 +208,7 @@ export default function IssueZeroReader() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-4 inset-x-4 flex justify-between items-center text-[11px] text-white/90 bg-black/60 backdrop-blur-md px-3.5 py-2 rounded-xl border border-white/10 font-mono">
-                  <span>HKJ-PAL-2026-ZERO</span>
+                  <span>{isAr ? 'النسخة الأصلية' : 'Original Edition'}</span>
                   <span className="text-[#D80032] font-bold">{isAr ? 'الإصدار التأسيسي' : 'Issue Zero'}</span>
                 </div>
               </div>
@@ -356,7 +356,7 @@ export default function IssueZeroReader() {
 
               <div className="mt-8 pt-6 border-t border-[#222] flex items-center justify-between text-xs text-neutral-500 font-mono">
                 <span>{isAr ? 'هيئة تحرير ميدان — تشرين الأول ٢٠٢٦' : 'Midaan Editorial Collective — Autumn 2026'}</span>
-                <span>HKJ-PAL-2026-ZERO</span>
+                <span>{isAr ? 'عمّان وفلسطين' : 'Amman & Palestine'}</span>
               </div>
             </div>
 

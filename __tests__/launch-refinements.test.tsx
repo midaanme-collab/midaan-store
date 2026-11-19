@@ -703,7 +703,7 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(screen.getByText('اقرأ المجلة')).toBeInTheDocument();
     });
 
-    it('verifies CampaignVideoSection displays logos, removes shop button, and provides sound toggle', async () => {
+    it('verifies CampaignVideoSection displays logos, removes shop button, and removes audio toggle button', async () => {
       await act(async () => {
         render(<CampaignVideoSection />);
       });
@@ -716,9 +716,8 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       expect(screen.queryByText(/تعاون يجمع ميدان وصوت وصورة في إصدارين/i)).toBeNull();
       expect(screen.queryByRole('link', { name: /تسوّق المجموعة|Shop the Collection/i })).toBeNull();
 
-      // Sound toggle button is present
-      const soundBtn = screen.getByRole('button', { name: /تشغيل الصوت/i });
-      expect(soundBtn).toBeInTheDocument();
+      // Sound toggle button is completely removed
+      expect(screen.queryByRole('button', { name: /تشغيل الصوت|كتم الصوت|Unmute|Mute/i })).toBeNull();
     });
 
     it('verifies DropShowcase section header shows ONLY "المتجر" and "إصدار محدود" badge, removing subtitle and fixed price text', () => {
@@ -1345,13 +1344,19 @@ describe('Launch Refinements & Truthful Experience Suite', () => {
       // Size Guide & Exchange Policy links are present
       expect(screen.getAllByRole('button', { name: /جدول المقاسات/i }).length).toBe(2);
       expect(screen.getAllByRole('button', { name: /سياسة الاستبدال/i }).length).toBe(2);
+
+      // Upcoming / Print Edition preview cards must NOT exist on homepage store
+      expect(screen.queryByText(/الأرشيف والإصدارات القادمة/i)).toBeNull();
+      expect(screen.queryByText(/إصدارات قادمة ومطبوعة/i)).toBeNull();
+      expect(screen.queryByText(/نسخة مجلة ميدان المطبوعة/i)).toBeNull();
+      expect(screen.queryByText(/Drop 02 Apparel/i)).toBeNull();
     });
 
-    it('renders complete Issue Zero reader page with table of contents and full texts', () => {
+    it('renders complete Issue Zero reader page with table of contents and full texts, without HKJ-PAL-2026-ZERO', () => {
       render(<IssueZeroReader />);
 
-      // Colophon and Header
-      expect(screen.getAllByText(/HKJ-PAL-2026-ZERO/i).length).toBeGreaterThanOrEqual(1);
+      // HKJ-PAL-2026-ZERO colophon code must NOT be present
+      expect(screen.queryByText(/HKJ-PAL-2026-ZERO/i)).toBeNull();
       expect(screen.getByRole('heading', { level: 1, name: /العدد صفر: انتحاب/i })).toBeInTheDocument();
 
       // Table of Contents with 5 entries

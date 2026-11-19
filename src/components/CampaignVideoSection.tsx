@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { useStore } from '@/store';
 import { content } from '@/locales/dictionary';
 
@@ -13,22 +13,6 @@ export default function CampaignVideoSection() {
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-
-  const toggleSound = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!videoRef.current) return;
-    const nextMuted = !videoRef.current.muted;
-    videoRef.current.muted = nextMuted;
-    videoRef.current.volume = 1.0;
-    setIsMuted(nextMuted);
-    if (videoRef.current.paused) {
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => setIsPlaying(true)).catch(() => {});
-      }
-    }
-  };
 
   const togglePlay = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -49,8 +33,7 @@ export default function CampaignVideoSection() {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = true;
-      videoRef.current.volume = 1.0;
-      setIsMuted(true);
+      videoRef.current.volume = 0;
       // Respect prefers-reduced-motion
       const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReducedMotion) {
@@ -118,7 +101,7 @@ export default function CampaignVideoSection() {
               loop
               muted
               playsInline
-              onClick={toggleSound}
+              onClick={togglePlay}
               className="w-full h-full object-cover cursor-pointer"
             />
 
@@ -150,9 +133,8 @@ export default function CampaignVideoSection() {
               </button>
             )}
 
-            {/* Bottom Controls Bar */}
-            <div className="absolute bottom-5 inset-x-5 z-30 flex items-center justify-between pointer-events-none">
-              {/* Play/Pause Minimal Toggle */}
+            {/* Bottom Controls Bar: Minimal Play/Pause */}
+            <div className="absolute bottom-5 inset-x-5 z-30 flex items-center justify-start pointer-events-none">
               <button
                 type="button"
                 onClick={togglePlay}
@@ -160,30 +142,6 @@ export default function CampaignVideoSection() {
                 aria-label={isPlaying ? strings.campaign.pauseBtn : strings.campaign.playBtn}
               >
                 {isPlaying ? <Pause size={14} /> : <Play size={14} className={isRtl ? 'mr-0.5' : 'ml-0.5'} />}
-              </button>
-
-              {/* Sleek Prominent Floating Sound Toggle Button */}
-              <button
-                type="button"
-                onClick={toggleSound}
-                className="pointer-events-auto flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/75 hover:bg-black/90 text-white border border-white/20 backdrop-blur-md shadow-2xl transition-all active:scale-95 group"
-                aria-label={isMuted ? (isRtl ? 'تشغيل الصوت' : 'Unmute video') : (isRtl ? 'كتم الصوت' : 'Mute video')}
-              >
-                {isMuted ? (
-                  <>
-                    <VolumeX size={16} className="text-[#D80032] group-hover:scale-110 transition-transform" />
-                    <span className="font-sans text-[11px] font-bold">
-                      {isRtl ? 'تشغيل الصوت' : 'Unmute'}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Volume2 size={16} className="text-emerald-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-sans text-[11px] font-bold">
-                      {isRtl ? 'كتم الصوت' : 'Mute'}
-                    </span>
-                  </>
-                )}
               </button>
             </div>
 
