@@ -5,7 +5,7 @@
  */
 
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '476490290557651';
-export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-LX4ZKELGPL';
 
 declare global {
   interface Window {

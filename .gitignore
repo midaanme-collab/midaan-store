@@ -7,6 +7,8 @@ out/
 .env
 .env*.local
 .env.*
+.env.production
+.secrets/
 
 # OS & Bundles & Logs
 .DS_Store

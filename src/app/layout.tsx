@@ -3,7 +3,7 @@ import Script from "next/script";
 import MetaPixelNavigation from "@/components/MetaPixelNavigation";
 import "./globals.css";
 
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-LX4ZKELGPL";
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "476490290557651";
 
 export const viewport: Viewport = {
